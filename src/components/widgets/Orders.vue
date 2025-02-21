@@ -178,23 +178,21 @@ export default {
       return toCurrency(+item.inAmount * +item.rate);
     };
 
-    const toggleType = (item) => {
-      let updateItem;
-      if (item.type === ORDER_TYPES.order) {
-        updateItem = {
-          ...item,
-          type: ORDER_TYPES.profit,
-        };
-      }
-
-      if (item.type === ORDER_TYPES.profit) {
-        updateItem = {
-          ...item,
-          type: ORDER_TYPES.order,
-        };
-      }
-
-      store.dispatch("orders/updateOrderEntity", updateItem);
+    const toggleType = () => {
+      // let updateItem;
+      // if (item.type === ORDER_TYPES.order) {
+      //   updateItem = {
+      //     ...item,
+      //     type: ORDER_TYPES.profit,
+      //   };
+      // }
+      // if (item.type === ORDER_TYPES.profit) {
+      //   updateItem = {
+      //     ...item,
+      //     type: ORDER_TYPES.order,
+      //   };
+      // }
+      // store.dispatch("orders/updateOrderEntity", updateItem);
     };
 
     const onChangeStatus = (item) => {

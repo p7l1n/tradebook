@@ -127,10 +127,10 @@ export default {
     const amountIn = ref("");
     const rateIn = ref("");
 
-    const ordersList = computed(() => store.getters["orders/orders"]);
+    const operatorList = computed(() => store.getters["operators/operators"]);
     const clientsList = computed(() => store.getters["clients/clients"]);
     const operatorItems = computed(() => {
-      return [...new Set(ordersList.value.map((item) => item.operator))].map(
+      return [...new Set(operatorList.value.map((item) => item.name))].map(
         (item) => {
           return {
             title: item,
@@ -139,7 +139,7 @@ export default {
         }
       );
     });
-    console.log("ordersList.value", operatorItems.value);
+
     const clientItems = computed(() => {
       return [...new Set(clientsList.value.map((item) => item.name))].map(
         (item) => {
