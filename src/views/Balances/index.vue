@@ -28,12 +28,22 @@
         class="balance-page__widgets-item"
       />
     </div>
+    <!-- edit balances start -->
+    <div
+      v-if="activeMenuIndex === 2"
+      :class="{ isLoading }"
+      class="balance-page__widgets"
+    >
+      <Loader v-if="isLoading" />
+      <Balances v-if="!isLoading" class="balance-page__widgets-item" />
+    </div>
   </div>
 </template>
 <script>
 import SubMenu from "./components/SubMenu";
 import Rates from "@/components/widgets/Rates";
 import TotalInfo from "@/components/widgets/TotalInfo";
+import Balances from "@/components/widgets/Balances";
 import Loader from "@/components/Loader";
 
 import { useStore } from "vuex";
@@ -45,6 +55,7 @@ export default {
     SubMenu,
     Rates,
     TotalInfo,
+    Balances,
     Loader,
   },
   setup() {

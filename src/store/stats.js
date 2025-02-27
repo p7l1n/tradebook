@@ -1,4 +1,6 @@
-//const types = {};
+const types = {
+  SET_AMOUNT: "SET_AMOUNT",
+};
 
 export default {
   namespaced: true,
@@ -18,7 +20,16 @@ export default {
     stats: (state) => state.stats,
   },
 
-  mutations: {},
+  mutations: {
+    [types.SET_AMOUNT](state, { key, value }) {
+      state.stats.start[key] = value;
+    },
+  },
 
-  actions: {},
+  actions: {
+    setAmount({ commit }, { key, value }) {
+      console.log(key, value);
+      commit(types.SET_AMOUNT, { key, value });
+    },
+  },
 };

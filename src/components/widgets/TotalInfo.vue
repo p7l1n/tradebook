@@ -9,6 +9,7 @@
         <div class="widget-total__list-item-field label">Свед юсд</div>
         <div class="widget-total__list-item-field label">Прибыль</div>
         <div class="widget-total__list-item-field label">Журнал ДК</div>
+        <div class="widget-total__list-item-field label">Тетрадь</div>
         <div class="widget-total__list-item-field label">ФАКТ</div>
       </div>
       <div
@@ -49,6 +50,19 @@
           class="widget-total__list-item-field"
         >
           {{ !item.totalInCurrencyDK ? 0 : toCurrency(item.totalInCurrencyDK) }}
+        </div>
+        <div
+          :class="{
+            red: item.totalInCurrencyDailyNotes < 0,
+            green: item.totalInCurrencyDailyNotes >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{
+            !item.totalInCurrencyDailyNotes
+              ? 0
+              : toCurrency(item.totalInCurrencyDailyNotes)
+          }}
         </div>
         <div
           :class="{

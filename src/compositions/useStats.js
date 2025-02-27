@@ -8,6 +8,7 @@ export default function useStats() {
   const ratesList = computed(() => store.getters["rates/rates"]);
   const ordersList = computed(() => store.getters["orders/orders"]);
   const notesList = computed(() => store.getters["note/notes"]);
+  const dailyNotesList = computed(() => store.getters["dailyNote/notes"]);
   const initialStats = computed(() => store.getters["stats/stats"]);
 
   const filterOptions = computed(() => store.getters["orders/filter"]);
@@ -64,8 +65,10 @@ export default function useStats() {
       statsOrders[key] = {
         totalInCurrency: 0,
         totalInCurrencyDK: 0,
+        totalInCurrencyDKwithoutProfit: 0,
+        totalInCurrencyDailyNotes: 0,
         totalInCurrencyFACT: 0,
-        totalInCurrencyStart: initialStats.value.start[key],
+        totalInCurrencyStart: +initialStats.value.start[key],
       };
     });
 
@@ -82,9 +85,26 @@ export default function useStats() {
 
     // calc DK
     notesList.value.forEach((note) => {
+      // with profit
       const amount =
         note.type === NOTE_TYPES.debit ? -note.amount : +note.amount;
       statsOrders[note.inCurrency].totalInCurrencyDK += amount;
+
+      // without profit
+      let amountWithout =
+        note.type === NOTE_TYPES.debit ? -note.amount : +note.amount;
+      if (note.isProfit) {
+        amountWithout = 0;
+      }
+      statsOrders[note.inCurrency].totalInCurrencyDKwithoutProfit +=
+        amountWithout;
+    });
+
+    // calc DAILY NOTES
+    dailyNotesList.value.forEach((note) => {
+      const amount =
+        note.type === NOTE_TYPES.debit ? -note.amount : +note.amount;
+      statsOrders[note.inCurrency].totalInCurrencyDailyNotes += amount;
     });
 
     // calc in USDT
@@ -106,9 +126,9 @@ export default function useStats() {
     // calc in FACTS
     Object.keys(statsOrders).forEach((key) => {
       statsOrders[key].totalInCurrencyFACT =
-        statsOrders[key].totalInCurrencyStart +
-        statsOrders[key].totalInCurrency +
-        statsOrders[key].totalInCurrencyDK;
+        +statsOrders[key].totalInCurrencyStart +
+        +statsOrders[key].totalInCurrency +
+        +statsOrders[key].totalInCurrencyDKwithoutProfit;
     });
 
     return {
@@ -123,7 +143,6 @@ export default function useStats() {
       sum += allStats.value.statsOrders[key]?.totalInUSDT || 0;
     });
 
-    console.log("sum2", sum);
     return sum;
   });
 

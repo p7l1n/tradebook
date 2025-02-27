@@ -78,7 +78,7 @@
             v-if="showFields?.date?.show"
             class="widget-orders__list-item-field"
           >
-            {{ moment(item.date).format("DD.MM.YY,HH:mm") }}
+            {{ moment(item.date).format("DD.MM,HH:mm") }}
           </div>
           <div
             v-if="showFields?.type?.show"
@@ -109,24 +109,24 @@
             {{ item.rate }}
           </div>
           <div class="widget-orders__list-item-field red">
-            {{ item.outCurrency }}
+            {{ ORDER_TYPES.trade !== item.type ? item.outCurrency : "" }}
           </div>
           <div class="widget-orders__list-item-field strong">
             {{
-              ORDER_TYPES.order === item.type ? toCurrency(item.outAmount) : ""
+              ORDER_TYPES.trade !== item.type ? toCurrency(item.outAmount) : ""
             }}
           </div>
           <div
             v-if="showFields?.hint?.show"
             class="widget-orders__list-item-field mini"
           >
-            {{ ORDER_TYPES.order === item.type ? getHint(item) : "" }}
+            {{ ORDER_TYPES.trade !== item.type ? getHint(item) : "" }}
           </div>
           <div
             v-if="showFields?.dateChange?.show"
             class="widget-orders__list-item-field mini"
           >
-            {{ moment(item.dateChange).format("DD.MM.YY,HH:mm") }}
+            {{ moment(item.dateChange).format("DD.MM,HH:mm") }}
           </div>
         </div>
       </div>

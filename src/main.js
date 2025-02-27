@@ -20,6 +20,9 @@ createPersistedState({
     "note.notes",
     "note.profitHistory",
     "note.filter",
+    "dailyNote.notes",
+    "dailyNote.filter",
+    "stats.stats",
   ],
 })(store);
 

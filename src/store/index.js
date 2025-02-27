@@ -5,6 +5,7 @@ import stats from "./stats";
 import clients from "./clients";
 import operators from "./operators";
 import note from "./note";
+import dailyNote from "./dailyNote";
 
 export default createStore({
   state: {},
@@ -18,5 +19,6 @@ export default createStore({
     clients,
     operators,
     note,
+    dailyNote,
   },
 });

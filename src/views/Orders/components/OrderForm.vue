@@ -55,10 +55,10 @@
     <div class="order-form__field">
       <Input placeholder="Сумма" v-model="amountIn" type="number" />
     </div>
-    <div class="order-form__field">
+    <div v-if="activeOperationTypesIndex != 2" class="order-form__field">
       <Input placeholder="Курс" v-model="rateIn" type="number" />
     </div>
-    <div class="order-form__field">
+    <div v-if="activeOperationTypesIndex != 2" class="order-form__field">
       <CheckGroupButton
         label="расход (валюта)"
         :items="outCurrencies"
@@ -116,7 +116,11 @@ export default {
     const store = useStore();
     const selectedOperator = ref(null);
     const selectedClient = ref(null);
-    const operationTypes = ref([ORDER_TYPES.order, ORDER_TYPES.profit]);
+    const operationTypes = ref([
+      ORDER_TYPES.order,
+      ORDER_TYPES.move,
+      ORDER_TYPES.trade,
+    ]);
     const activeOperationTypesIndex = ref(0);
     const activeIncurrenciesIndex = ref(0);
     const activeOutcurrenciesIndex = ref(0);
@@ -182,12 +186,25 @@ export default {
     };
 
     const addNewOrder = () => {
-      if (!selectedClient.value || !amountIn.value || !rateIn.value) return;
+      if (!selectedClient.value || !amountIn.value) return;
 
-      const outAmountValue =
+      if (activeOperationTypesIndex.value !== 2) {
+        // в выручке проверка на наличие курса не нужна
+        if (!rateIn.value) {
+          return;
+        }
+      }
+
+      let outAmountValue =
         outCurrencies.value[activeOutcurrenciesIndex.value] === "USDT"
           ? +amountIn.value / +rateIn.value
           : +amountIn.value * +rateIn.value;
+
+      if (activeOperationTypesIndex.value == 2) {
+        // выручка просто прибыль с 0 расходом
+        outAmountValue = 0;
+        rateIn.value = 0;
+      }
 
       // edit
       if (props.editOrder) {

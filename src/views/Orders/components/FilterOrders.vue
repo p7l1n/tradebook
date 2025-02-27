@@ -277,6 +277,7 @@ export default {
         inCurrency: "USDT",
         amount: profitUsdt.value,
         comment: NOTE_COMMENT_TYPES.cashOut,
+        isProfit: true,
       });
       // const newOrderEntity = {
       //   id,

@@ -23,8 +23,9 @@ export default {
   setup() {
     const menuItems = ref([
       { title: "Балансы", route: "balances" },
-      { title: "Журнал сделок", route: "orders" },
-      { title: "Журнал ДК", route: "note" },
+      { title: "Журнал СД", route: "orders" },
+      { title: "Журнал ДК", route: "notes" },
+      { title: "Тетрадь", route: "dailynotes" },
       { title: "Клиенты", route: "clients" },
       { title: "Операторы", route: "operators" },
     ]);

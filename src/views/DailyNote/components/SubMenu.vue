@@ -22,7 +22,7 @@ export default {
     },
   },
   setup() {
-    const menuItems = ref(["Табло", "Валюты", "Балансы"]);
+    const menuItems = ref(["ВСЕ", "USDT", "RUB", "EUR", "USD", "WUSD"]);
 
     return {
       menuItems,
@@ -43,7 +43,7 @@ export default {
   justify-content: center;
 
   &__item {
-    width: 80px;
+    width: 110px;
     display: flex;
     justify-content: center;
     align-items: center;
