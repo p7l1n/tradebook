@@ -11,8 +11,8 @@ export default function useDailyNotes() {
     if (ndx === 0) return "";
     if (ndx === 1) return "USDT";
     if (ndx === 2) return "RUB";
-    if (ndx === 3) return "EUR";
-    if (ndx === 4) return "USD";
+    if (ndx === 3) return "USD";
+    if (ndx === 4) return "EUR";
     if (ndx === 5) return "WUSD";
   };
 

@@ -4,7 +4,7 @@
     <div :class="{ isLoading }" class="note-page__widgets">
       <Loader v-if="isLoading" />
       <div class="filter">
-        <Button title="Новая запись" @click="openForm" class="credit-btn" />
+        <!-- <Button title="Новая запись" @click="openForm" class="credit-btn" /> -->
         <div class="filter__stats">
           <el-date-picker
             v-model="dateFrom"
@@ -28,6 +28,40 @@
           </div>
         </div>
       </div>
+      <div v-if="activeMenuIndex != 0" class="note-page__form">
+        <CheckGroupButton
+          :items="operationTypes"
+          :active-index="activeOperationTypesIndex"
+          @check="onSelectOperationType"
+        />
+        <div class="note-page__form-field">
+          <el-select
+            v-model="selectedClient"
+            clearable
+            filterable
+            placeholder="Контрагент"
+            style="width: 100%"
+            size="large"
+            @change="onClientSelect"
+          >
+            <el-option
+              v-for="item in clientItems"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </div>
+        <div class="note-page__form-field">
+          <Input placeholder="Сумма" gray v-model="amount" type="number" />
+        </div>
+        <div class="note-page__form-field">
+          <Input placeholder="Примечание" gray v-model="comment" />
+        </div>
+        <div class="note-page__form-field">
+          <Button title="Добавить" style="width: 120px" @click="addNew" />
+        </div>
+      </div>
       <DailyNotes
         v-if="!isLoading"
         class="notes-page__widgets-item"
@@ -41,7 +75,11 @@
           :title="selectedItem ? 'Редактирование записи' : 'Новая запись'"
           v-click-away="closeForm"
         >
-          <Form @close="closeForm" :edit-note="selectedItem" />
+          <Form
+            @close="closeForm"
+            :edit-note="selectedItem"
+            :currency-index="activeMenuIndex"
+          />
         </ModalContent>
       </Modal>
     </teleport>
@@ -51,16 +89,20 @@
 import SubMenu from "./components/SubMenu";
 import Loader from "@/components/Loader";
 
+import Input from "@/components/Input";
 import Modal from "@/components/Modal";
 import ModalContent from "@/components/ModalContent";
 import Form from "./components/Form";
 import DailyNotes from "@/components/widgets/DailyNotes";
 import Button from "@/components/Button";
+import CheckGroupButton from "@/components/CheckGroupButton";
+import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
 
 import { useStore } from "vuex";
 
 import { ref, computed, onMounted } from "vue";
 import { toCurrency } from "@/helpers";
+import { NOTE_TYPES } from "@/config/noteTypes";
 
 export default {
   components: {
@@ -69,8 +111,10 @@ export default {
     Modal,
     ModalContent,
     Form,
+    Input,
     DailyNotes,
     Button,
+    CheckGroupButton,
   },
   setup() {
     const store = useStore();
@@ -79,6 +123,17 @@ export default {
     const selectedItem = ref(null);
     const dateFrom = ref("");
     const dateTo = ref("");
+
+    // form
+    const operationTypes = ref([NOTE_TYPES.debit, NOTE_TYPES.credit]);
+    const activeOperationTypesIndex = ref(0);
+    const selectedClient = ref(null);
+    const amount = ref("");
+    const comment = ref("");
+
+    const onClientSelect = (val) => {
+      selectedClient.value = val;
+    };
 
     const shortcuts = ref([
       {
@@ -106,6 +161,18 @@ export default {
     const disabledDate = (time) => {
       return time.getTime() > Date.now();
     };
+
+    const clientsList = computed(() => store.getters["clients/clients"]);
+    const clientItems = computed(() => {
+      return [...new Set(clientsList.value.map((item) => item.name))].map(
+        (item) => {
+          return {
+            title: item,
+            value: item,
+          };
+        }
+      );
+    });
 
     const isLoading = computed(() => store.getters["rates/isLoading"]);
     const filterOptions = computed(() => store.getters["dailyNote/filter"]);
@@ -146,6 +213,39 @@ export default {
       });
     };
 
+    const onSelectOperationType = (ndx) => {
+      activeOperationTypesIndex.value = ndx;
+    };
+
+    const clearForm = () => {
+      activeOperationTypesIndex.value = 0;
+
+      comment.value = "";
+      amount.value = "";
+      selectedClient.value = null;
+    };
+
+    const getCurrency = () => {
+      return DEFAULT_CURRENCIES[activeMenuIndex.value - 1];
+    };
+
+    const addNew = () => {
+      if (!selectedClient.value || !amount.value) return;
+
+      const newOrderEntity = {
+        id: `${Math.random()}`.slice(2),
+        date: +new Date(),
+        type: operationTypes.value[activeOperationTypesIndex.value],
+        client: selectedClient.value,
+        inCurrency: getCurrency(),
+        amount: amount.value,
+        comment: comment.value,
+      };
+
+      store.dispatch("dailyNote/addNewEntity", newOrderEntity);
+      clearForm();
+    };
+
     onMounted(() => {
       if (filterOptions.value.dateFrom) {
         dateFrom.value = filterOptions.value.dateFrom;
@@ -166,6 +266,17 @@ export default {
       dateFrom,
       dateTo,
       shortcuts,
+
+      // form
+      operationTypes,
+      activeOperationTypesIndex,
+      clientItems,
+      amount,
+      comment,
+      selectedClient,
+      onClientSelect,
+      addNew,
+
       toCurrency,
       disabledDate,
 
@@ -175,6 +286,7 @@ export default {
       openForm,
       onSelectDateFrom,
       onSelectDateTo,
+      onSelectOperationType,
     };
   },
 };
@@ -192,6 +304,7 @@ export default {
     align-items: flex-start;
     justify-content: space-between;
     width: 100%;
+    margin-bottom: 10px;
 
     &__stats {
       display: flex;
@@ -225,6 +338,17 @@ export default {
       align-items: center;
       height: calc(100vh - 120px);
     }
+  }
+
+  &__form {
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+  }
+
+  &__form-field {
+    width: 220px;
+    margin-left: 10px;
   }
 }
 </style>

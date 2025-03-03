@@ -13,6 +13,7 @@
 </template>
 <script>
 import { ref } from "vue";
+import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
 
 export default {
   props: {
@@ -22,7 +23,7 @@ export default {
     },
   },
   setup() {
-    const menuItems = ref(["ВСЕ", "USDT", "RUB", "EUR", "USD", "WUSD"]);
+    const menuItems = ref(["ВСЕ"].concat(DEFAULT_CURRENCIES));
 
     return {
       menuItems,

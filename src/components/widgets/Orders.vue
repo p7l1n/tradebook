@@ -54,7 +54,7 @@
         </div>
         <div
           :class="{
-            active: selectedItem && selectedItem.apiKey === item.apiKey,
+            editing: editing && ids.includes(item.id),
           }"
           class="widget-orders__list-item"
           v-for="(item, ndx) in ordersList"
@@ -83,7 +83,6 @@
           <div
             v-if="showFields?.type?.show"
             class="widget-orders__list-item-field strong clicked"
-            @click.stop="toggleType(item)"
           >
             {{ item.type }}
           </div>
@@ -128,6 +127,10 @@
           >
             {{ moment(item.dateChange).format("DD.MM,HH:mm") }}
           </div>
+          <div
+            class="widget-orders__list-item-field remove"
+            @click.stop="remove(item)"
+          ></div>
         </div>
       </div>
     </div>
@@ -143,7 +146,17 @@ import useStats from "@/compositions/useStats";
 
 export default {
   components: {},
-  setup(_, { emit }) {
+  props: {
+    editing: {
+      type: Boolean,
+      default: false,
+    },
+    ids: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  setup(props, { emit }) {
     const { filteredOrdersList: ordersList } = useStats();
     const store = useStore();
     const selectedItem = ref(null);
@@ -160,6 +173,10 @@ export default {
     const showFields = computed(() => store.getters["orders/showFields"]);
 
     const selectRow = (item) => {
+      if (props.editing) {
+        emit("collect", item.id);
+        return;
+      }
       emit("select", item);
     };
 
@@ -178,31 +195,17 @@ export default {
       return toCurrency(+item.inAmount * +item.rate);
     };
 
-    const toggleType = () => {
-      // let updateItem;
-      // if (item.type === ORDER_TYPES.order) {
-      //   updateItem = {
-      //     ...item,
-      //     type: ORDER_TYPES.profit,
-      //   };
-      // }
-      // if (item.type === ORDER_TYPES.profit) {
-      //   updateItem = {
-      //     ...item,
-      //     type: ORDER_TYPES.order,
-      //   };
-      // }
-      // store.dispatch("orders/updateOrderEntity", updateItem);
-    };
-
     const onChangeStatus = (item) => {
       const updateItem = { ...item };
       store.dispatch("orders/updateOrderEntity", updateItem);
     };
 
+    const remove = (item) => {
+      store.dispatch("orders/removeOrderEntity", item);
+    };
+
     return {
       ORDER_TYPES,
-      toggleType,
       ordersList,
       title,
       buy,
@@ -217,7 +220,7 @@ export default {
       showFields,
       getNumFormat,
       selectRow,
-
+      remove,
       toCurrency,
       getHint,
       getOutAmount,
@@ -273,12 +276,18 @@ export default {
     flex-direction: column;
     margin-top: 20px;
     height: auto;
+    padding-bottom: 10px;
   }
 
   &__list-item {
     display: flex;
     align-items: center;
     position: relative;
+    cursor: pointer;
+
+    &.editing {
+      background-color: #ccc;
+    }
 
     &.active {
       background-color: $colorRowGrayActive;
@@ -304,6 +313,20 @@ export default {
     align-items: center;
     width: 100%;
     height: 30px;
+    position: relative;
+
+    &.remove {
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+      background-image: url("~@/assets/icons/remove.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: 50%;
+      position: absolute;
+      right: 5px;
+      top: 6px;
+    }
 
     &.strong {
       color: $textColorBlack;

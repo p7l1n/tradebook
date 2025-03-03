@@ -6,7 +6,7 @@
       :type="type"
       :disabled="disabled"
       @input="updateInputValue"
-      :class="{ disabled }"
+      :class="{ disabled, gray }"
       class="ui-input__input"
     />
   </div>
@@ -25,6 +25,10 @@ export default {
       default: "",
     },
     disabled: {
+      type: Boolean,
+      default: false,
+    },
+    gray: {
       type: Boolean,
       default: false,
     },
@@ -57,6 +61,10 @@ export default {
     padding: 0 10px;
     border-radius: $controlRadius;
     width: 100%;
+
+    &.gray {
+      background-color: $panelColorLight;
+    }
 
     &.disabled {
       border: 1px solid #ccc;

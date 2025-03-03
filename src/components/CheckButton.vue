@@ -1,6 +1,6 @@
 <template>
   <div class="check-button">
-    <div class="check-button__label">
+    <div v-if="label" class="check-button__label">
       {{ label }}
     </div>
     <div class="check-button__selector">
@@ -56,6 +56,7 @@ export default {
     font-size: 14px;
     color: $textColorGrayDark;
     text-align: left;
+    margin-bottom: 5px;
   }
 
   &__selector {
@@ -66,7 +67,6 @@ export default {
     background-color: $panelColorLight;
     padding: 5px;
     box-sizing: border-box;
-    margin-top: 5px;
   }
 
   &__selector-item {

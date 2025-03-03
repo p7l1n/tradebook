@@ -26,7 +26,7 @@
         />
       </el-select>
     </div>
-    <div class="note-form__field">
+    <div v-if="currencyIndex == 0" class="note-form__field">
       <CheckGroupButton
         label="Валюта"
         :items="inCurrencies"
@@ -81,6 +81,9 @@ export default {
     editNote: {
       type: [null, Object],
       default: null,
+    },
+    currencyIndex: {
+      required: true,
     },
   },
   setup(props, { emit }) {
@@ -182,6 +185,10 @@ export default {
           (item) => item === props.editNote.inCurrency
         );
         amount.value = props.editNote.amount;
+      } else {
+        if (props.currencyIndex != 0) {
+          activeIncurrenciesIndex.value = props.currencyIndex - 1;
+        }
       }
     });
 
