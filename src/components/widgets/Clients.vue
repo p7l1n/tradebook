@@ -1,21 +1,56 @@
 <template>
   <div class="widget-clients-wrap">
-    <div class="widget-clients-controls">
+    <!-- edit -->
+    <el-input
+      v-model="searchStr"
+      style="width: 240px"
+      placeholder="Поиск по контрагентам"
+      clearable
+      @input="onSearch"
+      class="widget-clients-wrap__search"
+    />
+    <div v-if="false" class="widget-clients-controls">
       <CheckButton
-        label="Редактировать"
-        yes-title="Вкл"
+        yes-title="Редакт"
         no-title="Выкл"
         :checked="editModeFlag"
         @check="onCheckEdit"
       />
     </div>
+    <div v-if="editModeFlag" class="widget-clients__edit-form">
+      <div class="row">
+        <div class="input-field row">
+          <Input placeholder="Контрагент" gray v-model="name" />
+        </div>
+        <div class="input-field row">
+          <Input placeholder="Телеграм" gray v-model="telegram" />
+        </div>
+        <div class="input-field row">
+          <Input placeholder="Дополнительно" gray v-model="info" />
+        </div>
+        <CheckGroupButton
+          :items="typesItems"
+          :active-index="activeTypesIndex"
+          @check="onSelectType"
+        />
+      </div>
+      <div class="row">
+        <Button
+          :title="isEditing ? 'Сохранить' : 'Добавить'"
+          @click="updateEntity"
+        />
+        <Button title="Очистить" @click="clearAll" />
+        <Button v-if="selectedItem" title="Удалить" @click="removeEntity" />
+      </div>
+    </div>
     <div class="widget-clients">
-      <div class="widget-clients__title">Клиенты</div>
+      <div class="widget-clients__title">Контрагенты</div>
       <div class="widget-clients__list">
         <div class="widget-clients__list-item">
-          <div class="widget-clients__list-item-field label">Клиент</div>
+          <div class="widget-clients__list-item-field label">Контрагент</div>
           <div class="widget-clients__list-item-field label">Телеграм</div>
           <div class="widget-clients__list-item-field label">Дополнительно</div>
+          <div class="widget-clients__list-item-field label">Тип</div>
         </div>
         <div
           :class="{
@@ -23,7 +58,7 @@
             active: selectedItem && selectedItem.id === item.id,
           }"
           class="widget-clients__list-item"
-          v-for="(item, ndx) in clientsList"
+          v-for="(item, ndx) in filteredClientsList"
           :key="ndx"
           @click="selectRow(item)"
         >
@@ -36,26 +71,11 @@
           <div class="widget-clients__list-item-field">
             {{ item.info }}
           </div>
+          <div class="widget-clients__list-item-field">
+            {{ item.type }}
+          </div>
         </div>
       </div>
-    </div>
-    <!-- edit -->
-    <div v-if="editModeFlag" class="widget-clients__edit-form">
-      <div class="input-field row">
-        <Input placeholder="Клиент" v-model="name" />
-      </div>
-      <div class="input-field row">
-        <Input placeholder="Телеграм" v-model="telegram" />
-      </div>
-      <div class="input-field row">
-        <Input placeholder="Дополнительно" v-model="info" />
-      </div>
-      <Button
-        :title="isEditing ? 'Сохранить' : 'Добавить'"
-        @click="updateEntity"
-      />
-      <Button title="Очистить поля" class="mt15" @click="clearAll" />
-      <Button title="Удалить клиента" class="mt15" @click="removeEntity" />
     </div>
   </div>
 </template>
@@ -66,23 +86,46 @@ import Input from "@/components/Input";
 import Button from "@/components/Button";
 import CheckButton from "@/components/CheckButton";
 import { getNumFormat } from "@/helpers";
+import CheckGroupButton from "@/components/CheckGroupButton";
+import { CONTRAGENTS } from "@/config/noteTypes";
 
 export default {
   components: {
     Input,
     Button,
     CheckButton,
+    CheckGroupButton,
   },
   setup() {
     const store = useStore();
-    const editModeFlag = ref(false);
+    const editModeFlag = ref(true);
     const selectedItem = ref(null);
     const id = ref("");
     const name = ref("");
     const telegram = ref("");
     const info = ref("");
+    const searchStr = ref("");
+    const typesItems = ref([CONTRAGENTS.client, CONTRAGENTS.operator]);
+    const activeTypesIndex = ref(0);
 
     const clientsList = computed(() => store.getters["clients/clients"]);
+
+    const filteredClientsList = computed(() => {
+      if (!searchStr.value) return clientsList.value;
+
+      return clientsList.value.filter((item) => {
+        return (
+          item.name.toLowerCase().includes(searchStr.value.toLowerCase()) ||
+          item.type.toLowerCase().includes(searchStr.value.toLowerCase()) ||
+          item.telegram.toLowerCase().includes(searchStr.value.toLowerCase()) ||
+          item.info.toLowerCase().includes(searchStr.value.toLowerCase())
+        );
+      });
+    });
+
+    const onSelectType = (ndx) => {
+      activeTypesIndex.value = ndx;
+    };
 
     const clearAll = () => {
       selectedItem.value = null;
@@ -100,6 +143,9 @@ export default {
       telegram.value = selectedItem.value.telegram;
       info.value = selectedItem.value.info;
       id.value = selectedItem.value.id;
+      activeTypesIndex.value = typesItems.value.findIndex(
+        (type) => type === selectedItem.value.type
+      );
     };
 
     const isEditing = computed(() => {
@@ -113,20 +159,24 @@ export default {
           telegram: telegram.value,
           info: info.value,
           id: id.value,
+          type: typesItems.value[activeTypesIndex.value],
         });
         clearAll();
       } else {
+        console.log(typesItems.value, activeTypesIndex.value);
         store.dispatch("clients/addEntity", {
           id: `${Math.random()}`.slice(2),
           name: name.value,
           telegram: telegram.value,
           info: info.value,
+          type: typesItems.value[activeTypesIndex.value],
         });
         clearAll();
       }
     };
 
     const removeEntity = () => {
+      if (!selectedItem.value) return;
       store.dispatch("clients/removeEntity", selectedItem.value.id);
       clearAll();
     };
@@ -134,6 +184,8 @@ export default {
     const onCheckEdit = (val) => {
       editModeFlag.value = val;
     };
+
+    const onSearch = () => {};
 
     return {
       clientsList,
@@ -144,14 +196,19 @@ export default {
       //
       selectedItem,
       isEditing,
-
+      typesItems,
+      activeTypesIndex,
       editModeFlag,
+      searchStr,
+      filteredClientsList,
       getNumFormat,
       clearAll,
       selectRow,
       updateEntity,
       removeEntity,
       onCheckEdit,
+      onSelectType,
+      onSearch,
     };
   },
 };
@@ -161,15 +218,20 @@ export default {
 @import "@/assets/styles/base.scss";
 
 .widget-clients-wrap {
+  width: 100%;
   display: flex;
+  align-items: flex-start;
   flex-direction: column;
   position: relative;
+
+  &__search {
+    position: absolute;
+    top: -60px;
+  }
 }
 
 .widget-clients-controls {
-  position: absolute;
-  left: 780px;
-  top: 0;
+  margin-left: 10px;
 }
 
 .widget-clients {
@@ -260,36 +322,36 @@ export default {
     }
 
     &:nth-child(even) {
-      background-color: $panelColorActive;
+      // background-color: $panelColorActive;
     }
   }
 
   // edit
   &__edit-form {
-    width: 400px;
-    margin-top: 20px;
+    width: 900px;
     display: flex;
-    flex-direction: column;
-    padding: $paddingSmall;
-    border-radius: $borderRadius;
-    background-color: $panelColorLight;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .row {
+      display: flex;
+      align-items: center;
+
+      .ui-button {
+        width: 33%;
+        margin-left: 10px;
+      }
+    }
 
     .input-field {
-      margin-bottom: 15px;
+      width: 33%;
+      margin-right: 10px;
 
       &.row {
         display: flex;
         align-items: center;
-
-        .mr15 {
-          margin-right: 15px;
-        }
       }
     }
   }
-}
-
-.mt15 {
-  margin-top: 5px;
 }
 </style>

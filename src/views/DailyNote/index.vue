@@ -103,6 +103,7 @@ import { useStore } from "vuex";
 import { ref, computed, onMounted } from "vue";
 import { toCurrency } from "@/helpers";
 import { NOTE_TYPES } from "@/config/noteTypes";
+import useStatsNotes from "@/compositions/useStatsNotes";
 
 export default {
   components: {
@@ -117,12 +118,14 @@ export default {
     CheckGroupButton,
   },
   setup() {
+    const { allStats } = useStatsNotes();
     const store = useStore();
     const activeMenuIndex = ref(0);
     const editForm = ref(false);
     const selectedItem = ref(null);
     const dateFrom = ref("");
     const dateTo = ref("");
+    console.log("daily stats", allStats.value);
 
     // form
     const operationTypes = ref([NOTE_TYPES.debit, NOTE_TYPES.credit]);

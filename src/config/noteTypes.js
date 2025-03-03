@@ -9,4 +9,6 @@ export const NOTE_COMMENT_TYPES = {
 
 export const CONTRAGENTS = {
   profit: "Прибыль",
+  client: "Клиент",
+  operator: "Оператор",
 };

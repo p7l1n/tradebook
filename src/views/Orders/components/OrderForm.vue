@@ -88,6 +88,7 @@ import Input from "@/components/Input";
 import Button from "@/components/Button";
 import CheckGroupButton from "@/components/CheckGroupButton";
 import { ORDER_TYPES } from "@/config/orderTypes";
+import { CONTRAGENTS } from "@/config/noteTypes";
 import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
 
 import { useStore } from "vuex";
@@ -131,7 +132,11 @@ export default {
     const amountIn = ref("");
     const rateIn = ref("");
 
-    const operatorList = computed(() => store.getters["operators/operators"]);
+    const operatorList = computed(() =>
+      store.getters["clients/clients"].filter(
+        (item) => item.type === CONTRAGENTS.operator
+      )
+    );
     const clientsList = computed(() => store.getters["clients/clients"]);
     const operatorItems = computed(() => {
       return [...new Set(operatorList.value.map((item) => item.name))].map(

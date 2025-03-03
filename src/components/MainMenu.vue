@@ -26,8 +26,7 @@ export default {
       { title: "Журнал СД", route: "orders" },
       { title: "Журнал ДК", route: "notes" },
       { title: "Тетрадь", route: "dailynotes" },
-      { title: "Клиенты", route: "clients" },
-      { title: "Операторы", route: "operators" },
+      { title: "Контрагенты", route: "clients" },
     ]);
 
     return {

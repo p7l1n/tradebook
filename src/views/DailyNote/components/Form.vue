@@ -69,6 +69,7 @@ import { useStore } from "vuex";
 import { onMounted, ref, computed } from "vue";
 
 import { ElSelect } from "element-plus";
+import { CONTRAGENTS } from "@/config/noteTypes";
 
 export default {
   components: {
@@ -99,7 +100,11 @@ export default {
 
     const amount = ref("");
 
-    const clientsList = computed(() => store.getters["clients/clients"]);
+    const clientsList = computed(() =>
+      store.getters["clients/clients"].filter(
+        (item) => item.type === CONTRAGENTS.client
+      )
+    );
     const clientItems = computed(() => {
       return [...new Set(clientsList.value.map((item) => item.name))].map(
         (item) => {

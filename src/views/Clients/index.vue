@@ -8,19 +8,19 @@
     >
       <Loader v-if="isLoading" />
       <Clients v-if="!isLoading" class="clients-page__clients-item" />
-    </div>
-    <!-- clients edit -->
-    <div
-      v-if="activeMenuIndex === 1"
-      :class="{ isLoading }"
-      class="clients-page__clients"
-    >
-      <Loader v-if="isLoading" />
-      <Clients
-        v-if="!isLoading"
-        :edit-mode="true"
-        class="clients-page__clients-item"
-      />
+      <!-- clients edit -->
+      <div
+        v-if="!isLoading && activeMenuIndex === 1"
+        :class="{ isLoading }"
+        class="clients-page__clients"
+      >
+        <Loader v-if="isLoading" />
+        <Clients
+          v-if="!isLoading"
+          :edit-mode="true"
+          class="clients-page__clients-item"
+        />
+      </div>
     </div>
   </div>
 </template>
