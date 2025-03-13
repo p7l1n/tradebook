@@ -9,6 +9,11 @@
           <div class="widget-profits__list-item-field label">Сумма</div>
           <div class="widget-profits__list-item-field label">Действие</div>
         </div>
+        <el-empty
+          v-if="!filteredProfitHistory.length"
+          :image-size="300"
+          description="Данных нет"
+        />
         <div
           :class="{
             active: selectedItem && selectedItem.apiKey === item.apiKey,

@@ -52,6 +52,11 @@
           <div class="widget-clients__list-item-field label">Дополнительно</div>
           <div class="widget-clients__list-item-field label">Тип</div>
         </div>
+        <el-empty
+          v-if="!filteredClientsList.length"
+          :image-size="300"
+          description="Данных нет"
+        />
         <div
           :class="{
             editMode: editModeFlag,

@@ -64,7 +64,7 @@ export default {
 
   getters: {
     rates: (state) => state.rates,
-    isLoading: (state) => !+state.rates.USD.buy,
+    isLoading: () => false, // !+state.rates.USD.buy,
     updateFromServer: (state) => state.updateFromServer,
   },
 

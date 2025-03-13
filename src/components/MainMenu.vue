@@ -11,7 +11,13 @@
         {{ item.title }}
       </router-link>
     </div>
-    <div class="main-menu__office" @click="$router.push({ name: 'login' })">
+    <div
+      class="main-menu__office"
+      @click="
+        $router.push({ name: 'login' });
+        $store.dispatch('auth/addUser', null);
+      "
+    >
       <div class="icon" />
     </div>
   </div>

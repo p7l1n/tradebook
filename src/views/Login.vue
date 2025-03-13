@@ -17,9 +17,9 @@
 </template>
 <script>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
+import { useStore } from "vuex";
 
 export default {
   components: {
@@ -27,13 +27,16 @@ export default {
     Button,
   },
   setup() {
-    const router = useRouter();
     const userName = ref("");
     const password = ref("");
+    const store = useStore();
 
     const login = () => {
       if (userName.value === "admin" && password.value === "12312345") {
-        router.push({ name: "balances" });
+        store.dispatch("auth/addUser", {
+          userName: userName.value,
+        });
+        window.location.reload();
       } else {
         alert("Некорректный доступ");
       }

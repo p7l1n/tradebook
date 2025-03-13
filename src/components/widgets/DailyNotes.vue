@@ -12,6 +12,11 @@
           <div class="widget-notes__list-item-field label">Сумма</div>
           <div class="widget-notes__list-item-field label">Примечание</div>
         </div>
+        <el-empty
+          v-if="!filteredNotesList.length"
+          :image-size="300"
+          description="Данных нет"
+        />
         <div
           :class="{
             active: selectedItem && selectedItem.apiKey === item.apiKey,

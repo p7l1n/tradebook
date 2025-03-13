@@ -52,6 +52,11 @@
             Дата изм
           </div>
         </div>
+        <el-empty
+          v-if="!ordersList.length"
+          :image-size="300"
+          description="Данных нет"
+        />
         <div
           :class="{
             editing: editing && ids.includes(item.id),

@@ -23,6 +23,7 @@ createPersistedState({
     "dailyNote.notes",
     "dailyNote.filter",
     "stats.stats",
+    "auth.user",
   ],
 })(store);
 

@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import Home from "@/views/Balances/index.vue";
+import guards from "./guards";
 
 const routes = [
   {
@@ -51,5 +52,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
+
+router.beforeEach(guards);
 
 export default router;
