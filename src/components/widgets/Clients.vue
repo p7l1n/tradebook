@@ -93,6 +93,7 @@ import CheckButton from "@/components/CheckButton";
 import { getNumFormat } from "@/helpers";
 import CheckGroupButton from "@/components/CheckGroupButton";
 import { CONTRAGENTS } from "@/config/noteTypes";
+import { ElNotification } from "element-plus";
 
 export default {
   components: {
@@ -110,10 +111,15 @@ export default {
     const telegram = ref("");
     const info = ref("");
     const searchStr = ref("");
-    const typesItems = ref([CONTRAGENTS.client, CONTRAGENTS.operator]);
+    const typesItems = ref([
+      CONTRAGENTS.client,
+      CONTRAGENTS.operator,
+      CONTRAGENTS.profit,
+    ]);
     const activeTypesIndex = ref(0);
 
     const clientsList = computed(() => store.getters["clients/clients"]);
+    console.log("clientsList", clientsList.value);
 
     const filteredClientsList = computed(() => {
       if (!searchStr.value) return clientsList.value;
@@ -158,6 +164,21 @@ export default {
     });
 
     const updateEntity = async () => {
+      if (!name.value.trim()) return;
+      const find = clientsList.value.find(
+        (item) =>
+          item.name === name.value.trim() &&
+          item.type === typesItems.value[activeTypesIndex.value]
+      );
+      if (find) {
+        ElNotification({
+          title: "Внимание",
+          message: `Такой контрагент уже существует`,
+          type: "warning",
+        });
+        return;
+      }
+
       if (isEditing.value) {
         store.dispatch("clients/updateEntity", {
           name: name.value,
@@ -168,7 +189,6 @@ export default {
         });
         clearAll();
       } else {
-        console.log(typesItems.value, activeTypesIndex.value);
         store.dispatch("clients/addEntity", {
           id: `${Math.random()}`.slice(2),
           name: name.value,
@@ -349,7 +369,7 @@ export default {
     }
 
     .input-field {
-      width: 33%;
+      width: 25%;
       margin-right: 10px;
 
       &.row {

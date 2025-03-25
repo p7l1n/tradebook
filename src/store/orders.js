@@ -11,6 +11,7 @@ export default {
   state: () => ({
     filter: {
       searchStr: "",
+      status: null,
       client: null,
       operator: null,
       inCurrency: null,

@@ -25,6 +25,24 @@
           @change="onSelectDate"
         />
       </div>
+      <!-- status checked -->
+      <div class="filter-orders__item">
+        <div class="filter-orders__item-title">Исп/Не исп</div>
+        <el-select
+          v-model="selectedStatus"
+          clearable
+          placeholder="Выберите статус"
+          style="width: 170px"
+          @change="onStatusSelect"
+        >
+          <el-option
+            v-for="item in statusItems"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </div>
       <!-- client -->
       <div class="filter-orders__item">
         <div class="filter-orders__item-title">Клиент</div>
@@ -99,6 +117,7 @@
       </div>
     </div>
     <div class="filter-orders__section row">
+      <div v-if="isCashOutedToday" class="cashouted">Касса снята</div>
       <el-button
         v-if="showCashOut"
         type="success"
@@ -124,6 +143,7 @@ import { ElSelect, ElNotification } from "element-plus";
 import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import useStats from "@/compositions/useStats";
+import useNotes from "@/compositions/useNotes";
 import { toCurrency, isTodayBetweenDates } from "@/helpers";
 import {
   NOTE_TYPES,
@@ -134,8 +154,10 @@ import {
 export default {
   setup() {
     const { profitUsdt } = useStats();
+    const { isCashOutedToday } = useNotes();
     const store = useStore();
     const selectedDate = ref(null);
+    const selectedStatus = ref(null);
     const selectedClient = ref(null);
     const selectedOperator = ref(null);
     const selectedCurrIn = ref(null);
@@ -174,6 +196,15 @@ export default {
         },
       },
     ]);
+
+    const statusItems = computed(() => {
+      return ["Исполнено", "Не исполнено"].map((item) => {
+        return {
+          title: item,
+          value: item,
+        };
+      });
+    });
 
     const clientItems = computed(() => {
       return [...new Set(ordersList.value.map((item) => item.client))].map(
@@ -221,6 +252,10 @@ export default {
 
     const onSelectDate = (val) => {
       store.dispatch("orders/setFilterOption", { key: "date", value: val });
+    };
+
+    const onStatusSelect = (val) => {
+      store.dispatch("orders/setFilterOption", { key: "status", value: val });
     };
 
     const onClientSelect = (val) => {
@@ -344,6 +379,8 @@ export default {
 
       searchStr,
       selectedDate,
+      statusItems,
+      selectedStatus,
       selectedClient,
       selectedOperator,
       selectedCurrIn,
@@ -355,10 +392,12 @@ export default {
       currOutItems,
       showStats,
       showCashOut,
+      isCashOutedToday,
 
       disabledDate,
       onSearch,
       onSelectDate,
+      onStatusSelect,
       onClientSelect,
       onOperatorSelect,
       onCurrInSelect,
@@ -376,16 +415,26 @@ export default {
 <style lang="scss" scoped>
 .filter-orders {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
   width: 100%;
 
   &__section {
     display: flex;
     align-items: center;
 
+    &:last-child {
+      margin-top: 15px;
+    }
+
     .cashout {
       margin-right: 10px;
+    }
+
+    .cashouted {
+      margin-right: 30px;
+      color: $colorRedDark;
+      font-weight: bold;
     }
 
     &.row {

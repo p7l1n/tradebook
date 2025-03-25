@@ -112,6 +112,10 @@ export default {
       type: String,
       default: "",
     },
+    tradeInitialOrderTypeIndex: {
+      type: [String, Number],
+      default: 0,
+    },
   },
   setup(props, { emit }) {
     const store = useStore();
@@ -203,8 +207,9 @@ export default {
       let outAmountValue =
         outCurrencies.value[activeOutcurrenciesIndex.value] === "USDT"
           ? +amountIn.value / +rateIn.value
-          : +amountIn.value * +rateIn.value;
+          : +amountIn.value / +rateIn.value; // *
 
+      console.log();
       if (activeOperationTypesIndex.value == 2) {
         // выручка просто прибыль с 0 расходом
         outAmountValue = 0;
@@ -245,7 +250,7 @@ export default {
         rate: rateIn.value,
         outCurrency: outCurrencies.value[activeOutcurrenciesIndex.value],
         outAmount: outAmountValue,
-        status: true,
+        status: false,
       };
 
       store.dispatch("orders/addNewOrderEntity", newOrderEntity);
@@ -275,6 +280,7 @@ export default {
         );
       } else {
         // ["USDT", "RUB", "USD", "EUR", "WUSD"] from config queue fixed
+        activeOperationTypesIndex.value = props.tradeInitialOrderTypeIndex;
         if (props.tradeInitialParam === "buyUSDT")
           activeIncurrenciesIndex.value = 0;
         if (props.tradeInitialParam === "sellUSDT")

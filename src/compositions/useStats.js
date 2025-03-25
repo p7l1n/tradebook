@@ -14,6 +14,7 @@ export default function useStats() {
   const filterOptions = computed(() => store.getters["orders/filter"]);
   console.log("ratesList", ratesList.value);
   console.log("ordersList", ordersList.value);
+  console.log("filter", filterOptions.value);
 
   const filteredOrdersList = computed(() => {
     return ordersList.value
@@ -29,6 +30,13 @@ export default function useStats() {
               (r.outAmount + "").includes(str)
           : true;
       })
+      .filter((r) =>
+        filterOptions.value.status == null
+          ? true
+          : filterOptions.value.status === "Исполнено"
+          ? r.status == true
+          : r.status == false
+      )
       .filter((r) =>
         filterOptions.value.client
           ? r.client === filterOptions.value.client

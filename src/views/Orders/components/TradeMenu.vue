@@ -62,16 +62,47 @@
         @click="$emit('sellWUSD', 'sellWUSD')"
       ></Button>
     </div>
+    <CheckGroupButton
+      :items="operationTypes"
+      :active-index="activeOperationTypesIndex"
+      @check="onSelectOperationType"
+    />
   </div>
 </template>
 <script>
 import Button from "@/components/Button";
+import CheckGroupButton from "@/components/CheckGroupButton";
+import { onMounted, ref } from "vue";
+import { ORDER_TYPES } from "@/config/orderTypes";
 
 export default {
   components: {
     Button,
+    CheckGroupButton,
   },
-  setup() {},
+  setup(_, { emit }) {
+    const activeOperationTypesIndex = ref(0);
+    const operationTypes = ref([
+      ORDER_TYPES.order,
+      ORDER_TYPES.move,
+      ORDER_TYPES.trade,
+    ]);
+
+    const onSelectOperationType = (ndx) => {
+      activeOperationTypesIndex.value = ndx;
+      emit("selectOrderType", activeOperationTypesIndex.value);
+    };
+
+    onMounted(() => {
+      emit("selectOrderType", activeOperationTypesIndex.value);
+    });
+
+    return {
+      operationTypes,
+      activeOperationTypesIndex,
+      onSelectOperationType,
+    };
+  },
 };
 </script>
 <style lang="scss" scoped>

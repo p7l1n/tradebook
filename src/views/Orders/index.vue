@@ -13,6 +13,7 @@
         @sellEUR="setTradeParam"
         @buyWUSD="setTradeParam"
         @sellWUSD="setTradeParam"
+        @selectOrderType="onSelectOrderType"
       />
       <div v-if="activeMenuIndex === 0" class="orders-page__edit">
         <CheckButton
@@ -74,6 +75,7 @@
             @close="closeForm"
             :edit-order="selectedOrder"
             :trade-initial-param="tradeInitialParam"
+            :trade-initial-order-type-index="tradeInitialOrderTypeIndex"
           />
         </ModalContent>
       </Modal>
@@ -137,6 +139,7 @@ export default {
     const editOrdersFields = ref(false);
     const selectedOrder = ref(null);
     const tradeInitialParam = ref("");
+    const tradeInitialOrderTypeIndex = ref(0);
     const editModeFlag = ref(false);
     const collectionsIds = ref([]);
 
@@ -180,6 +183,10 @@ export default {
       selectedOrder.value = null;
     };
 
+    const onSelectOrderType = (param) => {
+      tradeInitialOrderTypeIndex.value = param;
+    };
+
     const onCheckEdit = (val) => {
       editModeFlag.value = val;
       if (!editModeFlag.value) {
@@ -210,6 +217,7 @@ export default {
       editOrdersFields,
       selectedOrder,
       tradeInitialParam,
+      tradeInitialOrderTypeIndex,
       filterOptions,
       editModeFlag,
       collectionsIds,
@@ -222,6 +230,7 @@ export default {
       onCheckEdit,
       onCollect,
       removeOrders,
+      onSelectOrderType,
     };
   },
 };

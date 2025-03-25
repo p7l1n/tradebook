@@ -61,12 +61,21 @@
         <div class="note-page__form-field">
           <Button title="Добавить" style="width: 120px" @click="addNew" />
         </div>
+        <div class="note-page__form-field">
+          <el-checkbox
+            v-model="showStats"
+            label="Показать сводку"
+            border
+            @change="onChangeStats"
+          />
+        </div>
       </div>
       <DailyNotes
-        v-if="!isLoading"
+        v-if="!isLoading && !showStats"
         class="notes-page__widgets-item"
         @select="onSelectNote"
       />
+      <NotesStats v-if="!isLoading && showStats" />
     </div>
     <!-- редактирование формы -->
     <teleport v-if="editForm" to="body">
@@ -104,6 +113,7 @@ import { ref, computed, onMounted } from "vue";
 import { toCurrency } from "@/helpers";
 import { NOTE_TYPES } from "@/config/noteTypes";
 import useStatsNotes from "@/compositions/useStatsNotes";
+import NotesStats from "@/components/widgets/NotesStats";
 
 export default {
   components: {
@@ -116,10 +126,12 @@ export default {
     DailyNotes,
     Button,
     CheckGroupButton,
+    NotesStats,
   },
   setup() {
     const { allStats } = useStatsNotes();
     const store = useStore();
+    const showStats = ref(null);
     const activeMenuIndex = ref(0);
     const editForm = ref(false);
     const selectedItem = ref(null);
@@ -277,6 +289,7 @@ export default {
       amount,
       comment,
       selectedClient,
+      showStats,
       onClientSelect,
       addNew,
 
@@ -346,6 +359,7 @@ export default {
   &__form {
     margin: 0 0 10px 0;
     display: flex;
+    width: 100%;
     align-items: center;
   }
 
