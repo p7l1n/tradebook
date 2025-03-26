@@ -15,18 +15,21 @@
       class="main-menu__office"
       @click="
         $router.push({ name: 'login' });
-        $store.dispatch('auth/addUser', null);
+        $store.dispatch('auth/logout', null);
       "
     >
+      {{ userInfo?.sub?.split("@")[0] }}
       <div class="icon" />
     </div>
   </div>
 </template>
 <script>
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { useStore } from "vuex";
 
 export default {
   setup() {
+    const store = useStore();
     const menuItems = ref([
       { title: "Балансы", route: "balances" },
       { title: "Журнал СД", route: "orders" },
@@ -35,8 +38,11 @@ export default {
       { title: "Контрагенты", route: "clients" },
     ]);
 
+    const userInfo = computed(() => store.getters["auth/user"]);
+
     return {
       menuItems,
+      userInfo,
     };
   },
 };
@@ -78,13 +84,17 @@ export default {
   }
 
   &__office {
-    width: $menuWidth;
+    // width: $menuWidth;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    color: $textColorWhite;
+    font-weight: bold;
+    cursor: pointer;
 
     .icon {
+      cursor: pointer;
       width: 64px;
       height: 64px;
       background-image: url("~@/assets/icons/person.svg");
@@ -93,6 +103,7 @@ export default {
       background-repeat: no-repeat;
       border-radius: 50%;
       background-color: $panelColorSecondary;
+      margin: 0 15px;
 
       &:hover {
         cursor: pointer;

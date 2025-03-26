@@ -9,7 +9,7 @@
     "lint:style": "stylelint 'src/**/*.vue' --fix"
   },
   "dependencies": {
-    "axios": "^1.7.9",
+    "axios": "^1.8.4",
     "core-js": "^3.8.3",
     "element-plus": "^2.9.3",
     "moment": "^2.30.1",

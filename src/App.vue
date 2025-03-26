@@ -30,4 +30,8 @@ html {
   text-align: center;
   color: #2c3e50;
 }
+
+.el-notification {
+  font-family: Avenir, Helvetica, Arial, sans-serif !important;
+}
 </style>

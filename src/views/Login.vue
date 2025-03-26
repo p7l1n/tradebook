@@ -1,51 +1,158 @@
 <template>
   <div class="login-page">
-    <div class="login-form">
-      <div class="login-form__title">Вход</div>
-      <div class="login-form__icon"></div>
-      <div class="login-form__field mt25">
-        <Input placeholder="Логин" v-model="userName" />
-      </div>
-      <div class="login-form__field">
-        <Input placeholder="Пароль" type="password" v-model="password" />
-      </div>
-      <div class="login-form__login-btn" @click="login">
-        <Button title="Войти" />
-      </div>
+    <div class="login-form wrap">
+      <el-tabs
+        v-model="tabName"
+        class="login-tabs"
+        type="border-card"
+        @tab-click="onTabClick"
+      >
+        <el-tab-pane label="Авторизация" name="login" class="login-form">
+          <div class="login-form__icon"></div>
+          <div class="login-form__field mt25">
+            <el-input
+              v-model="userName"
+              placeholder="Email"
+              clearable
+              class="base-input"
+            />
+          </div>
+          <div class="login-form__field">
+            <el-input
+              v-model="password"
+              placeholder="Пароль"
+              clearable
+              type="password"
+              class="base-input"
+            />
+          </div>
+          <div class="login-form__login-btn" @click="login">
+            <el-button type="success" :loading="loading" class="base-btn"
+              >Логин</el-button
+            >
+          </div>
+        </el-tab-pane>
+        <!-- reg -->
+        <el-tab-pane label="Регистрация" name="register" class="login-form">
+          <div class="login-form__icon"></div>
+          <div class="login-form__field mt25">
+            <el-input
+              v-model="userName"
+              placeholder="Email"
+              clearable
+              class="base-input"
+            />
+          </div>
+          <div class="login-form__field">
+            <el-input
+              v-model="password"
+              placeholder="Пароль"
+              type="password"
+              clearable
+              class="base-input"
+            />
+          </div>
+          <div class="login-form__field">
+            <el-input
+              v-model="passwordRepeat"
+              placeholder="Повторите пароль"
+              type="password"
+              clearable
+              class="base-input"
+            />
+          </div>
+          <div class="login-form__login-btn" @click="login">
+            <el-button type="primary" :loading="loading" class="base-btn"
+              >Регистрация</el-button
+            >
+          </div>
+        </el-tab-pane>
+      </el-tabs>
     </div>
   </div>
 </template>
 <script>
 import { ref } from "vue";
-import Input from "@/components/Input";
-import Button from "@/components/Button";
 import { useStore } from "vuex";
+import { ElNotification } from "element-plus";
 
 export default {
-  components: {
-    Input,
-    Button,
-  },
+  components: {},
   setup() {
     const userName = ref("");
     const password = ref("");
+    const passwordRepeat = ref("");
+    const tabName = ref("login");
     const store = useStore();
+    const loading = ref(false);
 
-    const login = () => {
-      if (userName.value === "admin" && password.value === "12312345") {
-        store.dispatch("auth/addUser", {
-          userName: userName.value,
+    const clearForm = () => {
+      userName.value = "";
+      password.value = "";
+      passwordRepeat.value = "";
+    };
+
+    const login = async () => {
+      if (!userName.value.trim().length || !userName.value.includes("@")) {
+        ElNotification({
+          title: "Авторизация",
+          message: "Проверьте правильность поля email",
+          type: "error",
         });
-        window.location.reload();
-      } else {
-        alert("Некорректный доступ");
+        return;
       }
+      if (tabName.value !== "login") {
+        if (password.value.length < 8) {
+          ElNotification({
+            title: "Регистрация",
+            message: "Минимальный пароль 8 символов",
+            type: "error",
+          });
+          return;
+        }
+        if (password.value !== passwordRepeat.value) {
+          ElNotification({
+            title: "Регистрация",
+            message: "Пароли не совпадают",
+            type: "error",
+          });
+          return;
+        }
+        loading.value = true;
+        const res = await store.dispatch("auth/register", {
+          email: userName.value,
+          password: password.value,
+        });
+
+        loading.value = false;
+
+        if (res.success) {
+          clearForm();
+          tabName.value = "login";
+        }
+        return;
+      }
+
+      loading.value = true;
+      await store.dispatch("auth/login", {
+        email: userName.value,
+        password: password.value,
+      });
+      loading.value = false;
+    };
+
+    const onTabClick = () => {
+      clearForm();
     };
 
     return {
+      tabName,
       userName,
       password,
+      passwordRepeat,
+      loading,
       login,
+      onTabClick,
     };
   },
 };
@@ -60,7 +167,8 @@ export default {
   align-items: center;
   width: 100%;
   height: 100vh;
-  background-image: url("https://avatars.mds.yandex.net/i?id=ef87dc26201fba0ace05f0ce30f59027_l-5253062-images-thumbs&n=13");
+  background-color: #cccccc17;
+  //background-image: url("https://avatars.mds.yandex.net/i?id=ef87dc26201fba0ace05f0ce30f59027_l-5253062-images-thumbs&n=13");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50%;
@@ -68,7 +176,7 @@ export default {
 
 .login-form {
   width: 300px;
-  height: 250px;
+  // height: 250px;
   margin: 0 auto;
   padding: $paddingSmall;
   display: flex;
@@ -79,15 +187,18 @@ export default {
   position: relative;
   overflow: hidden;
 
+  &.wrap {
+    padding: 20px 40px;
+  }
+
   &__icon {
     width: 50px;
-    height: 50px;
+    min-height: 50px;
     background-image: url("~@/assets/icons/person.svg");
     background-size: contain;
     background-position: 50%;
     background-repeat: no-repeat;
     border-radius: 50%;
-    margin-top: 25px;
     margin-bottom: 20px;
     background-color: $panelColorSecondary;
   }
