@@ -1,15 +1,24 @@
 <template>
-  <MainMenu v-if="$route.name != 'login'" />
+  <MainMenu v-if="userInfo" />
   <router-view />
 </template>
 <script>
 import MainMenu from "@/components/MainMenu";
+import { computed } from "vue";
+import { useStore } from "vuex";
 
 export default {
   components: {
     MainMenu,
   },
-  setup() {},
+  setup() {
+    const store = useStore();
+    const userInfo = computed(() => store.getters["auth/user"]);
+
+    return {
+      userInfo,
+    };
+  },
 };
 </script>
 <style lang="scss">
