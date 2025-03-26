@@ -5,7 +5,7 @@ module.exports = defineConfig({
       '^/api': {
         target: 'http://194.87.146.150:5000',
         ws: true,
-        changeOrigin: false
+        changeOrigin: true
       },
     }
   },
