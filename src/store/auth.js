@@ -35,7 +35,7 @@ export default {
       if (res.token) {
         const userInfo = parseJwt(res.token);
         console.log(userInfo);
-        commit(types.ADD_USER, userInfo);
+        commit(types.ADD_USER, { ...userInfo, jwt: res.token });
         router.push("/balances");
       } else {
         ElNotification({

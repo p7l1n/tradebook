@@ -49,47 +49,7 @@ export default {
         show: true,
       },
     },
-    orders: [
-      // {
-      //   id: 8073470215460445,
-      //   date: 1737234000000,
-      //   dateChange: 1737234000000,
-      //   type: "СДЕЛКА",
-      //   client: "Ivan ivanov",
-      //   operator: "bschange",
-      //   inCurrency: "RUB",
-      //   inAmount: "43000",
-      //   rate: "90",
-      //   outCurrency: "USDT",
-      //   outAmount: 477.778, // 43000 / 90
-      // },
-      // {
-      //   id: 8017590425460445,
-      //   date: 1736888400000,
-      //   dateChange: 1737234000000,
-      //   type: "СДЕЛКА",
-      //   client: "Danya",
-      //   operator: "velvet",
-      //   inCurrency: "USDT",
-      //   inAmount: "70000",
-      //   rate: "1.005",
-      //   outCurrency: "USD",
-      //   outAmount: 70349.99999999999, // 70000 * 1.005
-      // },
-      // {
-      //   id: 1937470875460445,
-      //   date: 1731618000000,
-      //   dateChange: 1737234000000,
-      //   type: "СДЕЛКА",
-      //   client: "Danya",
-      //   operator: "bschange",
-      //   inCurrency: "EUR",
-      //   inAmount: "20000",
-      //   rate: "95",
-      //   outCurrency: "RUB",
-      //   outAmount: 1900000, // 20000 * 95
-      // },
-    ],
+    orders: [],
   }),
 
   getters: {

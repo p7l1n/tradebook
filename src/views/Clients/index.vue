@@ -50,7 +50,7 @@ export default {
     };
 
     onMounted(async () => {
-      await store.dispatch("rates/fetchRates");
+      // await store.dispatch("rates/fetchRates");
     });
 
     return {

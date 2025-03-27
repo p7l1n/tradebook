@@ -35,6 +35,7 @@ export const postQuery = async (url, params = {}) => {
 
 export const putQuery = async (url, params = {}) => {
   let res;
+  delete params.id;
 
   try {
     res = await axios.put(`${BASE_URL}${url}`, params, {

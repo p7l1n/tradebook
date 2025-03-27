@@ -12,3 +12,9 @@ export const CONTRAGENTS = {
   client: "Клиент",
   operator: "Оператор",
 };
+
+export const getContragentFromIndex = (index) => {
+  if (index === 0) return CONTRAGENTS.client;
+  if (index === 1) return CONTRAGENTS.operator;
+  if (index === 2) return CONTRAGENTS.profit;
+};

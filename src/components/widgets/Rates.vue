@@ -163,7 +163,7 @@ export default {
           points: points.value,
         });
         clearAll();
-        await store.dispatch("rates/fetchRates");
+        // await store.dispatch("rates/fetchRates");
       } else {
         store.dispatch("rates/addRateEntity", {
           title: title.value,

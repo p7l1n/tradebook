@@ -35,12 +35,25 @@
         />
       </div>
       <div class="row">
-        <Button
-          :title="isEditing ? 'Сохранить' : 'Добавить'"
+        <el-button
+          type="success"
+          :loading="loading"
+          class="base-btn"
+          style="margin-left: 10px"
           @click="updateEntity"
-        />
+        >
+          {{ isEditing ? "Сохранить" : "Добавить" }}
+        </el-button>
         <Button title="Очистить" @click="clearAll" />
-        <Button v-if="selectedItem" title="Удалить" @click="removeEntity" />
+        <el-button
+          type="warning"
+          :loading="loadingRemove"
+          class="base-btn"
+          style="margin-left: 10px"
+          @click="removeEntity"
+        >
+          Удалить
+        </el-button>
       </div>
     </div>
     <div class="widget-clients">
@@ -116,10 +129,11 @@ export default {
       CONTRAGENTS.operator,
       CONTRAGENTS.profit,
     ]);
+    const loading = ref(false);
+    const loadingRemove = ref(false);
     const activeTypesIndex = ref(0);
 
     const clientsList = computed(() => store.getters["clients/clients"]);
-    console.log("clientsList", clientsList.value);
 
     const filteredClientsList = computed(() => {
       if (!searchStr.value) return clientsList.value;
@@ -180,29 +194,35 @@ export default {
       }
 
       if (isEditing.value) {
+        loading.value = true;
         store.dispatch("clients/updateEntity", {
           name: name.value,
           telegram: telegram.value,
           info: info.value,
           id: id.value,
-          type: typesItems.value[activeTypesIndex.value],
+          type: activeTypesIndex.value, // typesItems.value[activeTypesIndex.value],
         });
+        loading.value = false;
         clearAll();
       } else {
-        store.dispatch("clients/addEntity", {
-          id: `${Math.random()}`.slice(2),
+        loading.value = true;
+        await store.dispatch("clients/addEntity", {
+          // id: `${Math.random()}`.slice(2),
           name: name.value,
           telegram: telegram.value,
           info: info.value,
-          type: typesItems.value[activeTypesIndex.value],
+          type: activeTypesIndex.value, // typesItems.value[activeTypesIndex.value],
         });
+        loading.value = false;
         clearAll();
       }
     };
 
-    const removeEntity = () => {
+    const removeEntity = async () => {
       if (!selectedItem.value) return;
-      store.dispatch("clients/removeEntity", selectedItem.value.id);
+      loadingRemove.value = true;
+      await store.dispatch("clients/removeEntity", selectedItem.value.id);
+      loadingRemove.value = false;
       clearAll();
     };
 
@@ -219,6 +239,9 @@ export default {
       telegram,
       info,
       //
+      loading,
+      loadingRemove,
+
       selectedItem,
       isEditing,
       typesItems,
@@ -353,7 +376,7 @@ export default {
 
   // edit
   &__edit-form {
-    width: 900px;
+    width: 1000px;
     display: flex;
     align-items: center;
     margin-bottom: 10px;

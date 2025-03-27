@@ -4,7 +4,7 @@
 </template>
 <script>
 import MainMenu from "@/components/MainMenu";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -14,6 +14,12 @@ export default {
   setup() {
     const store = useStore();
     const userInfo = computed(() => store.getters["auth/user"]);
+
+    onMounted(async () => {
+      setTimeout(async () => {
+        await store.dispatch("clients/fetchContragents");
+      }, 500);
+    });
 
     return {
       userInfo,
