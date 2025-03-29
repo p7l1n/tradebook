@@ -200,18 +200,17 @@ export default {
           telegram: telegram.value,
           info: info.value,
           id: id.value,
-          type: activeTypesIndex.value, // typesItems.value[activeTypesIndex.value],
+          type: activeTypesIndex.value,
         });
         loading.value = false;
         clearAll();
       } else {
         loading.value = true;
         await store.dispatch("clients/addEntity", {
-          // id: `${Math.random()}`.slice(2),
           name: name.value,
           telegram: telegram.value,
           info: info.value,
-          type: activeTypesIndex.value, // typesItems.value[activeTypesIndex.value],
+          type: activeTypesIndex.value,
         });
         loading.value = false;
         clearAll();

@@ -1,5 +1,6 @@
 import axios from "axios";
 import store from "@/store";
+// axios.defaults.withCredentials = true;
 
 const BASE_URL = process.env.VUE_APP_API_URL;
 import { ElNotification } from "element-plus";
@@ -10,6 +11,7 @@ export const postQuery = async (url, params = {}) => {
   try {
     res = await axios.post(`${BASE_URL}${url}`, params, {
       headers: {
+        // withCredentials: true,
         "content-type": "application/json",
         Authorization: `Bearer ${store.getters["auth/user"]?.jwt || ""}`,
       },

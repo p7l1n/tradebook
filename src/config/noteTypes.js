@@ -3,6 +3,11 @@ export const NOTE_TYPES = {
   credit: "КРЕДИТ",
 };
 
+export const getNoteTypeFromIndex = (index) => {
+  if (index === 0) return NOTE_TYPES.debit;
+  if (index === 1) return NOTE_TYPES.credit;
+};
+
 export const NOTE_COMMENT_TYPES = {
   cashOut: "Снятие прибыли",
 };

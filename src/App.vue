@@ -4,7 +4,7 @@
 </template>
 <script>
 import MainMenu from "@/components/MainMenu";
-import { computed, onMounted } from "vue";
+import { computed, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -15,9 +15,22 @@ export default {
     const store = useStore();
     const userInfo = computed(() => store.getters["auth/user"]);
 
+    watch(
+      () => userInfo.value?.jwt,
+      async (jwt) => {
+        if (jwt) {
+          await store.dispatch("clients/fetchContragents");
+          await store.dispatch("dailyNote/fetchNotes");
+        }
+      }
+    );
+
     onMounted(async () => {
       setTimeout(async () => {
-        await store.dispatch("clients/fetchContragents");
+        if (userInfo.value?.jwt) {
+          await store.dispatch("clients/fetchContragents");
+          await store.dispatch("dailyNote/fetchNotes");
+        }
       }, 500);
     });
 

@@ -59,15 +59,18 @@
           <Input placeholder="Примечание" gray v-model="comment" />
         </div>
         <div class="note-page__form-field">
-          <Button title="Добавить" style="width: 120px" @click="addNew" />
+          <el-button
+            type="success"
+            :loading="loading"
+            class="base-btn"
+            style="width: 120px"
+            @click="addNew"
+          >
+            Добавить
+          </el-button>
         </div>
         <div class="note-page__form-field">
-          <el-checkbox
-            v-model="showStats"
-            label="Показать сводку"
-            border
-            @change="onChangeStats"
-          />
+          <el-checkbox v-model="showStats" label="Показать сводку" border />
         </div>
       </div>
       <DailyNotes
@@ -103,9 +106,9 @@ import Modal from "@/components/Modal";
 import ModalContent from "@/components/ModalContent";
 import Form from "./components/Form";
 import DailyNotes from "@/components/widgets/DailyNotes";
-import Button from "@/components/Button";
+// import Button from "@/components/Button";
 import CheckGroupButton from "@/components/CheckGroupButton";
-import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
+// import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
 
 import { useStore } from "vuex";
 
@@ -124,7 +127,7 @@ export default {
     Form,
     Input,
     DailyNotes,
-    Button,
+    // Button,
     CheckGroupButton,
     NotesStats,
   },
@@ -138,6 +141,7 @@ export default {
     const dateFrom = ref("");
     const dateTo = ref("");
     console.log("daily stats", allStats.value);
+    const loading = ref(false);
 
     // form
     const operationTypes = ref([NOTE_TYPES.debit, NOTE_TYPES.credit]);
@@ -241,23 +245,28 @@ export default {
     };
 
     const getCurrency = () => {
-      return DEFAULT_CURRENCIES[activeMenuIndex.value - 1];
+      return activeMenuIndex.value - 1; // DEFAULT_CURRENCIES[activeMenuIndex.value - 1];
     };
 
-    const addNew = () => {
+    const addNew = async () => {
       if (!selectedClient.value || !amount.value) return;
-
+      loading.value = true;
+      const findClient = clientsList.value.find(
+        (item) => item.name === selectedClient.value
+      );
       const newOrderEntity = {
-        id: `${Math.random()}`.slice(2),
-        date: +new Date(),
-        type: operationTypes.value[activeOperationTypesIndex.value],
-        client: selectedClient.value,
+        date: new Date(),
+        clientId: findClient?.id,
+        type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
         inCurrency: getCurrency(),
         amount: amount.value,
         comment: comment.value,
+        isProfit: false,
+        category: 0,
       };
 
-      store.dispatch("dailyNote/addNewEntity", newOrderEntity);
+      await store.dispatch("dailyNote/addNewEntity", newOrderEntity);
+      loading.value = false;
       clearForm();
     };
 
@@ -281,6 +290,7 @@ export default {
       dateFrom,
       dateTo,
       shortcuts,
+      loading,
 
       // form
       operationTypes,

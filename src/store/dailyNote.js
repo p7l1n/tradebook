@@ -1,9 +1,14 @@
+import { postQuery, getQuery, putQuery, deleteQuery } from "@/api";
+import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
+import { getNoteTypeFromIndex } from "@/config/noteTypes";
+
 const types = {
   UPDATE_ENTITY: "UPDATE_ENTITY",
   ADD_NEW_ENTITY: "ADD_NEW_ENTITY",
   REMOVE_ENTITY: "REMOVE_ENTITY",
 
   SET_FILTER_OPTION: "SET_FILTER_OPTION",
+  SET_NOTES: "SET_NOTES",
 };
 
 export default {
@@ -19,10 +24,13 @@ export default {
 
   getters: {
     filter: (state) => state.filter,
-    notes: (state) => state.notes,
+    notes: (state) => state.notes.filter((c) => c.category === 0),
   },
 
   mutations: {
+    [types.SET_NOTES](state, value) {
+      state.notes = value;
+    },
     [types.SET_FILTER_OPTION](state, { key, value }) {
       state.filter[key] = value;
     },
@@ -47,17 +55,53 @@ export default {
   },
 
   actions: {
+    async fetchNotes({ commit, rootGetters }) {
+      const contragents = rootGetters["clients/clients"];
+
+      const res = await getQuery("Notes");
+      if (res && Array.isArray(res)) {
+        commit(
+          types.SET_NOTES,
+          res.map((item) => {
+            return {
+              ...item,
+              type: getNoteTypeFromIndex(item.type),
+              inCurrency: DEFAULT_CURRENCIES[item.inCurrency],
+              client:
+                contragents.find((c) => c.id === item.clientId)?.name || "???",
+            };
+          })
+        );
+      }
+      if (res.error) {
+        return;
+      }
+    },
     setFilterOption({ commit }, { key, value }) {
       commit(types.SET_FILTER_OPTION, { key, value });
     },
-    updateEntity({ commit }, value) {
-      commit(types.UPDATE_ENTITY, value);
+    async updateEntity({ dispatch }, value) {
+      const res = await putQuery(`Notes/${value.id}`, value);
+      await dispatch("fetchNotes");
+      if (res.error) {
+        return;
+      }
     },
-    addNewEntity({ commit }, value) {
-      commit(types.ADD_NEW_ENTITY, value);
+    async addNewEntity({ dispatch }, value) {
+      const res = await postQuery("Notes", value);
+      if (res.id) {
+        await dispatch("fetchNotes");
+      }
+      if (res.error) {
+        return;
+      }
     },
-    removeEntity({ commit }, value) {
-      commit(types.REMOVE_ENTITY, value);
+    async removeEntity({ dispatch }, value) {
+      const res = await deleteQuery(`Notes/${value.id}`);
+      await dispatch("fetchNotes");
+      if (res.error) {
+        return;
+      }
     },
   },
 };
