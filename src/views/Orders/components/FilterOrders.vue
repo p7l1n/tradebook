@@ -121,9 +121,11 @@
       <el-button
         v-if="showCashOut"
         type="success"
+        :loading="cashOutLoading"
+        :disabled="!profitUsdt"
         @click="cashOut"
         class="cashout"
-        >Снять кассу</el-button
+        >Снять кассу {{ toCurrency(profitUsdt) }} USDT</el-button
       >
       <!-- options -->
       <div class="filter-orders__item">
@@ -146,7 +148,7 @@ import useStats from "@/compositions/useStats";
 import useNotes from "@/compositions/useNotes";
 import { toCurrency, isTodayBetweenDates } from "@/helpers";
 import {
-  NOTE_TYPES,
+  // NOTE_TYPES,
   NOTE_COMMENT_TYPES,
   // CONTRAGENTS,
 } from "@/config/noteTypes";
@@ -165,10 +167,12 @@ export default {
     const showStats = ref(null);
     const searchStr = ref("");
     const currentDate = ref(null);
+    const cashOutLoading = ref(false);
 
     const ordersList = computed(() => store.getters["orders/orders"]);
     const filterOptions = computed(() => store.getters["orders/filter"]);
     const notesList = computed(() => store.getters["note/notes"]);
+    const clientsList = computed(() => store.getters["clients/clients"]);
 
     const disabledDate = (time) => {
       return time.getTime() > Date.now();
@@ -294,26 +298,43 @@ export default {
       });
     };
 
-    const cashOut = () => {
-      const id = `${Math.random()}`.slice(2);
-      const date = +new Date();
+    const cashOut = async () => {
+      // const id = `${Math.random()}`.slice(2);
+
+      const clientId = clientsList.value.find(
+        (cl) => cl.type === "Прибыль" && cl.name === "Прибыль"
+      )?.id;
+
+      if (!clientId) {
+        ElNotification({
+          title: "Ошибка снятия",
+          message: `Не найден контрагент "Прибыль"`,
+          type: "warning",
+        });
+        return;
+      }
+      cashOutLoading.value = true;
+      const date = new Date();
       // новая запись в таблицу профит
-      store.dispatch("note/addNewProfit", {
-        id,
+      await store.dispatch("note/addNewProfit", {
+        // id,
         date,
         amount: profitUsdt.value,
       });
       // дулируем как КРЕДИТ в тетрадь
-      store.dispatch("note/addNewEntity", {
-        id,
+      const res = await store.dispatch("dailyNote/addNewEntity", {
+        // id,
         date,
-        type: NOTE_TYPES.credit,
-        client: "Прибыль",
-        inCurrency: "USDT",
+        type: 1, // NOTE_TYPES.credit,
+        clientId,
+        inCurrencyId: 0, // usdt
         amount: profitUsdt.value,
         comment: NOTE_COMMENT_TYPES.cashOut,
+        category: 1,
         isProfit: true,
       });
+      cashOutLoading.value = false;
+      if (res.error) return;
       // const newOrderEntity = {
       //   id,
       //   date: +new Date(),
@@ -393,7 +414,10 @@ export default {
       showStats,
       showCashOut,
       isCashOutedToday,
+      cashOutLoading,
+      profitUsdt,
 
+      toCurrency,
       disabledDate,
       onSearch,
       onSelectDate,

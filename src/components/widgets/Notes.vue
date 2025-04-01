@@ -53,6 +53,10 @@
           <div class="widget-notes__list-item-field strong">
             {{ item.comment }}
           </div>
+          <div
+            class="widget-notes__list-item-field remove"
+            @click.stop="remove(item)"
+          ></div>
         </div>
       </div>
     </div>
@@ -63,18 +67,24 @@ import { ref } from "vue";
 // import { useStore } from "vuex";
 import { getNumFormat, toCurrency } from "@/helpers";
 import { NOTE_TYPES } from "@/config/noteTypes";
+import { useStore } from "vuex";
 import moment from "moment";
 import useNotes from "@/compositions/useNotes";
 
 export default {
   components: {},
   setup(_, { emit }) {
+    const store = useStore();
     const { filteredNotesList } = useNotes();
     // const store = useStore();
     const selectedItem = ref(null);
 
     const selectRow = (item) => {
       emit("select", item);
+    };
+
+    const remove = async (item) => {
+      await store.dispatch("dailyNote/removeEntity", item);
     };
 
     return {
@@ -84,6 +94,7 @@ export default {
       NOTE_TYPES,
       getNumFormat,
       selectRow,
+      remove,
 
       toCurrency,
     };
@@ -137,6 +148,7 @@ export default {
     display: flex;
     align-items: center;
     cursor: pointer;
+    position: relative;
 
     &.active {
       background-color: $colorRowGrayActive;
@@ -162,6 +174,20 @@ export default {
     align-items: center;
     width: 100%;
     height: 30px;
+    position: relative;
+
+    &.remove {
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+      background-image: url("~@/assets/icons/remove.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: 50%;
+      position: absolute;
+      right: 5px;
+      top: 6px;
+    }
 
     &.strong {
       color: $textColorBlack;

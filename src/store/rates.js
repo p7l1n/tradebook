@@ -1,4 +1,5 @@
-import { getRates } from "@/api/getRates";
+// import { getRates } from "@/api/getRates";
+import { getQuery, postQuery, putQuery } from "@/api";
 
 const types = {
   ADD_RATE_ENTITY: "ADD_RATE_ENTITY",
@@ -73,7 +74,7 @@ export default {
       state.updateFromServer = value;
     },
     [types.ADD_RATE_ENTITY](state, toast = {}) {
-      if (!state.rates[toast.title]) {
+      if (state.rates[toast.title]) {
         state.rates[toast.title] = {
           ...toast,
         };
@@ -99,43 +100,65 @@ export default {
     setUpdateFromServer({ commit }, value) {
       commit(types.SET_UPDATE_FROM_SERVER, value);
     },
-    addRateEntity({ commit }, rate) {
-      commit(types.ADD_RATE_ENTITY, rate);
+    async fetchRates({ commit, state }) {
+      const res = await getQuery("Rates");
+      if (res && Array.isArray(res)) {
+        res.forEach((rate) => {
+          if (state.rates[rate.title]) {
+            commit(types.ADD_RATE_ENTITY, rate);
+          }
+        });
+      }
+      if (res.error) {
+        return;
+      }
+
+      // if (!state.updateFromServer) {
+      //   return;
+      // }
+      // const rub = await getRates("usdtrub");
+      // const usd = await getRates("usdtusd");
+      // const eur = await getRates("usdteur");
+
+      // if (rub.info) {
+      //   commit(types.UPDATE_RATE, {
+      //     key: "RUB",
+      //     buy: rub.info.ask,
+      //     sell: rub.info.bid,
+      //   });
+      // }
+      // if (usd.info) {
+      //   commit(types.UPDATE_RATE, {
+      //     key: "USD",
+      //     buy: usd.info.ask,
+      //     sell: usd.info.bid,
+      //   });
+      // }
+      // if (eur.info) {
+      //   commit(types.UPDATE_RATE, {
+      //     key: "EUR",
+      //     buy: eur.info.ask,
+      //     sell: eur.info.bid,
+      //   });
+      // }
+    },
+    async addRateEntity({ dispatch }, rate) {
+      const res = await postQuery("Rates", rate);
+      if (res.id) {
+        await dispatch("fetchRates");
+      }
+      if (res.error) {
+        return;
+      }
     },
     removeRateEntity({ commit }, key) {
       commit(types.REMOVE_RATE_ENTITY, key);
     },
-    updateRateEntity({ commit }, entity) {
-      commit(types.UPDATE_RATE_ENTITY, entity);
-    },
-    async fetchRates({ commit, state }) {
-      if (!state.updateFromServer) {
+    async updateRateEntity({ dispatch }, entity) {
+      const res = await putQuery(`Rates/${entity.id}`, entity);
+      await dispatch("fetchRates");
+      if (res.error) {
         return;
-      }
-      const rub = await getRates("usdtrub");
-      const usd = await getRates("usdtusd");
-      const eur = await getRates("usdteur");
-
-      if (rub.info) {
-        commit(types.UPDATE_RATE, {
-          key: "RUB",
-          buy: rub.info.ask,
-          sell: rub.info.bid,
-        });
-      }
-      if (usd.info) {
-        commit(types.UPDATE_RATE, {
-          key: "USD",
-          buy: usd.info.ask,
-          sell: usd.info.bid,
-        });
-      }
-      if (eur.info) {
-        commit(types.UPDATE_RATE, {
-          key: "EUR",
-          buy: eur.info.ask,
-          sell: eur.info.bid,
-        });
       }
     },
   },

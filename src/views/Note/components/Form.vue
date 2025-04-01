@@ -43,18 +43,25 @@
 
     <div class="note-form__btns">
       <Button title="Очистить" @click="clearForm" />
-      <Button
+      <el-button
         v-if="editNote"
-        title="Удалить"
-        :is-red="true"
-        class="ml10"
+        type="warning"
+        :loading="loadingRemove"
+        class="base-btn ml10"
+        style="width: 120px"
         @click="remove"
-      />
-      <Button
-        :title="editNote ? 'Сохранить' : 'Добавить'"
-        class="ml10"
+      >
+        Удалить
+      </el-button>
+      <el-button
+        type="success"
+        :loading="loading"
+        class="base-btn ml10"
+        style="width: 120px"
         @click="addNew"
-      />
+      >
+        {{ editNote ? "Сохранить" : "Добавить" }}
+      </el-button>
     </div>
   </div>
 </template>
@@ -91,6 +98,8 @@ export default {
     const operationTypes = ref([NOTE_TYPES.debit, NOTE_TYPES.credit]);
     const activeOperationTypesIndex = ref(0);
     const activeIncurrenciesIndex = ref(0);
+    const loading = ref(false);
+    const loadingRemove = ref(false);
 
     const inCurrencies = ref(DEFAULT_CURRENCIES);
 
@@ -129,44 +138,59 @@ export default {
       selectedClient.value = null;
     };
 
-    const addNew = () => {
+    const addNew = async () => {
       if (!selectedClient.value || !amount.value) return;
       // edit
       if (props.editNote) {
+        const findClient = clientsList.value.find(
+          (item) => item.name === selectedClient.value
+        );
+
+        loading.value = true;
         const newOrderEntity = {
           id: props.editNote.id,
-          date: props.editNote.date,
-          type: operationTypes.value[activeOperationTypesIndex.value],
-          client: selectedClient.value,
+          date: new Date(props.editNote.date),
+          type: activeOperationTypesIndex.value,
+          clientId: findClient?.id,
           comment: comment.value,
-          inCurrency: inCurrencies.value[activeIncurrenciesIndex.value],
+          inCurrencyId: activeIncurrenciesIndex.value,
           amount: amount.value,
+          category: props.editNote.category,
         };
-        store.dispatch("note/updateEntity", newOrderEntity);
+        await store.dispatch("dailyNote/updateEntity", newOrderEntity);
+        loading.value = false;
         clearForm();
         emit("close");
         return;
       }
 
       // add new
-
+      loading.value = true;
+      const findClient = clientsList.value.find(
+        (item) => item.name === selectedClient.value
+      );
       const newOrderEntity = {
-        id: `${Math.random()}`.slice(2),
-        date: +new Date(),
-        type: operationTypes.value[activeOperationTypesIndex.value],
-        client: selectedClient.value,
-        inCurrency: inCurrencies.value[activeIncurrenciesIndex.value],
+        date: new Date(),
+        clientId: findClient?.id,
+        type: activeOperationTypesIndex.value,
+        inCurrencyId: activeIncurrenciesIndex.value,
         amount: amount.value,
         comment: comment.value,
+        isProfit: false,
+        category: 1,
       };
 
-      store.dispatch("note/addNewEntity", newOrderEntity);
+      await store.dispatch("dailyNote/addNewEntity", newOrderEntity);
+      loading.value = false;
+
       clearForm();
       emit("close");
     };
 
-    const remove = () => {
-      store.dispatch("note/removeEntity", props.editNote);
+    const remove = async () => {
+      loadingRemove.value = true;
+      await store.dispatch("dailyNote/removeEntity", props.editNote);
+      loadingRemove.value = false;
       emit("close");
     };
 
@@ -195,6 +219,8 @@ export default {
       comment,
       selectedClient,
       clientItems,
+      loading,
+      loadingRemove,
       onSelectOperationType,
       onSelectInCurrencies,
       onClientSelect,

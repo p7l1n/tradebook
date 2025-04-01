@@ -19,8 +19,12 @@ export default {
       () => userInfo.value?.jwt,
       async (jwt) => {
         if (jwt) {
+          await store.dispatch("stats/fetchCurrencies");
+          await store.dispatch("rates/fetchRates");
           await store.dispatch("clients/fetchContragents");
           await store.dispatch("dailyNote/fetchNotes");
+          await store.dispatch("note/fetchProfitHistory");
+          await store.dispatch("orders/fetchOrders");
         }
       }
     );
@@ -28,8 +32,12 @@ export default {
     onMounted(async () => {
       setTimeout(async () => {
         if (userInfo.value?.jwt) {
+          await store.dispatch("stats/fetchCurrencies");
+          await store.dispatch("rates/fetchRates");
           await store.dispatch("clients/fetchContragents");
           await store.dispatch("dailyNote/fetchNotes");
+          await store.dispatch("note/fetchProfitHistory");
+          await store.dispatch("orders/fetchOrders");
         }
       }, 500);
     });
@@ -59,7 +67,8 @@ html {
   color: #2c3e50;
 }
 
-.el-notification {
+.el-notification,
+.el-select-dropdown__item {
   font-family: Avenir, Helvetica, Arial, sans-serif !important;
 }
 </style>

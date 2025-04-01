@@ -95,6 +95,7 @@ import { useStore } from "vuex";
 import { onMounted, ref, computed } from "vue";
 
 import { ElSelect } from "element-plus";
+import { ElNotification } from "element-plus";
 
 export default {
   components: {
@@ -141,7 +142,11 @@ export default {
         (item) => item.type === CONTRAGENTS.operator
       )
     );
-    const clientsList = computed(() => store.getters["clients/clients"]);
+    const clientsList = computed(() =>
+      store.getters["clients/clients"].filter(
+        (item) => item.type !== CONTRAGENTS.profit
+      )
+    );
     const operatorItems = computed(() => {
       return [...new Set(operatorList.value.map((item) => item.name))].map(
         (item) => {
@@ -194,22 +199,40 @@ export default {
       rateIn.value = "";
     };
 
-    const addNewOrder = () => {
-      if (!selectedClient.value || !amountIn.value) return;
+    const addNewOrder = async () => {
+      if (!selectedClient.value || !amountIn.value || !selectedOperator.value) {
+        ElNotification({
+          title: "Журнал сделок",
+          message: `Проверьте введенные данные`,
+          type: "warning",
+        });
+        return;
+      }
 
       if (activeOperationTypesIndex.value !== 2) {
         // в выручке проверка на наличие курса не нужна
         if (!rateIn.value) {
+          ElNotification({
+            title: "Журнал сделок",
+            message: `Проверьте введенные данные`,
+            type: "warning",
+          });
           return;
         }
       }
+
+      const operatorId = operatorList.value.find(
+        (op) => op.name === selectedOperator.value
+      )?.id;
+      const clientId = clientsList.value.find(
+        (cl) => cl.name === selectedClient.value
+      )?.id;
 
       let outAmountValue =
         outCurrencies.value[activeOutcurrenciesIndex.value] === "USDT"
           ? +amountIn.value / +rateIn.value
           : +amountIn.value / +rateIn.value; // *
 
-      console.log();
       if (activeOperationTypesIndex.value == 2) {
         // выручка просто прибыль с 0 расходом
         outAmountValue = 0;
@@ -220,18 +243,18 @@ export default {
       if (props.editOrder) {
         const newOrderEntity = {
           id: props.editOrder.id,
-          date: props.editOrder.date,
-          type: operationTypes.value[activeOperationTypesIndex.value],
-          operator: selectedOperator.value,
-          client: selectedClient.value,
-          inCurrency: inCurrencies.value[activeIncurrenciesIndex.value],
+          date: new Date(props.editOrder.date),
+          type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
+          operatorId, // : selectedOperator.value,
+          clientId, // selectedClient.value,
+          inCurrencyId: activeIncurrenciesIndex.value, // inCurrencies.value[activeIncurrenciesIndex.value],
           inAmount: amountIn.value,
           rate: rateIn.value,
-          outCurrency: outCurrencies.value[activeOutcurrenciesIndex.value],
+          outCurrencyId: activeOutcurrenciesIndex.value, // outCurrencies.value[activeOutcurrenciesIndex.value],
           outAmount: outAmountValue,
           status: props.editOrder.status,
         };
-        store.dispatch("orders/updateOrderEntity", newOrderEntity);
+        await store.dispatch("orders/updateOrderEntity", newOrderEntity);
         clearForm();
         emit("close");
         return;
@@ -240,20 +263,20 @@ export default {
       // add new
 
       const newOrderEntity = {
-        id: `${Math.random()}`.slice(2),
-        date: +new Date(),
-        type: operationTypes.value[activeOperationTypesIndex.value],
-        operator: selectedOperator.value,
-        client: selectedClient.value,
-        inCurrency: inCurrencies.value[activeIncurrenciesIndex.value],
+        // id: `${Math.random()}`.slice(2),
+        date: new Date(),
+        type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
+        operatorId, // selectedOperator.value,
+        clientId, // selectedClient.value,
+        inCurrencyId: activeIncurrenciesIndex.value, // inCurrencies.value[activeIncurrenciesIndex.value],
         inAmount: amountIn.value,
         rate: rateIn.value,
-        outCurrency: outCurrencies.value[activeOutcurrenciesIndex.value],
+        outCurrencyId: activeOutcurrenciesIndex.value, // outCurrencies.value[activeOutcurrenciesIndex.value],
         outAmount: outAmountValue,
-        status: false,
+        status: 0,
       };
 
-      store.dispatch("orders/addNewOrderEntity", newOrderEntity);
+      await store.dispatch("orders/addNewOrderEntity", newOrderEntity);
       clearForm();
       emit("close");
     };

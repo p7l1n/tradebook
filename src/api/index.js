@@ -2,6 +2,21 @@ import axios from "axios";
 import store from "@/store";
 // axios.defaults.withCredentials = true;
 
+const routes = {
+  Notes: "Журнал/Тетрадь",
+  Clients: "Контрагенты",
+  Orders: "Заявки",
+};
+
+const getError = (err) => {
+  return (
+    err?.response?.data?.title ||
+    err?.response?.data[0]?.description ||
+    err?.response?.statusText || // err.response.status === 401
+    "Unknown API error"
+  );
+};
+
 const BASE_URL = process.env.VUE_APP_API_URL;
 import { ElNotification } from "element-plus";
 
@@ -18,19 +33,27 @@ export const postQuery = async (url, params = {}) => {
     });
 
     if (res.data) {
+      if (routes[url]) {
+        ElNotification({
+          title: routes[url],
+          message: `Запись добавлена`,
+          type: "success",
+        });
+      }
       return res.data;
     }
+
     return {
       error: "Empty response from API",
     };
   } catch (err) {
     ElNotification({
       title: "Error POST",
-      message: err?.response?.data[0]?.description || "Unknown API error",
+      message: getError(err),
       type: "error",
     });
     return {
-      error: err?.response?.data[0]?.description || "Unknown API error",
+      error: getError(err),
     };
   }
 };
@@ -47,6 +70,14 @@ export const putQuery = async (url, params = {}) => {
       },
     });
 
+    if (routes[url.split("/")[0]]) {
+      ElNotification({
+        title: routes[url.split("/")[0]],
+        message: `Запись изменена`,
+        type: "warning",
+      });
+    }
+
     if (res.data) {
       return res.data;
     }
@@ -56,11 +87,11 @@ export const putQuery = async (url, params = {}) => {
   } catch (err) {
     ElNotification({
       title: "Error PUT",
-      message: err?.response?.data?.error || "Unknown API error",
+      message: getError(err),
       type: "error",
     });
     return {
-      error: err?.response?.data?.error || "Unknown API error",
+      error: getError(err),
     };
   }
 };
@@ -75,6 +106,15 @@ export const deleteQuery = async (url) => {
         Authorization: `Bearer ${store.getters["auth/user"]?.jwt || ""}`,
       },
     });
+
+    if (routes[url.split("/")[0]]) {
+      ElNotification({
+        title: routes[url.split("/")[0]],
+        message: `Запись удалена`,
+        type: "error",
+      });
+    }
+
     if (res.data) {
       return res.data;
     }
@@ -84,11 +124,11 @@ export const deleteQuery = async (url) => {
   } catch (err) {
     ElNotification({
       title: "Error DELETE",
-      message: err?.response?.data?.error || "Unknown API error",
+      message: getError(err),
       type: "error",
     });
     return {
-      error: err?.response?.data?.error || "Unknown API error",
+      error: getError(err),
     };
   }
 };
@@ -116,11 +156,11 @@ export const getQuery = async (url, params = {}) => {
   } catch (err) {
     ElNotification({
       title: "Error GET",
-      message: err?.response?.data?.error || "Unknown API error",
+      message: getError(err),
       type: "error",
     });
     return {
-      error: err?.response?.data?.error || "Unknown API error",
+      error: getError(err),
     };
   }
 };

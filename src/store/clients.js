@@ -2,9 +2,6 @@ import { postQuery, getQuery, putQuery, deleteQuery } from "@/api";
 import { getContragentFromIndex } from "@/config/noteTypes";
 
 const types = {
-  ADD_CLIENT: "ADD_CLIENT",
-  REMOVE_CLIENT: "REMOVE_CLIENT",
-  UPDATE_CLIENT: "UPDATE_CLIENT",
   ADD_CLIENT_LIST: "ADD_CLIENT_LIST",
 };
 
@@ -21,19 +18,6 @@ export default {
   mutations: {
     [types.ADD_CLIENT_LIST](state, value) {
       state.clients = value;
-    },
-    [types.ADD_CLIENT](state, value) {
-      const findItem = state.clients.find((cl) => cl.id === value.id);
-      if (findItem) return;
-
-      state.clients.push(value);
-    },
-    [types.UPDATE_CLIENT](state, value) {
-      const findIndex = state.clients.findIndex((cl) => cl.id === value.id);
-      state.clients.splice(findIndex, 1, { ...value });
-    },
-    [types.REMOVE_CLIENT](state, value) {
-      state.clients = state.clients.filter((cl) => cl.id !== value);
     },
   },
 

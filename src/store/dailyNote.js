@@ -3,10 +3,6 @@ import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
 import { getNoteTypeFromIndex } from "@/config/noteTypes";
 
 const types = {
-  UPDATE_ENTITY: "UPDATE_ENTITY",
-  ADD_NEW_ENTITY: "ADD_NEW_ENTITY",
-  REMOVE_ENTITY: "REMOVE_ENTITY",
-
   SET_FILTER_OPTION: "SET_FILTER_OPTION",
   SET_NOTES: "SET_NOTES",
 };
@@ -24,7 +20,7 @@ export default {
 
   getters: {
     filter: (state) => state.filter,
-    notes: (state) => state.notes.filter((c) => c.category === 0),
+    notes: (state) => state.notes.filter((c) => c.category === 0), // 0 daily
   },
 
   mutations: {
@@ -33,24 +29,6 @@ export default {
     },
     [types.SET_FILTER_OPTION](state, { key, value }) {
       state.filter[key] = value;
-    },
-    [types.UPDATE_ENTITY](state, value) {
-      const newList = [];
-
-      state.notes.forEach((item) => {
-        if (item.id == value.id) {
-          newList.push({ ...value });
-        } else {
-          newList.push({ ...item });
-        }
-      });
-      state.notes = newList;
-    },
-    [types.ADD_NEW_ENTITY](state, value) {
-      state.notes.unshift(value);
-    },
-    [types.REMOVE_ENTITY](state, value) {
-      state.notes = state.notes.filter((item) => item.id !== value.id);
     },
   },
 
@@ -65,8 +43,9 @@ export default {
           res.map((item) => {
             return {
               ...item,
+              date: +new Date(item.date),
               type: getNoteTypeFromIndex(item.type),
-              inCurrency: DEFAULT_CURRENCIES[item.inCurrency],
+              inCurrency: DEFAULT_CURRENCIES[item.inCurrencyId],
               client:
                 contragents.find((c) => c.id === item.clientId)?.name || "???",
             };
@@ -92,9 +71,7 @@ export default {
       if (res.id) {
         await dispatch("fetchNotes");
       }
-      if (res.error) {
-        return;
-      }
+      return res;
     },
     async removeEntity({ dispatch }, value) {
       const res = await deleteQuery(`Notes/${value.id}`);

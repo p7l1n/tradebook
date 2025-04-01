@@ -1,6 +1,6 @@
 <template>
   <div class="widget-rates-wrap">
-    <div v-if="editMode" class="widget-rates-controls">
+    <!-- <div v-if="editMode" class="widget-rates-controls">
       <CheckButton
         label="Обновлять цены с сервера"
         yes-title="Да"
@@ -8,7 +8,7 @@
         :checked="updateFromServerFlag"
         @check="onCheckUpdatePrice"
       />
-    </div>
+    </div> -->
     <div class="widget-rates">
       <div class="widget-rates__title">Курс валют</div>
       <div class="widget-rates__list">
@@ -75,33 +75,41 @@
         />
         <Input placeholder="Округление" v-model="points" type="number" />
       </div>
-      <Button
+      <el-button
+        type="warning"
+        :loading="loading"
+        class="base-btn"
+        @click="updateEntity"
+      >
+        {{ isEditing ? "Сохранить" : "Добавить" }}
+      </el-button>
+      <!-- <Button
         :title="isEditing ? 'Сохранить' : 'Добавить'"
         @click="updateEntity"
-      />
-      <Button title="Очистить поля" class="mt15" @click="clearAll" />
-      <Button
+      /> -->
+      <!-- <Button title="Очистить поля" class="mt15" @click="clearAll" /> -->
+      <!-- <Button
         v-if="selectedItem && !fixedRates.includes(selectedItem?.title)"
         title="Удалить текущий курс"
         class="mt15"
         @click="removeRateEntity"
-      />
+      /> -->
     </div>
   </div>
 </template>
 <script>
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import Input from "@/components/Input";
-import Button from "@/components/Button";
-import CheckButton from "@/components/CheckButton";
+// import Button from "@/components/Button";
+// import CheckButton from "@/components/CheckButton";
 import { getNumFormat } from "@/helpers";
 
 export default {
   components: {
     Input,
-    Button,
-    CheckButton,
+    // Button,
+    // CheckButton,
   },
   props: {
     editMode: {
@@ -119,6 +127,7 @@ export default {
     const spreadSell = ref("");
     const apiKey = ref("");
     const points = ref("");
+    const loading = ref(false);
     const fixedRates = []; // ["RUB", "USD", "EUR"];
 
     const ratesList = computed(() => store.getters["rates/rates"]);
@@ -152,8 +161,10 @@ export default {
     };
 
     const updateEntity = async () => {
+      loading.value = true;
       if (isEditing.value) {
-        store.dispatch("rates/updateRateEntity", {
+        await store.dispatch("rates/updateRateEntity", {
+          id: selectedItem.value.id,
           title: title.value,
           buy: buy.value,
           sell: sell.value,
@@ -162,10 +173,11 @@ export default {
           apiKey: apiKey.value,
           points: points.value,
         });
-        clearAll();
-        // await store.dispatch("rates/fetchRates");
+        loading.value = false;
+        // clearAll();
+        selectRow(ratesList.value["RUB"]);
       } else {
-        store.dispatch("rates/addRateEntity", {
+        await store.dispatch("rates/addRateEntity", {
           title: title.value,
           buy: buy.value,
           sell: sell.value,
@@ -174,7 +186,9 @@ export default {
           apiKey: apiKey.value,
           points: points.value,
         });
-        clearAll();
+        loading.value = false;
+        // clearAll();
+        selectRow(ratesList.value["RUB"]);
       }
     };
 
@@ -191,6 +205,10 @@ export default {
       store.dispatch("rates/setUpdateFromServer", val);
     };
 
+    onMounted(() => {
+      selectRow(ratesList.value["RUB"]);
+    });
+
     return {
       ratesList,
       title,
@@ -204,6 +222,7 @@ export default {
       isEditing,
       selectedItem,
       fixedRates,
+      loading,
 
       updateFromServerFlag,
       getNumFormat,

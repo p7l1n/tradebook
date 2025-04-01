@@ -1,17 +1,24 @@
+import { postQuery, getQuery, putQuery, deleteQuery } from "@/api";
+
 const types = {
   SET_AMOUNT: "SET_AMOUNT",
+  ADD_CURR: "ADD_CURR",
+  REMOVE_CURR_LIST: "REMOVE_CURR_LIST",
+  UPDATE_CURR_LIST: "UPDATE_CURR_LIST",
+  ADD_CURR_LIST: "ADD_CURR_LIST",
 };
 
 export default {
   namespaced: true,
   state: () => ({
+    currencies: [],
     stats: {
       start: {
-        RUB: 100000,
-        USD: 100000,
-        EUR: 100000,
-        USDT: 100000,
-        WUSD: 100000,
+        RUB: 0,
+        USD: 0,
+        EUR: 0,
+        USDT: 0,
+        WUSD: 0,
       },
     },
   }),
@@ -24,12 +31,59 @@ export default {
     [types.SET_AMOUNT](state, { key, value }) {
       state.stats.start[key] = value;
     },
+    [types.ADD_CURR_LIST](state, value) {
+      state.currencies = value;
+    },
   },
 
   actions: {
-    setAmount({ commit }, { key, value }) {
-      console.log(key, value);
-      commit(types.SET_AMOUNT, { key, value });
+    async updateCurrencies({ dispatch }, value) {
+      const res = await putQuery(`Currencies/${value.id}`, value);
+      await dispatch("fetchCurrencies");
+      if (res.error) {
+        return;
+      }
+    },
+    setAmount({ state, dispatch }, { key, value, initial }) {
+      if (initial) {
+        state.stats.start[key] = value;
+        return;
+      }
+      const curr = state.currencies.find((item) => item.name === key);
+      if (curr && curr.amount === value) return;
+      dispatch("updateCurrencies", { ...curr, amount: value });
+    },
+    async fetchCurrencies({ dispatch, commit }) {
+      const res = await getQuery("Currencies");
+      if (res && Array.isArray(res)) {
+        commit(types.ADD_CURR_LIST, res);
+        res.forEach((curr) => {
+          dispatch("setAmount", {
+            key: curr.name,
+            value: curr.amount,
+            initial: true,
+          });
+        });
+      }
+      if (res.error) {
+        return;
+      }
+    },
+    async addCurrencies({ dispatch }, value) {
+      const res = await postQuery("Currencies", value);
+      if (res.id) {
+        await dispatch("fetchCurrencies");
+      }
+      if (res.error) {
+        return;
+      }
+    },
+    async removeCurrencies({ dispatch }, id) {
+      const res = await deleteQuery(`Currencies/${id}`);
+      await dispatch("fetchCurrencies");
+      if (res.error) {
+        return;
+      }
     },
   },
 };

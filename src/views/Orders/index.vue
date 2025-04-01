@@ -194,9 +194,9 @@ export default {
       }
     };
 
-    const removeOrders = () => {
-      collectionsIds.value.forEach((id) => {
-        store.dispatch("orders/removeOrderEntity", { id });
+    const removeOrders = async () => {
+      collectionsIds.value.forEach(async (id) => {
+        await store.dispatch("orders/removeOrderEntity", { id });
       });
 
       ElNotification({

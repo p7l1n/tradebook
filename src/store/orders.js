@@ -1,9 +1,11 @@
+import { postQuery, getQuery, putQuery, deleteQuery } from "@/api";
+import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
+import { getOrderTypeFromIndex } from "@/config/orderTypes";
+
 const types = {
-  UPDATE_ORDER_ENTITY: "UPDATE_ORDER_ENTITY",
-  ADD_NEW_ORDER_ENTITY: "ADD_NEW_ORDER_ENTITY",
-  REMOVE_ORDER_ENTITY: "REMOVE_ORDER_ENTITY",
   UPDATE_SHOW_FIELDS: "UPDATE_SHOW_FIELDS",
   SET_FILTER_OPTION: "SET_FILTER_OPTION",
+  SET_ORDERS: "SET_ORDERS",
 };
 
 export default {
@@ -22,7 +24,7 @@ export default {
     showFields: {
       id: {
         title: "ID",
-        show: true,
+        show: false,
       },
       date: {
         title: "Дата",
@@ -30,7 +32,7 @@ export default {
       },
       dateChange: {
         title: "Дата изм",
-        show: true,
+        show: false,
       },
       type: {
         title: "Тип",
@@ -67,23 +69,8 @@ export default {
         state.showFields[key].show = !state.showFields[key].show;
       }
     },
-    [types.UPDATE_ORDER_ENTITY](state, value) {
-      const newList = [];
-
-      state.orders.forEach((item) => {
-        if (item.id == value.id) {
-          newList.push({ ...value });
-        } else {
-          newList.push({ ...item });
-        }
-      });
-      state.orders = newList;
-    },
-    [types.ADD_NEW_ORDER_ENTITY](state, value) {
-      state.orders.unshift(value);
-    },
-    [types.REMOVE_ORDER_ENTITY](state, value) {
-      state.orders = state.orders.filter((item) => item.id !== value.id);
+    [types.SET_ORDERS](state, value) {
+      state.orders = value;
     },
   },
 
@@ -94,14 +81,56 @@ export default {
     updateShowFields({ commit }, value) {
       commit(types.UPDATE_SHOW_FIELDS, value);
     },
-    updateOrderEntity({ commit }, value) {
-      commit(types.UPDATE_ORDER_ENTITY, value);
+    async fetchOrders({ commit, rootGetters }) {
+      const clients = rootGetters["clients/clients"];
+
+      const res = await getQuery("Orders");
+      if (res && Array.isArray(res)) {
+        commit(
+          types.SET_ORDERS,
+          res.map((item) => {
+            return {
+              ...item,
+              date: +new Date(item.date),
+              status: item.status === 0 ? false : true,
+              type: getOrderTypeFromIndex(item.type),
+              inCurrency: DEFAULT_CURRENCIES[item.inCurrencyId],
+              outCurrency: DEFAULT_CURRENCIES[item.outCurrencyId],
+              client:
+                clients.find((c) => c.id === item.clientId)?.name || "???",
+              operator:
+                clients.find((c) => c.id === item.operatorId)?.name || "???",
+            };
+          })
+        );
+      }
+      if (res.error) {
+        return;
+      }
     },
-    addNewOrderEntity({ commit }, value) {
-      commit(types.ADD_NEW_ORDER_ENTITY, value);
+    async updateOrderEntity({ dispatch }, value) {
+      const data = { ...value };
+      if (data.status === false) data.status = 0;
+      if (data.status === true) data.status = 1;
+      const res = await putQuery(`Orders/${value.id}`, data);
+      await dispatch("fetchOrders");
+      if (res.error) {
+        return;
+      }
     },
-    removeOrderEntity({ commit }, value) {
-      commit(types.REMOVE_ORDER_ENTITY, value);
+    async addNewOrderEntity({ dispatch }, value) {
+      const res = await postQuery("Orders", value);
+      if (res.id) {
+        await dispatch("fetchOrders");
+      }
+      return res;
+    },
+    async removeOrderEntity({ dispatch }, value) {
+      const res = await deleteQuery(`Orders/${value.id}`);
+      await dispatch("fetchOrders");
+      if (res.error) {
+        return;
+      }
     },
   },
 };

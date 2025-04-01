@@ -13,7 +13,7 @@ createPersistedState({
     // "rates.rates",
     // "rates.updateFromServer",
     // "orders.showFields",
-    // "orders.filter",
+    "orders.filter",
     // "orders.orders",
     // "clients.clients",
     // "operators.operators",

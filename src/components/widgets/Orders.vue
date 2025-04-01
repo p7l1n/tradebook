@@ -148,6 +148,7 @@ import { getNumFormat, toCurrency } from "@/helpers";
 import { ORDER_TYPES } from "@/config/orderTypes";
 import moment from "moment";
 import useStats from "@/compositions/useStats";
+import useOrders from "@/compositions/useOrders";
 
 export default {
   components: {},
@@ -162,6 +163,7 @@ export default {
     },
   },
   setup(props, { emit }) {
+    const { getOrderAPIFormat } = useOrders();
     const { filteredOrdersList: ordersList } = useStats();
     const store = useStore();
     const selectedItem = ref(null);
@@ -201,12 +203,11 @@ export default {
     };
 
     const onChangeStatus = (item) => {
-      const updateItem = { ...item };
-      store.dispatch("orders/updateOrderEntity", updateItem);
+      store.dispatch("orders/updateOrderEntity", getOrderAPIFormat(item));
     };
 
-    const remove = (item) => {
-      store.dispatch("orders/removeOrderEntity", item);
+    const remove = async (item) => {
+      await store.dispatch("orders/removeOrderEntity", item);
     };
 
     return {
@@ -329,7 +330,7 @@ export default {
       background-size: cover;
       background-position: 50%;
       position: absolute;
-      right: 5px;
+      right: -5px;
       top: 6px;
     }
 

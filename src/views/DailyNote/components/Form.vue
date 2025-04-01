@@ -26,7 +26,7 @@
         />
       </el-select>
     </div>
-    <div v-if="currencyIndex == 0" class="note-form__field">
+    <div class="note-form__field">
       <CheckGroupButton
         label="Валюта"
         :items="inCurrencies"
@@ -156,11 +156,11 @@ export default {
 
         const newOrderEntity = {
           id: props.editNote.id,
-          date: props.editNote.date,
+          date: new Date(props.editNote.date),
           type: activeOperationTypesIndex.value,
           clientId: findClient?.id,
           comment: comment.value,
-          inCurrency: activeIncurrenciesIndex.value,
+          inCurrencyId: activeIncurrenciesIndex.value,
           amount: amount.value,
         };
         await store.dispatch("dailyNote/updateEntity", newOrderEntity);

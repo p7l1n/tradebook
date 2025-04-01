@@ -28,6 +28,7 @@
           </div>
         </div>
       </div>
+      <!-- form -->
       <div v-if="activeMenuIndex != 0" class="note-page__form">
         <CheckGroupButton
           :items="operationTypes"
@@ -73,6 +74,7 @@
           <el-checkbox v-model="showStats" label="Показать сводку" border />
         </div>
       </div>
+      <!-- end form -->
       <DailyNotes
         v-if="!isLoading && !showStats"
         class="notes-page__widgets-item"
@@ -115,8 +117,8 @@ import { useStore } from "vuex";
 import { ref, computed, onMounted } from "vue";
 import { toCurrency } from "@/helpers";
 import { NOTE_TYPES } from "@/config/noteTypes";
-import useStatsNotes from "@/compositions/useStatsNotes";
 import NotesStats from "@/components/widgets/NotesStats";
+import { ElNotification } from "element-plus";
 
 export default {
   components: {
@@ -132,7 +134,6 @@ export default {
     NotesStats,
   },
   setup() {
-    const { allStats } = useStatsNotes();
     const store = useStore();
     const showStats = ref(null);
     const activeMenuIndex = ref(0);
@@ -140,7 +141,6 @@ export default {
     const selectedItem = ref(null);
     const dateFrom = ref("");
     const dateTo = ref("");
-    console.log("daily stats", allStats.value);
     const loading = ref(false);
 
     // form
@@ -249,7 +249,14 @@ export default {
     };
 
     const addNew = async () => {
-      if (!selectedClient.value || !amount.value) return;
+      if (!selectedClient.value || !amount.value) {
+        ElNotification({
+          title: "Тетрадь",
+          message: `Укажите контрагента и сумму`,
+          type: "warning",
+        });
+        return;
+      }
       loading.value = true;
       const findClient = clientsList.value.find(
         (item) => item.name === selectedClient.value
@@ -258,7 +265,7 @@ export default {
         date: new Date(),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
-        inCurrency: getCurrency(),
+        inCurrencyId: getCurrency(),
         amount: amount.value,
         comment: comment.value,
         isProfit: false,
@@ -374,7 +381,6 @@ export default {
   }
 
   &__form-field {
-    width: 220px;
     margin-left: 10px;
   }
 }

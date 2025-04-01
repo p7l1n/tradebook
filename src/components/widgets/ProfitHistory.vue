@@ -4,7 +4,7 @@
       <div class="widget-profits__title">История снятий прибыли</div>
       <div class="widget-profits__list">
         <div class="widget-profits__list-item">
-          <div class="widget-profits__list-item-field label">ID</div>
+          <!-- <div class="widget-profits__list-item-field label">ID</div> -->
           <div class="widget-profits__list-item-field label">Дата</div>
           <div class="widget-profits__list-item-field label">Сумма</div>
           <div class="widget-profits__list-item-field label">Действие</div>
@@ -23,9 +23,9 @@
           :key="ndx"
           @click="selectRow(item)"
         >
-          <div class="widget-profits__list-item-field">
+          <!-- <div class="widget-profits__list-item-field">
             {{ `${item.id}`.slice(0, 9) }}
-          </div>
+          </div> -->
           <div class="widget-profits__list-item-field strong">
             {{ moment(item.date).format("DD.MM.YY") }}
           </div>
@@ -36,7 +36,7 @@
             <el-button
               size="small"
               type="danger"
-              round
+              :loading="removeLoading"
               @click="removeProfit(item)"
               >Отменить снятие</el-button
             >
@@ -47,7 +47,7 @@
   </div>
 </template>
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useStore } from "vuex";
 import { toCurrency } from "@/helpers";
 import { NOTE_TYPES } from "@/config/noteTypes";
@@ -60,21 +60,49 @@ export default {
   setup(_, { emit }) {
     const store = useStore();
     const selectedItem = ref(null);
+    const removeLoading = ref(false);
 
     const { filteredProfitHistory } = useNotes();
+    const notesList = computed(() => store.getters["note/notes"]);
 
     const selectRow = (item) => {
       emit("select", item);
     };
 
-    const removeProfit = (item) => {
-      store.dispatch("note/removeProfit", item);
-      store.dispatch("orders/removeOrderEntity", item);
-      ElNotification({
-        title: "Отменено",
-        message: `Снятие кассы на сумму ${toCurrency(item.amount)}`,
-        type: "warning",
-      });
+    const removeProfit = async (profitItem) => {
+      removeLoading.value = true;
+
+      // ищем в журнале ДК эту запись тоже
+      const noteDKItem = notesList.value.find(
+        (dk) => dk.date === profitItem.date
+      );
+
+      if (!noteDKItem) {
+        ElNotification({
+          title: "Ошибка",
+          message: `Данное снятие не найдено в журнале ДК`,
+          type: "error",
+        });
+        removeLoading.value = false;
+        return;
+      }
+      try {
+        await store.dispatch("dailyNote/removeEntity", noteDKItem);
+        await store.dispatch("note/removeProfit", profitItem);
+        ElNotification({
+          title: "Отменено",
+          message: `Снятие кассы на сумму ${toCurrency(profitItem.amount)}`,
+          type: "warning",
+        });
+      } catch (err) {
+        ElNotification({
+          title: "Отменено",
+          message: `Ошибка при снятии суммы`,
+          type: "error",
+        });
+        removeLoading.value = false;
+      }
+      removeLoading.value = false;
     };
 
     return {
@@ -82,6 +110,7 @@ export default {
       moment,
       NOTE_TYPES,
       filteredProfitHistory,
+      removeLoading,
       toCurrency,
       selectRow,
       removeProfit,

@@ -46,6 +46,7 @@
         </el-button>
         <Button title="Очистить" @click="clearAll" />
         <el-button
+          v-if="isEditing"
           type="warning"
           :loading="loadingRemove"
           class="base-btn"
@@ -184,7 +185,7 @@ export default {
           item.name === name.value.trim() &&
           item.type === typesItems.value[activeTypesIndex.value]
       );
-      if (find) {
+      if (!isEditing.value && find) {
         ElNotification({
           title: "Внимание",
           message: `Такой контрагент уже существует`,

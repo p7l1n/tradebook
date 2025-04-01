@@ -4,7 +4,7 @@
     <div :class="{ isLoading }" class="note-page__widgets">
       <Loader v-if="isLoading && activeMenuIndex === 0" />
       <div class="filter">
-        <Button title="Новая запись" @click="openForm" class="credit-btn" />
+        <!-- <Button title="Новая запись" @click="openForm" class="credit-btn" /> -->
         <div class="filter__stats">
           <el-date-picker
             v-model="dateFrom"
@@ -32,6 +32,58 @@
           </div>
         </div>
       </div>
+      <!-- form -->
+      <div v-if="activeMenuIndex === 0" class="note-page__form">
+        <CheckGroupButton
+          :items="operationTypes"
+          :active-index="activeOperationTypesIndex"
+          @check="onSelectOperationType"
+        />
+        <div class="note-page__form-field">
+          <CheckGroupButton
+            :items="inCurrencies"
+            :active-index="activeIncurrenciesIndex"
+            @check="onSelectInCurrencies"
+          />
+        </div>
+
+        <div class="note-page__form-field">
+          <el-select
+            v-model="selectedClient"
+            clearable
+            filterable
+            placeholder="Контрагент"
+            style="width: 100%"
+            size="large"
+            @change="onClientSelect"
+          >
+            <el-option
+              v-for="item in clientItems"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </div>
+        <div class="note-page__form-field">
+          <Input placeholder="Сумма" gray v-model="amount" type="number" />
+        </div>
+        <div class="note-page__form-field">
+          <Input placeholder="Примечание" gray v-model="comment" />
+        </div>
+        <div class="note-page__form-field">
+          <el-button
+            type="success"
+            :loading="loading"
+            class="base-btn"
+            style="width: 120px"
+            @click="addNew"
+          >
+            Добавить
+          </el-button>
+        </div>
+      </div>
+      <!-- end form -->
       <Notes
         v-if="!isLoading && activeMenuIndex === 0"
         class="notes-page__widgets-item"
@@ -64,13 +116,18 @@ import ModalContent from "@/components/ModalContent";
 import Form from "./components/Form";
 import Notes from "@/components/widgets/Notes";
 import ProfitHistory from "@/components/widgets/ProfitHistory";
-import Button from "@/components/Button";
+// import Button from "@/components/Button";
+import Input from "@/components/Input";
+import CheckGroupButton from "@/components/CheckGroupButton";
 
 import { useStore } from "vuex";
 
 import { ref, computed, onMounted } from "vue";
 import useNotes from "@/compositions/useNotes";
 import { toCurrency } from "@/helpers";
+import { NOTE_TYPES } from "@/config/noteTypes";
+import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
+import { ElNotification } from "element-plus";
 
 export default {
   components: {
@@ -81,7 +138,9 @@ export default {
     Form,
     Notes,
     ProfitHistory,
-    Button,
+    // Button,
+    Input,
+    CheckGroupButton,
   },
   setup() {
     const { profitUsdtHistory } = useNotes();
@@ -91,6 +150,49 @@ export default {
     const selectedItem = ref(null);
     const dateFrom = ref("");
     const dateTo = ref("");
+    const loading = ref(false);
+
+    const activeIncurrenciesIndex = ref(0);
+    const inCurrencies = ref(DEFAULT_CURRENCIES);
+
+    // form
+    const operationTypes = ref([NOTE_TYPES.debit, NOTE_TYPES.credit]);
+    const activeOperationTypesIndex = ref(0);
+    const selectedClient = ref(null);
+    const amount = ref("");
+    const comment = ref("");
+
+    const onSelectInCurrencies = (ndx) => {
+      activeIncurrenciesIndex.value = ndx;
+    };
+
+    const clientsList = computed(() => store.getters["clients/clients"]);
+    const clientItems = computed(() => {
+      return [...new Set(clientsList.value.map((item) => item.name))].map(
+        (item) => {
+          return {
+            title: item,
+            value: item,
+          };
+        }
+      );
+    });
+
+    const onClientSelect = (val) => {
+      selectedClient.value = val;
+    };
+
+    const onSelectOperationType = (ndx) => {
+      activeOperationTypesIndex.value = ndx;
+    };
+
+    const clearForm = () => {
+      activeOperationTypesIndex.value = 0;
+
+      comment.value = "";
+      amount.value = "";
+      selectedClient.value = null;
+    };
 
     const shortcuts = ref([
       {
@@ -148,6 +250,35 @@ export default {
       store.dispatch("note/setFilterOption", { key: "dateTo", value: val });
     };
 
+    const addNew = async () => {
+      if (!selectedClient.value || !amount.value) {
+        ElNotification({
+          title: "Журнал ДК",
+          message: `Укажите контрагента и сумму`,
+          type: "warning",
+        });
+        return;
+      }
+      loading.value = true;
+      const findClient = clientsList.value.find(
+        (item) => item.name === selectedClient.value
+      );
+      const newOrderEntity = {
+        date: new Date(),
+        clientId: findClient?.id,
+        type: activeOperationTypesIndex.value,
+        inCurrencyId: activeIncurrenciesIndex.value,
+        amount: amount.value,
+        comment: comment.value,
+        isProfit: false,
+        category: 1,
+      };
+
+      await store.dispatch("dailyNote/addNewEntity", newOrderEntity);
+      loading.value = false;
+      clearForm();
+    };
+
     onMounted(() => {
       if (filterOptions.value.dateFrom) {
         dateFrom.value = filterOptions.value.dateFrom;
@@ -166,6 +297,17 @@ export default {
       dateTo,
       shortcuts,
       profitUsdtHistory,
+      // form
+      amount,
+      comment,
+      operationTypes,
+      clientItems,
+      loading,
+      selectedClient,
+      activeOperationTypesIndex,
+      activeIncurrenciesIndex,
+      inCurrencies,
+
       toCurrency,
       disabledDate,
 
@@ -175,6 +317,11 @@ export default {
       openForm,
       onSelectDateFrom,
       onSelectDateTo,
+
+      onClientSelect,
+      onSelectOperationType,
+      onSelectInCurrencies,
+      addNew,
     };
   },
 };
@@ -192,6 +339,7 @@ export default {
     align-items: flex-start;
     justify-content: space-between;
     width: 100%;
+    margin-bottom: 10px;
 
     &__stats {
       display: flex;
@@ -199,6 +347,8 @@ export default {
     }
 
     &__profit {
+      position: absolute;
+      right: 20px;
       font-size: 16px;
       font-weight: bold;
       color: $colorGreenDark;
@@ -235,6 +385,17 @@ export default {
       align-items: center;
       height: calc(100vh - 120px);
     }
+  }
+
+  &__form {
+    margin: 0 0 10px 0;
+    display: flex;
+    width: 100%;
+    align-items: center;
+  }
+
+  &__form-field {
+    margin-left: 10px;
   }
 }
 </style>
