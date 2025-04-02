@@ -17,6 +17,38 @@
       />
     </div>
     <div class="order-form__field">
+      <Input
+        placeholder="Сумма приход"
+        v-model="amountIn"
+        type="number"
+        @input="onAmountInChange"
+      />
+    </div>
+    <div v-if="activeOperationTypesIndex != 2" class="order-form__field">
+      <CheckGroupButton
+        label="Расход (валюта)"
+        :items="outCurrencies"
+        :active-index="activeOutcurrenciesIndex"
+        @check="onSelectOutCurrencies"
+      />
+    </div>
+    <div v-if="activeOperationTypesIndex != 2" class="order-form__field">
+      <Input
+        placeholder="Сумма расход"
+        v-model="amountOut"
+        type="number"
+        @input="onAmountOutChange"
+      />
+    </div>
+    <div v-if="activeOperationTypesIndex != 2" class="order-form__field">
+      <Input
+        placeholder="Курс"
+        v-model="rateIn"
+        type="number"
+        @input="onRateChange"
+      />
+    </div>
+    <div class="order-form__field">
       <el-select
         v-model="selectedOperator"
         clearable
@@ -52,23 +84,9 @@
         />
       </el-select>
     </div>
-    <div class="order-form__field">
-      <Input placeholder="Сумма" v-model="amountIn" type="number" />
-    </div>
-    <div v-if="activeOperationTypesIndex != 2" class="order-form__field">
-      <Input placeholder="Курс" v-model="rateIn" type="number" />
-    </div>
-    <div v-if="activeOperationTypesIndex != 2" class="order-form__field">
-      <CheckGroupButton
-        label="расход (валюта)"
-        :items="outCurrencies"
-        :active-index="activeOutcurrenciesIndex"
-        @check="onSelectOutCurrencies"
-      />
-    </div>
     <div class="order-form__btns">
       <Button title="Очистить" @click="clearForm" />
-      <Button
+      <!-- <Button
         v-if="editOrder"
         title="Удалить"
         :is-red="true"
@@ -79,7 +97,24 @@
         :title="editOrder ? 'Сохранить' : 'Добавить'"
         class="ml10"
         @click="addNewOrder"
-      />
+      /> -->
+      <el-button
+        v-if="editOrder"
+        type="warning"
+        :loading="loadingRemove"
+        class="base-btn ml10"
+        @click="removeOrder"
+      >
+        Удалить
+      </el-button>
+      <el-button
+        type="success"
+        :loading="loading"
+        class="base-btn ml10"
+        @click="addNewOrder"
+      >
+        {{ editOrder ? "Сохранить" : "Добавить" }}
+      </el-button>
     </div>
   </div>
 </template>
@@ -89,10 +124,14 @@ import Button from "@/components/Button";
 import CheckGroupButton from "@/components/CheckGroupButton";
 import { ORDER_TYPES } from "@/config/orderTypes";
 import { CONTRAGENTS } from "@/config/noteTypes";
-import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
+import {
+  DEFAULT_CURRENCIES,
+  DEFAULT_CURRENCIES_SHORT,
+} from "@/config/defaultCurrencies";
 
 import { useStore } from "vuex";
 import { onMounted, ref, computed } from "vue";
+import { getNumFormat } from "@/helpers";
 
 import { ElSelect } from "element-plus";
 import { ElNotification } from "element-plus";
@@ -135,7 +174,11 @@ export default {
     const outCurrencies = ref(DEFAULT_CURRENCIES);
 
     const amountIn = ref("");
+    const amountOut = ref("");
     const rateIn = ref("");
+
+    const loadingRemove = ref(false);
+    const loading = ref(false);
 
     const operatorList = computed(() =>
       store.getters["clients/clients"].filter(
@@ -196,6 +239,7 @@ export default {
       selectedClient.value = null;
       selectedOperator.value = null;
       amountIn.value = "";
+      amountOut.value = "";
       rateIn.value = "";
     };
 
@@ -228,14 +272,9 @@ export default {
         (cl) => cl.name === selectedClient.value
       )?.id;
 
-      let outAmountValue =
-        outCurrencies.value[activeOutcurrenciesIndex.value] === "USDT"
-          ? +amountIn.value / +rateIn.value
-          : +amountIn.value / +rateIn.value; // *
-
       if (activeOperationTypesIndex.value == 2) {
         // выручка просто прибыль с 0 расходом
-        outAmountValue = 0;
+        // outAmountValue = 0;
         rateIn.value = 0;
       }
 
@@ -251,10 +290,12 @@ export default {
           inAmount: amountIn.value,
           rate: rateIn.value,
           outCurrencyId: activeOutcurrenciesIndex.value, // outCurrencies.value[activeOutcurrenciesIndex.value],
-          outAmount: outAmountValue,
+          outAmount: amountOut.value,
           status: props.editOrder.status,
         };
+        loading.value = true;
         await store.dispatch("orders/updateOrderEntity", newOrderEntity);
+        loading.value = false;
         clearForm();
         emit("close");
         return;
@@ -272,18 +313,127 @@ export default {
         inAmount: amountIn.value,
         rate: rateIn.value,
         outCurrencyId: activeOutcurrenciesIndex.value, // outCurrencies.value[activeOutcurrenciesIndex.value],
-        outAmount: outAmountValue,
+        outAmount: amountOut.value,
         status: 0,
       };
-
+      loading.value = true;
       await store.dispatch("orders/addNewOrderEntity", newOrderEntity);
+      loading.value = false;
       clearForm();
       emit("close");
     };
 
-    const removeOrder = () => {
-      store.dispatch("orders/removeOrderEntity", props.editOrder);
+    const removeOrder = async () => {
+      loadingRemove.value = true;
+      await store.dispatch("orders/removeOrderEntity", props.editOrder);
+      loadingRemove.value = false;
       emit("close");
+    };
+
+    const calcValues = () => {
+      let rate = "";
+      let amIn = "";
+      let amOut = "";
+      const myCurrency =
+        DEFAULT_CURRENCIES_SHORT[activeOutcurrenciesIndex.value];
+      const yourCurrency =
+        DEFAULT_CURRENCIES_SHORT[activeIncurrenciesIndex.value];
+
+      if (myCurrency === "р" || myCurrency === "т") {
+        if (amountIn.value && amountOut.value) {
+          rate = getNumFormat(amountOut.value / amountIn.value, 4);
+        }
+        if (amountIn.value && !amountOut.value && rateIn.value) {
+          amOut = getNumFormat(rateIn.value * amountIn.value, 4);
+        }
+        if (amountOut.value && !amountIn.value && rateIn.value) {
+          amIn = getNumFormat(amountOut.value / rateIn.value, 4);
+        }
+      } else {
+        if (amountIn.value && amountOut.value) {
+          rate = getNumFormat(amountIn.value / amountOut.value, 4);
+        }
+        if (amountIn.value && !amountOut.value && rateIn.value) {
+          amOut = getNumFormat(amountIn.value / rateIn.value, 4);
+        }
+        if (amountOut.value && !amountIn.value && rateIn.value) {
+          amIn = getNumFormat(amountOut.value * rateIn.value, 4);
+        }
+      }
+      if (myCurrency === "т" && yourCurrency === "р") {
+        if (amountIn.value && amountOut.value) {
+          rate = getNumFormat(amountIn.value / amountOut.value, 4);
+        }
+        if (amountIn.value && !amountOut.value && rateIn.value) {
+          amOut = getNumFormat(amountIn.value / rateIn.value, 4);
+        }
+        if (amountOut.value && !amountIn.value && rateIn.value) {
+          amIn = getNumFormat(amountOut.value * rateIn.value, 4);
+        }
+      }
+
+      if (myCurrency === "т" && yourCurrency === "е") {
+        if (amountIn.value && amountOut.value) {
+          rate = getNumFormat(amountOut.value / amountIn.value, 4);
+        }
+        if (amountIn.value && !amountOut.value && rateIn.value) {
+          amOut = getNumFormat(amountIn.value * rateIn.value, 4);
+        }
+        if (amountOut.value && !amountIn.value && rateIn.value) {
+          amIn = getNumFormat(amountOut.value / rateIn.value, 4);
+        }
+      }
+      if (
+        myCurrency === "т" &&
+        (yourCurrency === "б" || yourCurrency === "д")
+      ) {
+        if (amountIn.value && amountOut.value) {
+          rate = getNumFormat(amountIn.value / amountOut.value, 4);
+        }
+        if (amountIn.value && !amountOut.value && rateIn.value) {
+          amOut = getNumFormat(amountIn.value / rateIn.value, 4);
+        }
+        if (amountOut.value && !amountIn.value && rateIn.value) {
+          amIn = getNumFormat(amountOut.value * rateIn.value, 4);
+        }
+      }
+      if ((myCurrency === "б" || myCurrency === "д") && yourCurrency === "т") {
+        if (amountIn.value && amountOut.value) {
+          rate = getNumFormat(amountOut.value / amountIn.value, 4);
+        }
+        if (amountIn.value && !amountOut.value && rateIn.value) {
+          amOut = getNumFormat(amountIn.value * rateIn.value, 4);
+        }
+        if (amountOut.value && !amountIn.value && rateIn.value) {
+          amIn = getNumFormat(amountOut.value / rateIn.value, 4);
+        }
+      }
+
+      if (rate) {
+        rateIn.value = rate;
+      }
+      if (amIn) {
+        amountIn.value = amIn;
+      }
+      if (amOut) {
+        amountOut.value = amOut;
+      }
+    };
+
+    const onAmountInChange = () => {
+      setTimeout(() => {
+        calcValues();
+      }, 1500);
+    };
+    const onAmountOutChange = () => {
+      setTimeout(() => {
+        calcValues();
+      }, 1500);
+    };
+    const onRateChange = () => {
+      setTimeout(() => {
+        calcValues();
+      }, 1500);
     };
 
     onMounted(() => {
@@ -297,6 +447,7 @@ export default {
           (item) => item === props.editOrder.inCurrency
         );
         amountIn.value = props.editOrder.inAmount;
+        amountOut.value = props.editOrder.outAmount;
         rateIn.value = props.editOrder.rate;
         activeOutcurrenciesIndex.value = outCurrencies.value.findIndex(
           (item) => item === props.editOrder.outCurrency
@@ -334,11 +485,14 @@ export default {
       inCurrencies,
       outCurrencies,
       amountIn,
+      amountOut,
       rateIn,
       selectedOperator,
       selectedClient,
       operatorItems,
       clientItems,
+      loading,
+      loadingRemove,
       onSelectOperationType,
       onSelectInCurrencies,
       onSelectOutCurrencies,
@@ -347,6 +501,9 @@ export default {
       clearForm,
       addNewOrder,
       removeOrder,
+      onAmountInChange,
+      onAmountOutChange,
+      onRateChange,
     };
   },
 };
