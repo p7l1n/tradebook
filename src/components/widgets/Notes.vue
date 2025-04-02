@@ -22,7 +22,7 @@
             active: selectedItem && selectedItem.apiKey === item.apiKey,
           }"
           class="widget-notes__list-item"
-          v-for="(item, ndx) in filteredNotesList"
+          v-for="(item, ndx) in filteredNotesList.slice(0, countToShow)"
           :key="ndx"
           @click="selectRow(item)"
         >
@@ -30,7 +30,7 @@
             {{ `${item.id}`.slice(0, 9) }}
           </div> -->
           <div class="widget-notes__list-item-field">
-            {{ moment(item.date).format("DD.MM.YY,HH:mm") }}
+            {{ moment(item.date).utcOffset(360).format("DD.MM.YY,HH:mm") }}
           </div>
           <div class="widget-notes__list-item-field strong">
             {{ item.type }}
@@ -59,6 +59,13 @@
           ></div>
         </div>
       </div>
+      <div
+        v-if="filteredNotesList.length >= countToShow"
+        class="widget-notes__more"
+        @click="showMore"
+      >
+        Показать еще
+      </div>
     </div>
   </div>
 </template>
@@ -79,6 +86,13 @@ export default {
     // const store = useStore();
     const selectedItem = ref(null);
 
+    const countToShow = ref(20);
+    const countIncrement = ref(20);
+
+    const showMore = () => {
+      countToShow.value += countIncrement.value;
+    };
+
     const selectRow = (item) => {
       emit("select", item);
     };
@@ -92,9 +106,12 @@ export default {
       selectedItem,
       moment,
       NOTE_TYPES,
+      countIncrement,
+      countToShow,
       getNumFormat,
       selectRow,
       remove,
+      showMore,
 
       toCurrency,
     };
@@ -165,6 +182,22 @@ export default {
       &:hover {
         cursor: pointer;
       }
+    }
+  }
+
+  &__more {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 40px;
+    border-radius: $controlRadius;
+    background-color: $colorRowGrayActive;
+    margin: 0 auto 10px;
+
+    &:hover {
+      opacity: 0.8;
     }
   }
 

@@ -36,6 +36,7 @@
       </div>
       <div class="row">
         <el-button
+          v-if="!isSystemItem"
           type="success"
           :loading="loading"
           class="base-btn"
@@ -44,9 +45,9 @@
         >
           {{ isEditing ? "Сохранить" : "Добавить" }}
         </el-button>
-        <Button title="Очистить" @click="clearAll" />
+        <Button v-if="!isSystemItem" title="Очистить" @click="clearAll" />
         <el-button
-          v-if="isEditing"
+          v-if="isEditing && !isSystemItem"
           type="warning"
           :loading="loadingRemove"
           class="base-btn"
@@ -77,7 +78,7 @@
             active: selectedItem && selectedItem.id === item.id,
           }"
           class="widget-clients__list-item"
-          v-for="(item, ndx) in filteredClientsList"
+          v-for="(item, ndx) in filteredClientsList.slice(0, countToShow)"
           :key="ndx"
           @click="selectRow(item)"
         >
@@ -94,6 +95,13 @@
             {{ item.type }}
           </div>
         </div>
+      </div>
+      <div
+        v-if="filteredClientsList.length >= countToShow"
+        class="widget-clients__more"
+        @click="showMore"
+      >
+        Показать еще
       </div>
     </div>
   </div>
@@ -134,7 +142,22 @@ export default {
     const loadingRemove = ref(false);
     const activeTypesIndex = ref(0);
 
+    const countToShow = ref(20);
+    const countIncrement = ref(20);
+
+    const showMore = () => {
+      countToShow.value += countIncrement.value;
+    };
+
     const clientsList = computed(() => store.getters["clients/clients"]);
+
+    const isSystemItem = computed(() => {
+      return (
+        selectedItem.value &&
+        selectedItem.value.name === "Прибыль" &&
+        selectedItem.value.type === "Прибыль"
+      );
+    });
 
     const filteredClientsList = computed(() => {
       if (!searchStr.value) return clientsList.value;
@@ -241,6 +264,7 @@ export default {
       //
       loading,
       loadingRemove,
+      isSystemItem,
 
       selectedItem,
       isEditing,
@@ -249,6 +273,9 @@ export default {
       editModeFlag,
       searchStr,
       filteredClientsList,
+      countIncrement,
+      countToShow,
+      showMore,
       getNumFormat,
       clearAll,
       selectRow,
@@ -283,7 +310,7 @@ export default {
 }
 
 .widget-clients {
-  width: 700px;
+  width: 100%;
   padding: $paddingSmall;
   border-radius: $borderRadius;
   background-color: $panelColorLight;
@@ -318,6 +345,9 @@ export default {
   &__list-item {
     display: flex;
     align-items: center;
+    &:nth-child(even) {
+      background-color: $panelColorActive;
+    }
 
     &.active {
       background-color: $colorRowGrayActive;
@@ -371,6 +401,22 @@ export default {
 
     &:nth-child(even) {
       // background-color: $panelColorActive;
+    }
+  }
+
+  &__more {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 40px;
+    border-radius: $controlRadius;
+    background-color: $colorRowGrayActive;
+    margin: 0 auto 10px;
+
+    &:hover {
+      opacity: 0.8;
     }
   }
 

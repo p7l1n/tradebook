@@ -62,7 +62,7 @@
             editing: editing && ids.includes(item.id),
           }"
           class="widget-orders__list-item"
-          v-for="(item, ndx) in ordersList"
+          v-for="(item, ndx) in ordersList.slice(0, countToShow)"
           :key="ndx"
           @click="selectRow(item)"
         >
@@ -83,7 +83,7 @@
             v-if="showFields?.date?.show"
             class="widget-orders__list-item-field"
           >
-            {{ moment(item.date).format("DD.MM,HH:mm") }}
+            {{ moment(item.date).utcOffset(360).format("DD.MM, HH:mm") }}
           </div>
           <div
             v-if="showFields?.type?.show"
@@ -130,13 +130,22 @@
             v-if="showFields?.dateChange?.show"
             class="widget-orders__list-item-field mini"
           >
-            {{ moment(item.dateChange).format("DD.MM,HH:mm") }}
+            {{
+              moment(item.dateChange).utcOffset(360).format("DD.MM.YY,HH:mm")
+            }}
           </div>
           <div
             class="widget-orders__list-item-field remove"
             @click.stop="remove(item)"
           ></div>
         </div>
+      </div>
+      <div
+        v-if="ordersList.length >= countToShow"
+        class="widget-orders__more"
+        @click="showMore"
+      >
+        Показать еще
       </div>
     </div>
   </div>
@@ -174,6 +183,12 @@ export default {
     const spreadSell = ref("");
     const apiKey = ref("");
     const points = ref("");
+    const countToShow = ref(20);
+    const countIncrement = ref(20);
+
+    const showMore = () => {
+      countToShow.value += countIncrement.value;
+    };
 
     // const ratesList = computed(() => store.getters["rates/rates"]);
     // const ordersList = computed(() => store.getters["orders/orders"]);
@@ -189,10 +204,10 @@ export default {
 
     const getHint = (item) => {
       if (item.outCurrency === "USDT") {
-        return `Продажа ${item.outCurrency} за ${item.inCurrency}`;
+        return `Прод. ${item.outCurrency} за ${item.inCurrency}`;
       }
 
-      return `Покупка ${item.inCurrency} за ${item.outCurrency}`;
+      return `Пок. ${item.inCurrency} за ${item.outCurrency}`;
     };
 
     const getOutAmount = (item) => {
@@ -224,6 +239,9 @@ export default {
       selectedItem,
       moment,
       showFields,
+      countToShow,
+      countIncrement,
+      showMore,
       getNumFormat,
       selectRow,
       remove,
@@ -248,6 +266,7 @@ export default {
 .widget-orders {
   width: 100%;
   padding: 0 $paddingSmall;
+  box-sizing: border-box;
   border-radius: $borderRadius;
   background-color: $panelColorLight;
   display: flex;
@@ -366,6 +385,22 @@ export default {
 
     &.clicked {
       cursor: pointer;
+    }
+  }
+
+  &__more {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 40px;
+    border-radius: $controlRadius;
+    background-color: $colorRowGrayActive;
+    margin: 0 auto 10px;
+
+    &:hover {
+      opacity: 0.8;
     }
   }
 

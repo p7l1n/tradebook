@@ -22,7 +22,9 @@ export default {
   },
 
   actions: {
-    async fetchContragents({ commit }) {
+    async fetchContragents({ state, dispatch, commit, rootGetters }) {
+      const user = rootGetters["auth/user"]?.sub;
+
       const res = await getQuery("Clients");
       if (res && Array.isArray(res)) {
         commit(
@@ -34,6 +36,15 @@ export default {
             };
           })
         );
+        const hasUser = state.clients.find((u) => u.name === user);
+        if (!hasUser) {
+          await dispatch("addEntity", {
+            name: user,
+            telegram: "",
+            info: "",
+            type: 1,
+          });
+        }
       }
       if (res.error) {
         return;

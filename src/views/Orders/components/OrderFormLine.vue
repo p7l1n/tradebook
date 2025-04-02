@@ -1,120 +1,113 @@
 <template>
   <div class="order-form">
-    <div class="order-form__field">
-      <CheckGroupButton
-        label="Тип операции"
-        :items="operationTypes"
-        :active-index="activeOperationTypesIndex"
-        @check="onSelectOperationType"
-      />
-    </div>
-    <div class="order-form__field">
-      <CheckGroupButton
-        label="Приход (валюта)"
-        :items="inCurrencies"
-        :active-index="activeIncurrenciesIndex"
-        @check="onSelectInCurrencies"
-      />
-    </div>
-    <div class="order-form__field">
-      <Input
-        placeholder="Сумма приход"
-        v-model="amountIn"
-        type="number"
-        @input="onAmountInChange"
-      />
-    </div>
-    <div v-if="activeOperationTypesIndex != 2" class="order-form__field">
-      <CheckGroupButton
-        label="Расход (валюта)"
-        :items="outCurrencies"
-        :active-index="activeOutcurrenciesIndex"
-        @check="onSelectOutCurrencies"
-      />
-    </div>
-    <div v-if="activeOperationTypesIndex != 2" class="order-form__field">
-      <Input
-        placeholder="Сумма расход"
-        v-model="amountOut"
-        type="number"
-        @input="onAmountOutChange"
-      />
-    </div>
-    <div v-if="activeOperationTypesIndex != 2" class="order-form__field">
-      <Input
-        placeholder="Курс"
-        v-model="rateIn"
-        type="number"
-        @input="onRateChange"
-      />
-    </div>
-    <div class="order-form__field">
-      <el-select
-        v-model="selectedOperator"
-        clearable
-        filterable
-        placeholder="Выберите оператора"
-        style="width: 100%"
-        size="large"
-        @change="onOperatorSelect"
-      >
-        <el-option
-          v-for="item in operatorItems"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+    <div class="order-form__row">
+      <div class="order-form__field">
+        <CheckGroupButton
+          :items="operationTypes"
+          :active-index="activeOperationTypesIndex"
+          @check="onSelectOperationType"
         />
-      </el-select>
-    </div>
-    <div class="order-form__field">
-      <el-select
-        v-model="selectedClient"
-        clearable
-        filterable
-        placeholder="Выберите клиента"
-        style="width: 100%"
-        size="large"
-        @change="onClientSelect"
-      >
-        <el-option
-          v-for="item in clientItems"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+      </div>
+      <div class="order-form__field ml10">
+        <CheckGroupButton
+          :items="inCurrencies"
+          :active-index="activeIncurrenciesIndex"
+          @check="onSelectInCurrencies"
         />
-      </el-select>
+      </div>
+      <div class="order-form__field ml10">
+        <Input
+          placeholder="Сумма приход"
+          v-model="amountIn"
+          type="number"
+          @input="onAmountInChange"
+        />
+      </div>
+      <div v-if="activeOperationTypesIndex != 2" class="order-form__field ml10">
+        <CheckGroupButton
+          :items="outCurrencies"
+          :active-index="activeOutcurrenciesIndex"
+          @check="onSelectOutCurrencies"
+        />
+      </div>
+      <div v-if="activeOperationTypesIndex != 2" class="order-form__field ml10">
+        <Input
+          placeholder="Сумма расход"
+          v-model="amountOut"
+          type="number"
+          @input="onAmountOutChange"
+        />
+      </div>
+      <div v-if="activeOperationTypesIndex != 2" class="order-form__field ml10">
+        <Input
+          placeholder="Курс"
+          v-model="rateIn"
+          type="number"
+          @input="onRateChange"
+        />
+      </div>
     </div>
-    <div class="order-form__btns">
-      <Button title="Очистить" @click="clearForm" />
-      <!-- <Button
-        v-if="editOrder"
-        title="Удалить"
-        :is-red="true"
-        class="ml10"
-        @click="removeOrder"
-      />
-      <Button
-        :title="editOrder ? 'Сохранить' : 'Добавить'"
-        class="ml10"
-        @click="addNewOrder"
-      /> -->
-      <el-button
-        v-if="editOrder"
-        type="warning"
-        :loading="loadingRemove"
-        class="base-btn ml10"
-        @click="removeOrder"
-      >
-        Удалить
-      </el-button>
-      <el-button
-        type="success"
-        :loading="loading"
-        class="base-btn ml10"
-        @click="addNewOrder"
-      >
-        {{ editOrder ? "Сохранить" : "Добавить" }}
-      </el-button>
+    <div class="order-form__row">
+      <div class="order-form__field">
+        <el-select
+          v-model="selectedOperator"
+          clearable
+          filterable
+          placeholder="Выберите оператора"
+          style="width: 100%"
+          size="large"
+          @change="onOperatorSelect"
+        >
+          <el-option
+            v-for="item in operatorItems"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </div>
+      <div class="order-form__field ml10">
+        <el-select
+          v-model="selectedClient"
+          clearable
+          filterable
+          placeholder="Выберите клиента"
+          style="width: 100%"
+          size="large"
+          @change="onClientSelect"
+        >
+          <el-option
+            v-for="item in clientItems"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </div>
+      <div class="order-form__field ml10">
+        <Button title="Очистить" @click="clearForm" />
+      </div>
+      <div class="order-form__field ml10">
+        <el-button
+          v-if="editOrder"
+          type="warning"
+          :loading="loadingRemove"
+          class="base-btn ml10"
+          @click="removeOrder"
+        >
+          Удалить
+        </el-button>
+      </div>
+      <div class="order-form__field">
+        <el-button
+          type="success"
+          :loading="loading"
+          class="base-btn"
+          @click="addNewOrder"
+        >
+          {{ editOrder ? "Сохранить" : "Добавить" }}
+        </el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -180,6 +173,9 @@ export default {
     const loadingRemove = ref(false);
     const loading = ref(false);
 
+    const defaultContragent = computed(() => store.getters["auth/user"]?.sub);
+    selectedOperator.value = defaultContragent.value;
+
     const operatorList = computed(() =>
       store.getters["clients/clients"].filter(
         (item) => item.type === CONTRAGENTS.operator
@@ -237,7 +233,7 @@ export default {
       activeIncurrenciesIndex.value = 0;
       activeOutcurrenciesIndex.value = 0;
       selectedClient.value = null;
-      selectedOperator.value = null;
+      selectedOperator.value = defaultContragent.value;
       amountIn.value = "";
       amountOut.value = "";
       rateIn.value = "";
@@ -510,24 +506,23 @@ export default {
 </script>
 <style lang="scss" scoped>
 .order-form {
+  background-color: $panelColorActive;
+  padding: 10px;
+  border-radius: $controlRadius;
   display: flex;
   flex-direction: column;
 
-  &__field {
-    margin-bottom: 15px;
+  .ml10 {
+    margin-left: 10px;
   }
 
-  &__btns {
-    border-top: 1px solid #000;
-    padding: 10px 0;
-    margin-top: 20px;
-    width: 100%;
+  &__row {
     display: flex;
     align-items: center;
+  }
 
-    .ml10 {
-      margin-left: 10px;
-    }
+  &__field {
+    margin-bottom: 15px;
   }
 }
 </style>

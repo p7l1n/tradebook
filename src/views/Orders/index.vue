@@ -4,7 +4,7 @@
     <div :class="{ isLoading }" class="orders-page__widgets">
       <!-- быстрый доступ к покупке -->
       <TradeMenu
-        v-if="activeMenuIndex === 0"
+        v-if="false && activeMenuIndex === 0"
         @buyUSDT="setTradeParam"
         @sellUSDT="setTradeParam"
         @buyUSD="setTradeParam"
@@ -23,13 +23,18 @@
           @check="onCheckEdit"
         />
         <div v-if="activeMenuIndex === 0 && collectionsIds.length">
-          <Button
-            title="Удалить"
-            style="width: 100px; margin-left: 10px"
+          <el-button
+            type="warning"
+            :loading="loadingRemove"
+            class="base-btn ml10"
+            style="height: 30px"
             @click="removeOrders"
-          />
+          >
+            Удалить
+          </el-button>
         </div>
       </div>
+      <OrderFormLine v-if="activeMenuIndex === 0" />
       <!-- панель фильтров -->
       <FilterOrders v-if="activeMenuIndex === 1" />
       <!-- настройки полей таблицы -->
@@ -100,11 +105,11 @@ import TradeMenu from "./components/TradeMenu";
 import FilterOrders from "./components/FilterOrders";
 import Orders from "@/components/widgets/Orders";
 import Loader from "@/components/Loader";
-import Button from "@/components/Button";
 
 import Modal from "@/components/Modal";
 import ModalContent from "@/components/ModalContent";
 import OrderForm from "@/views/Orders/components/OrderForm";
+import OrderFormLine from "./components/OrderFormLine";
 import EditFieldsForm from "@/views/Orders/components/EditFieldsForm";
 import TotalInfo from "@/components/widgets/TotalInfo";
 import Rates from "@/components/widgets/Rates";
@@ -125,12 +130,12 @@ export default {
     Modal,
     ModalContent,
     OrderForm,
+    OrderFormLine,
     EditFieldsForm,
     FilterOrders,
     TotalInfo,
     Rates,
     CheckButton,
-    Button,
   },
   setup() {
     const store = useStore();
@@ -194,10 +199,14 @@ export default {
       }
     };
 
+    const loadingRemove = ref(false);
+
     const removeOrders = async () => {
+      loadingRemove.value = true;
       collectionsIds.value.forEach(async (id) => {
         await store.dispatch("orders/removeOrderEntity", { id });
       });
+      loadingRemove.value = false;
 
       ElNotification({
         title: "Успешно",
@@ -221,6 +230,7 @@ export default {
       filterOptions,
       editModeFlag,
       collectionsIds,
+      loadingRemove,
       onSelectMenu,
       closeForm,
       onSelectOrder,
@@ -240,6 +250,8 @@ export default {
 @import "@/assets/styles/base.scss";
 
 .orders-page {
+  position: relative;
+
   .mt-15 {
     margin-top: 15px;
     margin-bottom: 15px;
@@ -276,9 +288,10 @@ export default {
   }
 
   &__edit {
-    margin-top: 20px;
     display: flex;
     align-items: center;
+    position: absolute;
+    top: 5px;
   }
 }
 </style>

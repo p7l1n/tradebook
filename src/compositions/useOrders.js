@@ -12,6 +12,7 @@ export default function useOrders() {
   const selectedOperator = ref("");
   const selectedClient = ref("");
   const amountIn = ref("");
+  const amountOut = ref("");
   const rateIn = ref("");
 
   const inCurrencies = ref(DEFAULT_CURRENCIES);
@@ -46,19 +47,15 @@ export default function useOrders() {
       (item) => item === apiData.inCurrency
     );
     amountIn.value = apiData.inAmount;
+    amountOut.value = apiData.outAmount;
     rateIn.value = apiData.rate;
     activeOutcurrenciesIndex.value = outCurrencies.value.findIndex(
       (item) => item === apiData.outCurrency
     );
 
-    let outAmountValue =
-      outCurrencies.value[activeOutcurrenciesIndex.value] === "USDT"
-        ? +amountIn.value / +rateIn.value
-        : +amountIn.value / +rateIn.value; // *
-
     if (activeOperationTypesIndex.value == 2) {
       // выручка просто прибыль с 0 расходом
-      outAmountValue = 0;
+      amountOut.value = 0;
       rateIn.value = 0;
     }
 
@@ -68,6 +65,7 @@ export default function useOrders() {
     const clientId = clientsList.value.find(
       (cl) => cl.name === selectedClient.value
     )?.id;
+    console.log(apiData.date, new Date(apiData.date));
 
     const newOrderEntity = {
       id: apiData.id,
@@ -79,7 +77,7 @@ export default function useOrders() {
       inAmount: amountIn.value,
       rate: rateIn.value,
       outCurrencyId: activeOutcurrenciesIndex.value,
-      outAmount: outAmountValue,
+      outAmount: amountOut.value,
       status: apiData.status,
     };
 
