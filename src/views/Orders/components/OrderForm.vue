@@ -20,6 +20,7 @@
       <Input
         placeholder="Сумма приход"
         v-model="amountIn"
+        green
         type="number"
         @input="onAmountInChange"
       />
@@ -36,6 +37,7 @@
       <Input
         placeholder="Сумма расход"
         v-model="amountOut"
+        red
         type="number"
         @input="onAmountOutChange"
       />
@@ -86,23 +88,12 @@
     </div>
     <div class="order-form__btns">
       <Button title="Очистить" @click="clearForm" />
-      <!-- <Button
-        v-if="editOrder"
-        title="Удалить"
-        :is-red="true"
-        class="ml10"
-        @click="removeOrder"
-      />
-      <Button
-        :title="editOrder ? 'Сохранить' : 'Добавить'"
-        class="ml10"
-        @click="addNewOrder"
-      /> -->
       <el-button
         v-if="editOrder"
         type="warning"
         :loading="loadingRemove"
         class="base-btn ml10"
+        @enter="removeOrder"
         @click="removeOrder"
       >
         Удалить
@@ -111,6 +102,7 @@
         type="success"
         :loading="loading"
         class="base-btn ml10"
+        @enter="addNewOrder"
         @click="addNewOrder"
       >
         {{ editOrder ? "Сохранить" : "Добавить" }}
@@ -422,18 +414,27 @@ export default {
 
     const onAmountInChange = () => {
       setTimeout(() => {
+        if (amountIn.value && amountOut.value && rateIn.value) {
+          rateIn.value = "";
+        }
         calcValues();
-      }, 1500);
+      }, 500);
     };
     const onAmountOutChange = () => {
       setTimeout(() => {
+        if (amountIn.value && amountOut.value && rateIn.value) {
+          rateIn.value = "";
+        }
         calcValues();
-      }, 1500);
+      }, 500);
     };
     const onRateChange = () => {
       setTimeout(() => {
+        if (amountIn.value && amountOut.value && rateIn.value) {
+          amountOut.value = "";
+        }
         calcValues();
-      }, 1500);
+      }, 500);
     };
 
     onMounted(() => {

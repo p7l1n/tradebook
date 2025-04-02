@@ -1,13 +1,6 @@
 <template>
   <div class="order-form">
     <div class="order-form__row">
-      <div class="order-form__field">
-        <CheckGroupButton
-          :items="operationTypes"
-          :active-index="activeOperationTypesIndex"
-          @check="onSelectOperationType"
-        />
-      </div>
       <div class="order-form__field ml10">
         <CheckGroupButton
           :items="inCurrencies"
@@ -18,11 +11,29 @@
       <div class="order-form__field ml10">
         <Input
           placeholder="Сумма приход"
+          :green="true"
           v-model="amountIn"
           type="number"
           @input="onAmountInChange"
         />
       </div>
+      <div v-if="activeOperationTypesIndex != 2" class="order-form__field ml10">
+        <Input
+          placeholder="Курс"
+          v-model="rateIn"
+          type="number"
+          @input="onRateChange"
+        />
+      </div>
+      <div class="order-form__field ml43">
+        <CheckGroupButton
+          :items="operationTypes"
+          :active-index="activeOperationTypesIndex"
+          @check="onSelectOperationType"
+        />
+      </div>
+    </div>
+    <div class="order-form__row">
       <div v-if="activeOperationTypesIndex != 2" class="order-form__field ml10">
         <CheckGroupButton
           :items="outCurrencies"
@@ -34,37 +45,10 @@
         <Input
           placeholder="Сумма расход"
           v-model="amountOut"
+          red
           type="number"
           @input="onAmountOutChange"
         />
-      </div>
-      <div v-if="activeOperationTypesIndex != 2" class="order-form__field ml10">
-        <Input
-          placeholder="Курс"
-          v-model="rateIn"
-          type="number"
-          @input="onRateChange"
-        />
-      </div>
-    </div>
-    <div class="order-form__row">
-      <div class="order-form__field">
-        <el-select
-          v-model="selectedOperator"
-          clearable
-          filterable
-          placeholder="Выберите оператора"
-          style="width: 100%"
-          size="large"
-          @change="onOperatorSelect"
-        >
-          <el-option
-            v-for="item in operatorItems"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
       </div>
       <div class="order-form__field ml10">
         <el-select
@@ -78,6 +62,24 @@
         >
           <el-option
             v-for="item in clientItems"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </div>
+      <div class="order-form__field ml10">
+        <el-select
+          v-model="selectedOperator"
+          clearable
+          filterable
+          placeholder="Выберите оператора"
+          style="width: 100%"
+          size="large"
+          @change="onOperatorSelect"
+        >
+          <el-option
+            v-for="item in operatorItems"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -103,6 +105,7 @@
           type="success"
           :loading="loading"
           class="base-btn"
+          @enter="addNewOrder"
           @click="addNewOrder"
         >
           {{ editOrder ? "Сохранить" : "Добавить" }}
@@ -418,18 +421,27 @@ export default {
 
     const onAmountInChange = () => {
       setTimeout(() => {
+        if (amountIn.value && amountOut.value && rateIn.value) {
+          rateIn.value = "";
+        }
         calcValues();
-      }, 1500);
+      }, 500);
     };
     const onAmountOutChange = () => {
       setTimeout(() => {
+        if (amountIn.value && amountOut.value && rateIn.value) {
+          rateIn.value = "";
+        }
         calcValues();
-      }, 1500);
+      }, 500);
     };
     const onRateChange = () => {
       setTimeout(() => {
+        if (amountIn.value && amountOut.value && rateIn.value) {
+          amountOut.value = "";
+        }
         calcValues();
-      }, 1500);
+      }, 500);
     };
 
     onMounted(() => {
@@ -514,6 +526,10 @@ export default {
 
   .ml10 {
     margin-left: 10px;
+  }
+
+  .ml43 {
+    margin-left: 43px;
   }
 
   &__row {

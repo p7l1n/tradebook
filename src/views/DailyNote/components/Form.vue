@@ -35,7 +35,13 @@
       />
     </div>
     <div class="note-form__field">
-      <Input placeholder="Сумма" v-model="amount" type="number" />
+      <Input
+        placeholder="Сумма"
+        v-model="amount"
+        :red="activeOperationTypesIndex === 0"
+        :green="activeOperationTypesIndex === 1"
+        type="number"
+      />
     </div>
     <div class="note-form__field">
       <Input placeholder="Примечание" v-model="comment" />
@@ -49,6 +55,7 @@
         :loading="loadingRemove"
         class="base-btn"
         style="margin-left: 10px"
+        @enter="remove"
         @click="remove"
       >
         Удалить
@@ -57,6 +64,7 @@
         type="success"
         :loading="loading"
         class="base-btn"
+        @enter="addNew"
         @click="addNew"
       >
         {{ editNote ? "Сохранить" : "Добавить" }}

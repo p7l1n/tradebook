@@ -66,7 +66,13 @@
           </el-select>
         </div>
         <div class="note-page__form-field">
-          <Input placeholder="Сумма" gray v-model="amount" type="number" />
+          <Input
+            placeholder="Сумма"
+            :red="activeOperationTypesIndex === 0"
+            :green="activeOperationTypesIndex === 1"
+            v-model="amount"
+            type="number"
+          />
         </div>
         <div class="note-page__form-field">
           <Input placeholder="Примечание" gray v-model="comment" />
@@ -77,6 +83,7 @@
             :loading="loading"
             class="base-btn"
             style="width: 120px"
+            @enter="addNew"
             @click="addNew"
           >
             Добавить

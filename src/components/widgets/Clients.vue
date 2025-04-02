@@ -41,6 +41,7 @@
           :loading="loading"
           class="base-btn"
           style="margin-left: 10px"
+          @enter="updateEntity"
           @click="updateEntity"
         >
           {{ isEditing ? "Сохранить" : "Добавить" }}
@@ -52,6 +53,7 @@
           :loading="loadingRemove"
           class="base-btn"
           style="margin-left: 10px"
+          @enter="removeEntity"
           @click="removeEntity"
         >
           Удалить
@@ -202,7 +204,14 @@ export default {
     });
 
     const updateEntity = async () => {
-      if (!name.value.trim()) return;
+      if (!name.value.trim()) {
+        ElNotification({
+          title: "Контрагенты",
+          message: `Укажите контрагента`,
+          type: "warning",
+        });
+        return;
+      }
       const find = clientsList.value.find(
         (item) =>
           item.name === name.value.trim() &&
