@@ -160,6 +160,14 @@ export default {
       points.value = selectedItem.value.points;
     };
 
+    const getIndexOfTitle = (title) => {
+      if (title === "RUB") return 1;
+      if (title === "USD") return 2;
+      if (title === "USDT") return 5;
+      if (title === "EUR") return 3;
+      if (title === "WUSD") return 4;
+    };
+
     const updateEntity = async () => {
       loading.value = true;
       if (isEditing.value) {
@@ -172,6 +180,7 @@ export default {
           spreadSell: spreadSell.value,
           apiKey: apiKey.value,
           points: points.value,
+          inCurrencyId: getIndexOfTitle(title.value),
         });
         loading.value = false;
         // clearAll();
