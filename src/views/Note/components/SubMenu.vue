@@ -22,7 +22,7 @@ export default {
     },
   },
   setup() {
-    const menuItems = ref(["Журнал ДК", "История снятий"]);
+    const menuItems = ref(["Журнал ДК", "Сводка", "История снятий"]);
 
     return {
       menuItems,

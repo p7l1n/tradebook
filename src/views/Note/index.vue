@@ -5,7 +5,7 @@
       <Loader v-if="isLoading && activeMenuIndex === 0" />
       <div class="filter">
         <!-- <Button title="Новая запись" @click="openForm" class="credit-btn" /> -->
-        <div class="filter__stats">
+        <div v-if="activeMenuIndex === 0" class="filter__stats">
           <el-date-picker
             v-model="dateFrom"
             type="date"
@@ -96,8 +96,9 @@
         class="notes-page__widgets-item"
         @select="onSelectNote"
       />
+      <NotesStats v-if="!isLoading && activeMenuIndex === 1" />
       <ProfitHistory
-        v-if="!isLoading && activeMenuIndex === 1"
+        v-if="!isLoading && activeMenuIndex === 2"
         class="notes-page__widgets-item"
       />
     </div>
@@ -123,6 +124,7 @@ import ModalContent from "@/components/ModalContent";
 import Form from "./components/Form";
 import Notes from "@/components/widgets/Notes";
 import ProfitHistory from "@/components/widgets/ProfitHistory";
+import NotesStats from "@/components/widgets/NotesStats";
 // import Button from "@/components/Button";
 import Input from "@/components/Input";
 import CheckGroupButton from "@/components/CheckGroupButton";
@@ -145,6 +147,7 @@ export default {
     Form,
     Notes,
     ProfitHistory,
+    NotesStats,
     // Button,
     Input,
     CheckGroupButton,

@@ -156,8 +156,9 @@ export default {
     const isSystemItem = computed(() => {
       return (
         selectedItem.value &&
-        selectedItem.value.name === "Прибыль" &&
-        selectedItem.value.type === "Прибыль"
+        ((selectedItem.value.name === "Прибыль" &&
+          selectedItem.value.type === "Прибыль") ||
+          selectedItem.value.name === "Тетрадь")
       );
     });
 

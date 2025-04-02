@@ -97,7 +97,7 @@ export default {
 @import "@/assets/styles/base.scss";
 
 .widget-total {
-  width: 600px;
+  width: 100%;
   padding: $paddingSmall;
   display: flex;
   flex-direction: column;
