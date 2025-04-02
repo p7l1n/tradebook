@@ -164,7 +164,7 @@ export default {
 
         const newOrderEntity = {
           id: props.editNote.id,
-          date: new Date(props.editNote.date),
+          date: props.editNote.date,
           type: activeOperationTypesIndex.value,
           clientId: findClient?.id,
           comment: comment.value,

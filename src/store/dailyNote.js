@@ -43,7 +43,7 @@ export default {
           res.map((item) => {
             return {
               ...item,
-              date: +new Date(item.date),
+              date: item.date,
               type: getNoteTypeFromIndex(item.type),
               inCurrency: DEFAULT_CURRENCIES[item.inCurrencyId],
               client:

@@ -69,15 +69,16 @@ export default function useOrders() {
 
     const newOrderEntity = {
       id: apiData.id,
-      date: new Date(apiData.date),
+      date: apiData.date,
       type: activeOperationTypesIndex.value,
       operatorId,
       clientId,
+      comment: "active",
       inCurrencyId: activeIncurrenciesIndex.value,
-      inAmount: amountIn.value,
+      inAmount: +amountIn.value,
       rate: rateIn.value,
       outCurrencyId: activeOutcurrenciesIndex.value,
-      outAmount: amountOut.value,
+      outAmount: +amountOut.value,
       status: apiData.status,
     };
 

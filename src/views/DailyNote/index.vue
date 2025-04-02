@@ -1,6 +1,7 @@
 <template>
   <div class="note-page">
-    <SubMenu :active-index="activeMenuIndex" @selectMenu="onSelectMenu" />
+    <!-- <SubMenu :active-index="activeMenuIndex" @selectMenu="onSelectMenu" /> -->
+    <!-- end tables -->
     <div :class="{ isLoading }" class="note-page__widgets">
       <Loader v-if="isLoading" />
       <div class="filter">
@@ -26,6 +27,243 @@
               @change="onSelectDateTo"
             />
           </div>
+        </div>
+      </div>
+      <!-- tables -->
+      <div v-if="!isLoading && !showStats" class="note-page__tables">
+        <div class="note-page__tables-table">
+          <div class="title">USDT</div>
+          <div class="form">
+            <div class="form-field">
+              <Input
+                v-model="amounUsd"
+                type="number"
+                gray
+                :red="amounUsd < 0"
+                :green="amounUsd > 0"
+                placeholder="USDT сумма"
+                class="base-input"
+              />
+            </div>
+            <div class="form-field ml10">
+              <Input
+                v-model="commentUsd"
+                gray
+                placeholder="Инфо"
+                class="base-input"
+              />
+            </div>
+            <div class="form-field ml10">
+              <el-button
+                type="success"
+                :loading="loadingUSDT"
+                class="base-btn"
+                @enter="addUSDT"
+                @click="addUSDT"
+              >
+                Добавить
+              </el-button>
+            </div>
+          </div>
+          <el-table
+            empty-text="Нет данных"
+            :data="usdtList"
+            height="220"
+            style="width: 100%"
+          >
+            <el-table-column prop="amount" label="Сумма" width="180" />
+            <el-table-column prop="type" label="Тип" width="180" />
+            <el-table-column prop="comment" label="Инфо" />
+            <el-table-column prop="date" label="Дата" width="180" />
+          </el-table>
+        </div>
+        <!--  -->
+        <div class="note-page__tables-table">
+          <div class="title">RUB</div>
+          <div class="form">
+            <div class="form-field">
+              <Input
+                v-model="amountRub"
+                type="number"
+                gray
+                :red="amountRub < 0"
+                :green="amountRub > 0"
+                placeholder="RUB сумма"
+                class="base-input"
+              />
+            </div>
+            <div class="form-field ml10">
+              <Input
+                v-model="commentRub"
+                gray
+                placeholder="Инфо"
+                class="base-input"
+              />
+            </div>
+            <div class="form-field ml10">
+              <el-button
+                type="success"
+                :loading="loadingRUB"
+                class="base-btn"
+                @enter="addRUB"
+                @click="addRUB"
+              >
+                Добавить
+              </el-button>
+            </div>
+          </div>
+          <el-table
+            empty-text="Нет данных"
+            :data="rubList"
+            height="220"
+            style="width: 100%"
+          >
+            <el-table-column prop="amount" label="Сумма" width="180" />
+            <el-table-column prop="type" label="Тип" width="180" />
+            <el-table-column prop="comment" label="Инфо" />
+            <el-table-column prop="date" label="Дата" width="180" />
+          </el-table>
+        </div>
+        <!--  -->
+        <div class="note-page__tables-table">
+          <div class="title">USD</div>
+          <div class="form">
+            <div class="form-field">
+              <Input
+                v-model="amountDol"
+                type="number"
+                gray
+                :red="amountDol < 0"
+                :green="amountDol > 0"
+                placeholder="USD сумма"
+                class="base-input"
+              />
+            </div>
+            <div class="form-field ml10">
+              <Input
+                v-model="commentDol"
+                gray
+                placeholder="Инфо"
+                class="base-input"
+              />
+            </div>
+            <div class="form-field ml10">
+              <el-button
+                type="success"
+                :loading="loadingDOL"
+                class="base-btn"
+                @enter="addDOL"
+                @click="addDOL"
+              >
+                Добавить
+              </el-button>
+            </div>
+          </div>
+          <el-table
+            empty-text="Нет данных"
+            :data="dolList"
+            height="220"
+            style="width: 100%"
+          >
+            <el-table-column prop="amount" label="Сумма" width="180" />
+            <el-table-column prop="type" label="Тип" width="180" />
+            <el-table-column prop="comment" label="Инфо" />
+            <el-table-column prop="date" label="Дата" width="180" />
+          </el-table>
+        </div>
+        <!--  -->
+        <div class="note-page__tables-table">
+          <div class="title">EUR</div>
+          <div class="form">
+            <div class="form-field">
+              <Input
+                v-model="amountEur"
+                type="number"
+                gray
+                :red="amountEur < 0"
+                :green="amountEur > 0"
+                placeholder="EUR сумма"
+                class="base-input"
+              />
+            </div>
+            <div class="form-field ml10">
+              <Input
+                v-model="commentEur"
+                gray
+                placeholder="Инфо"
+                class="base-input"
+              />
+            </div>
+            <div class="form-field ml10">
+              <el-button
+                type="success"
+                :loading="loadingEUR"
+                class="base-btn"
+                @enter="addEUR"
+                @click="addEUR"
+              >
+                Добавить
+              </el-button>
+            </div>
+          </div>
+          <el-table
+            empty-text="Нет данных"
+            :data="eurList"
+            height="220"
+            style="width: 100%"
+          >
+            <el-table-column prop="amount" label="Сумма" width="180" />
+            <el-table-column prop="type" label="Тип" width="180" />
+            <el-table-column prop="comment" label="Инфо" />
+            <el-table-column prop="date" label="Дата" width="180" />
+          </el-table>
+        </div>
+        <!--  -->
+        <div class="note-page__tables-table">
+          <div class="title">WUSD</div>
+          <div class="form">
+            <div class="form-field">
+              <Input
+                v-model="amountWusd"
+                type="number"
+                gray
+                :red="amountWusd < 0"
+                :green="amountWusd > 0"
+                placeholder="WUSD сумма"
+                class="base-input"
+              />
+            </div>
+            <div class="form-field ml10">
+              <Input
+                v-model="commentWusd"
+                gray
+                placeholder="Инфо"
+                class="base-input"
+              />
+            </div>
+            <div class="form-field ml10">
+              <el-button
+                type="success"
+                :loading="loadingWusd"
+                class="base-btn"
+                @enter="addWUSD"
+                @click="addWUSD"
+              >
+                Добавить
+              </el-button>
+            </div>
+          </div>
+          <el-table
+            empty-text="Нет данных"
+            :data="wusdList"
+            height="220"
+            style="width: 100%"
+          >
+            <el-table-column prop="amount" label="Сумма" width="180" />
+            <el-table-column prop="type" label="Тип" width="180" />
+            <el-table-column prop="comment" label="Инфо" />
+            <el-table-column prop="date" label="Дата" width="180" />
+          </el-table>
         </div>
       </div>
       <!-- form -->
@@ -82,12 +320,12 @@
         </div>
       </div>
       <!-- end form -->
-      <DailyNotes
+      <!-- <DailyNotes
         v-if="!isLoading && !showStats"
         class="notes-page__widgets-item"
         @select="onSelectNote"
       />
-      <NotesStats v-if="!isLoading && showStats" />
+      <NotesStats v-if="!isLoading && showStats" /> -->
     </div>
     <!-- редактирование формы -->
     <teleport v-if="editForm" to="body">
@@ -107,14 +345,14 @@
   </div>
 </template>
 <script>
-import SubMenu from "./components/SubMenu";
+// import SubMenu from "./components/SubMenu";
 import Loader from "@/components/Loader";
 
 import Input from "@/components/Input";
 import Modal from "@/components/Modal";
 import ModalContent from "@/components/ModalContent";
 import Form from "./components/Form";
-import DailyNotes from "@/components/widgets/DailyNotes";
+// import DailyNotes from "@/components/widgets/DailyNotes";
 // import Button from "@/components/Button";
 import CheckGroupButton from "@/components/CheckGroupButton";
 // import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
@@ -124,23 +362,26 @@ import { useStore } from "vuex";
 import { ref, computed, onMounted } from "vue";
 import { toCurrency } from "@/helpers";
 import { NOTE_TYPES } from "@/config/noteTypes";
-import NotesStats from "@/components/widgets/NotesStats";
+// import NotesStats from "@/components/widgets/NotesStats";
 import { ElNotification } from "element-plus";
+import useDailyNotes from "@/compositions/useDailyNotes";
+import moment from "moment";
 
 export default {
   components: {
-    SubMenu,
+    // SubMenu,
     Loader,
     Modal,
     ModalContent,
     Form,
     Input,
-    DailyNotes,
+    // DailyNotes,
     // Button,
     CheckGroupButton,
-    NotesStats,
+    // NotesStats,
   },
   setup() {
+    const { filteredNotesList } = useDailyNotes();
     const store = useStore();
     const showStats = ref(null);
     const activeMenuIndex = ref(0);
@@ -149,6 +390,176 @@ export default {
     const dateFrom = ref("");
     const dateTo = ref("");
     const loading = ref(false);
+    //
+    const amounUsd = ref("");
+    const commentUsd = ref("");
+    const loadingUSDT = ref(false);
+
+    const amountRub = ref("");
+    const commentRub = ref("");
+    const loadingRUB = ref(false);
+
+    const amountDol = ref("");
+    const commentDol = ref("");
+    const loadingDOL = ref(false);
+
+    const amountEur = ref("");
+    const commentEur = ref("");
+    const loadingEUR = ref(false);
+
+    const amountWusd = ref("");
+    const commentWusd = ref("");
+    const loadingWusd = ref(false);
+
+    const addWUSD = async () => {
+      if (!amountWusd.value) {
+        ElNotification({
+          title: "Тетрадь WUSD",
+          message: `Укажите сумму`,
+          type: "warning",
+        });
+        return;
+      }
+      loadingWusd.value = true;
+      const findClient = clientsList.value.find(
+        (item) => item.name === "Тетрадь"
+      );
+      const newOrderEntity = {
+        date: Math.floor(+new Date() / 1000),
+        clientId: findClient?.id,
+        type: amountWusd.value > 0 ? 1 : 0,
+        inCurrencyId: 4,
+        amount: amountWusd.value > 0 ? amountWusd.value : -amountWusd.value,
+        comment: commentWusd.value,
+        isProfit: false,
+        category: 0,
+      };
+
+      await store.dispatch("dailyNote/addNewEntity", newOrderEntity);
+      loadingWusd.value = false;
+      commentWusd.value = "";
+      amountWusd.value = "";
+    };
+
+    const addEUR = async () => {
+      if (!amountEur.value) {
+        ElNotification({
+          title: "Тетрадь EUR",
+          message: `Укажите сумму`,
+          type: "warning",
+        });
+        return;
+      }
+      loadingEUR.value = true;
+      const findClient = clientsList.value.find(
+        (item) => item.name === "Тетрадь"
+      );
+      const newOrderEntity = {
+        date: Math.floor(+new Date() / 1000),
+        clientId: findClient?.id,
+        type: amountEur.value > 0 ? 1 : 0,
+        inCurrencyId: 3,
+        amount: amountEur.value > 0 ? amountEur.value : -amountEur.value,
+        comment: commentEur.value,
+        isProfit: false,
+        category: 0,
+      };
+
+      await store.dispatch("dailyNote/addNewEntity", newOrderEntity);
+      loadingEUR.value = false;
+      commentEur.value = "";
+      amountEur.value = "";
+    };
+
+    const addDOL = async () => {
+      if (!amountDol.value) {
+        ElNotification({
+          title: "Тетрадь USD",
+          message: `Укажите сумму`,
+          type: "warning",
+        });
+        return;
+      }
+      loadingDOL.value = true;
+      const findClient = clientsList.value.find(
+        (item) => item.name === "Тетрадь"
+      );
+      const newOrderEntity = {
+        date: Math.floor(+new Date() / 1000),
+        clientId: findClient?.id,
+        type: amountDol.value > 0 ? 1 : 0,
+        inCurrencyId: 2,
+        amount: amountDol.value > 0 ? amountDol.value : -amountDol.value,
+        comment: commentDol.value,
+        isProfit: false,
+        category: 0,
+      };
+
+      await store.dispatch("dailyNote/addNewEntity", newOrderEntity);
+      loadingDOL.value = false;
+      commentDol.value = "";
+      amountDol.value = "";
+    };
+
+    const addUSDT = async () => {
+      if (!amounUsd.value) {
+        ElNotification({
+          title: "Тетрадь USDT",
+          message: `Укажите сумму`,
+          type: "warning",
+        });
+        return;
+      }
+      loadingUSDT.value = true;
+      const findClient = clientsList.value.find(
+        (item) => item.name === "Тетрадь"
+      );
+      const newOrderEntity = {
+        date: Math.floor(+new Date() / 1000),
+        clientId: findClient?.id,
+        type: amounUsd.value > 0 ? 1 : 0,
+        inCurrencyId: 0,
+        amount: amounUsd.value > 0 ? amounUsd.value : -amounUsd.value,
+        comment: commentUsd.value,
+        isProfit: false,
+        category: 0,
+      };
+
+      await store.dispatch("dailyNote/addNewEntity", newOrderEntity);
+      loadingUSDT.value = false;
+      commentUsd.value = "";
+      amounUsd.value = "";
+    };
+    //
+    const addRUB = async () => {
+      if (!amountRub.value) {
+        ElNotification({
+          title: "Тетрадь RUB",
+          message: `Укажите сумму`,
+          type: "warning",
+        });
+        return;
+      }
+      loadingRUB.value = true;
+      const findClient = clientsList.value.find(
+        (item) => item.name === "Тетрадь"
+      );
+      const newOrderEntity = {
+        date: Math.floor(+new Date() / 1000),
+        clientId: findClient?.id,
+        type: amountRub.value > 0 ? 1 : 0,
+        inCurrencyId: 1,
+        amount: amountRub.value > 0 ? amountRub.value : -amountRub.value,
+        comment: commentRub.value,
+        isProfit: false,
+        category: 0,
+      };
+
+      await store.dispatch("dailyNote/addNewEntity", newOrderEntity);
+      loadingRUB.value = false;
+      commentRub.value = "";
+      amountRub.value = "";
+    };
 
     // form
     const operationTypes = ref([NOTE_TYPES.debit, NOTE_TYPES.credit]);
@@ -156,6 +567,66 @@ export default {
     const selectedClient = ref(null);
     const amount = ref("");
     const comment = ref("");
+
+    const eurList = computed(() => {
+      return filteredNotesList.value
+        .filter((item) => item.inCurrency === "EUR")
+        .map((item) => {
+          return {
+            ...item,
+            date: moment(item.date).utcOffset(360).format("DD.MM, HH:mm"),
+            amount: toCurrency(item.amount),
+          };
+        });
+    });
+
+    const wusdList = computed(() => {
+      return filteredNotesList.value
+        .filter((item) => item.inCurrency === "WUSD")
+        .map((item) => {
+          return {
+            ...item,
+            date: moment(item.date).utcOffset(360).format("DD.MM, HH:mm"),
+            amount: toCurrency(item.amount),
+          };
+        });
+    });
+
+    const usdtList = computed(() => {
+      return filteredNotesList.value
+        .filter((item) => item.inCurrency === "USDT")
+        .map((item) => {
+          return {
+            ...item,
+            date: moment(item.date).utcOffset(360).format("DD.MM, HH:mm"),
+            amount: toCurrency(item.amount),
+          };
+        });
+    });
+
+    const dolList = computed(() => {
+      return filteredNotesList.value
+        .filter((item) => item.inCurrency === "USD")
+        .map((item) => {
+          return {
+            ...item,
+            date: moment(item.date).utcOffset(360).format("DD.MM, HH:mm"),
+            amount: toCurrency(item.amount),
+          };
+        });
+    });
+
+    const rubList = computed(() => {
+      return filteredNotesList.value
+        .filter((item) => item.inCurrency === "RUB")
+        .map((item) => {
+          return {
+            ...item,
+            date: moment(item.date).utcOffset(360).format("DD.MM, HH:mm"),
+            amount: toCurrency(item.amount),
+          };
+        });
+    });
 
     const onClientSelect = (val) => {
       selectedClient.value = val;
@@ -269,7 +740,7 @@ export default {
         (item) => item.name === selectedClient.value
       );
       const newOrderEntity = {
-        date: new Date(),
+        date: Math.floor(+new Date() / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
         inCurrencyId: getCurrency(),
@@ -314,6 +785,42 @@ export default {
       comment,
       selectedClient,
       showStats,
+
+      //
+      amounUsd,
+      commentUsd,
+      loadingUSDT,
+      usdtList,
+      addUSDT,
+
+      //
+      amountDol,
+      commentDol,
+      loadingDOL,
+      dolList,
+      addDOL,
+
+      //
+      amountRub,
+      commentRub,
+      loadingRUB,
+      rubList,
+      addRUB,
+
+      //
+      amountEur,
+      commentEur,
+      loadingEUR,
+      eurList,
+      addEUR,
+
+      //
+      amountWusd,
+      commentWusd,
+      loadingWusd,
+      wusdList,
+      addWUSD,
+
       onClientSelect,
       addNew,
 
@@ -389,6 +896,56 @@ export default {
 
   &__form-field {
     margin-left: 10px;
+  }
+
+  &__tables {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  &__tables-table {
+    margin-right: 15px;
+    margin-bottom: 15px;
+    min-width: 48%;
+    max-width: 48%;
+    width: 100%;
+    min-height: 290px;
+    border: 1px solid #ccc;
+    // margin: 10px;
+    position: relative;
+    border-radius: $controlRadius;
+    overflow: hidden;
+
+    .ml10 {
+      margin-left: 10px;
+    }
+
+    .title {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      font-size: 11px;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 30px;
+
+      background-color: $panelColorSecondary;
+      color: $textColorWhite;
+    }
+
+    .form {
+      padding: 0 10px;
+      margin-top: 40px;
+      display: flex;
+      align-items: center;
+    }
   }
 }
 </style>

@@ -281,15 +281,15 @@ export default {
       if (props.editOrder) {
         const newOrderEntity = {
           id: props.editOrder.id,
-          date: new Date(props.editOrder.date),
+          date: props.editOrder.date,
           type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
           operatorId, // : selectedOperator.value,
           clientId, // selectedClient.value,
           inCurrencyId: activeIncurrenciesIndex.value, // inCurrencies.value[activeIncurrenciesIndex.value],
-          inAmount: amountIn.value,
+          inAmount: +amountIn.value,
           rate: rateIn.value,
           outCurrencyId: activeOutcurrenciesIndex.value, // outCurrencies.value[activeOutcurrenciesIndex.value],
-          outAmount: amountOut.value,
+          outAmount: +amountOut.value,
           status: props.editOrder.status,
         };
         loading.value = true;
@@ -304,15 +304,16 @@ export default {
 
       const newOrderEntity = {
         // id: `${Math.random()}`.slice(2),
-        date: new Date(),
+        date: Math.floor(+new Date() / 1000),
+        comment: "active",
         type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
         operatorId, // selectedOperator.value,
         clientId, // selectedClient.value,
         inCurrencyId: activeIncurrenciesIndex.value, // inCurrencies.value[activeIncurrenciesIndex.value],
-        inAmount: amountIn.value,
+        inAmount: +amountIn.value,
         rate: rateIn.value,
         outCurrencyId: activeOutcurrenciesIndex.value, // outCurrencies.value[activeOutcurrenciesIndex.value],
-        outAmount: amountOut.value,
+        outAmount: +amountOut.value,
         status: 0,
       };
       loading.value = true;
