@@ -94,7 +94,6 @@ export default {
 
     const notesList = computed(() => {
       const search = props.searchStr.toLowerCase();
-
       if (!search) {
         return filteredNotesList.value;
       }
@@ -103,6 +102,7 @@ export default {
           item.client.toLowerCase().includes(search) ||
           item.type.toLowerCase().includes(search) ||
           item.inCurrency.toLowerCase().includes(search) ||
+          item.comment.toLowerCase().includes(search) ||
           `${item.amount}`.toLowerCase().includes(search)
         );
       });
