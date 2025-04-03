@@ -157,7 +157,7 @@ export default {
         loading.value = true;
         const newOrderEntity = {
           id: props.editNote.id,
-          date: Math.floor(props.editNote.date / 1000),
+          date: Math.floor((props.editNote.date + 10800000) / 1000),
           type: activeOperationTypesIndex.value,
           clientId: findClient?.id,
           comment: comment.value,
@@ -178,7 +178,7 @@ export default {
         (item) => item.name === selectedClient.value
       );
       const newOrderEntity = {
-        date: Math.floor(+new Date() / 1000),
+        date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value,
         inCurrencyId: activeIncurrenciesIndex.value,

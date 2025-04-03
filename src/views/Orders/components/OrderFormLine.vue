@@ -304,7 +304,7 @@ export default {
 
       const newOrderEntity = {
         // id: `${Math.random()}`.slice(2),
-        date: Math.floor(+new Date() / 1000),
+        date: Math.floor((+new Date() + 10800000) / 1000),
         comment: "active",
         type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
         operatorId, // selectedOperator.value,

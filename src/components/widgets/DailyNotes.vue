@@ -31,7 +31,7 @@
             {{ `${item.id}`.slice(0, 9) }}
           </div> -->
           <div class="widget-notes__list-item-field">
-            {{ moment(item.date).utcOffset(360).format("DD.MM.YY,HH:mm") }}
+            {{ moment(item.date).utcOffset(180).format("DD.MM.YY,HH:mm") }}
           </div>
           <div class="widget-notes__list-item-field strong">
             {{ item.type }}

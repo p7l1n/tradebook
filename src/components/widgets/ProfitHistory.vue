@@ -27,7 +27,7 @@
             {{ `${item.id}`.slice(0, 9) }}
           </div> -->
           <div class="widget-profits__list-item-field strong">
-            {{ moment(item.date).utcOffset(360).format("DD.MM.YY,HH:mm") }}
+            {{ moment(item.date).utcOffset(180).format("DD.MM,HH:mm") }}
           </div>
           <div class="widget-profits__list-item-field strong green">
             {{ toCurrency(item.amount) }}

@@ -68,7 +68,7 @@ export default function useOrders() {
 
     const newOrderEntity = {
       id: apiData.id,
-      date: Math.floor(apiData.date / 1000),
+      date: Math.floor((apiData.date + 10800000) / 1000),
       type: activeOperationTypesIndex.value,
       operatorId,
       clientId,

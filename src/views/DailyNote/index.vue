@@ -635,7 +635,7 @@ export default {
         (item) => item.name === "Тетрадь"
       );
       const newOrderEntity = {
-        date: Math.floor(+new Date() / 1000),
+        date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value,
         inCurrencyId: 4,
@@ -665,7 +665,7 @@ export default {
         (item) => item.name === "Тетрадь"
       );
       const newOrderEntity = {
-        date: Math.floor(+new Date() / 1000),
+        date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value,
         inCurrencyId: 3,
@@ -695,7 +695,7 @@ export default {
         (item) => item.name === "Тетрадь"
       );
       const newOrderEntity = {
-        date: Math.floor(+new Date() / 1000),
+        date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value,
         inCurrencyId: 2,
@@ -725,7 +725,7 @@ export default {
         (item) => item.name === "Тетрадь"
       );
       const newOrderEntity = {
-        date: Math.floor(+new Date() / 1000),
+        date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value,
         inCurrencyId: 0,
@@ -755,7 +755,7 @@ export default {
         (item) => item.name === "Тетрадь"
       );
       const newOrderEntity = {
-        date: Math.floor(+new Date() / 1000),
+        date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value,
         inCurrencyId: 1,
@@ -945,7 +945,7 @@ export default {
         (item) => item.name === selectedClient.value
       );
       const newOrderEntity = {
-        date: Math.floor(+new Date() / 1000),
+        date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
         inCurrencyId: getCurrency(),

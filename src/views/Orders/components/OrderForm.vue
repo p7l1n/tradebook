@@ -274,7 +274,7 @@ export default {
       if (props.editOrder) {
         const newOrderEntity = {
           id: props.editOrder.id,
-          date: Math.floor(props.editOrder.date / 1000),
+          date: Math.floor((props.editOrder.date + 10800000) / 1000),
           comment: "active",
           type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
           operatorId, // : selectedOperator.value,
@@ -298,7 +298,7 @@ export default {
 
       const newOrderEntity = {
         // id: `${Math.random()}`.slice(2),
-        date: Math.floor(+new Date() / 1000),
+        date: Math.floor((+new Date() + 10800000) / 1000),
         type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
         operatorId, // selectedOperator.value,
         clientId, // selectedClient.value,

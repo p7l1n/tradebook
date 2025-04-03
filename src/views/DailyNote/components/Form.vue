@@ -164,7 +164,7 @@ export default {
 
         const newOrderEntity = {
           id: props.editNote.id,
-          date: Math.floor(props.editNote.date / 1000),
+          date: Math.floor((props.editNote.date + 10800000) / 1000),
           type: activeOperationTypesIndex.value,
           clientId: findClient?.id,
           comment: comment.value,

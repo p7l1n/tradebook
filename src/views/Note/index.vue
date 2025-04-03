@@ -284,7 +284,7 @@ export default {
         (item) => item.name === selectedClient.value
       );
       const newOrderEntity = {
-        date: Math.floor(+new Date() / 1000),
+        date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value,
         inCurrencyId: activeIncurrenciesIndex.value,
