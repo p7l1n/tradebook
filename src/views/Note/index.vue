@@ -6,15 +6,23 @@
       <div class="filter">
         <!-- <Button title="Новая запись" @click="openForm" class="credit-btn" /> -->
         <div v-if="activeMenuIndex === 0" class="filter__stats">
-          <el-date-picker
-            v-model="dateFrom"
-            type="date"
-            placeholder="Показать с"
-            :disabled-date="disabledDate"
-            :shortcuts="shortcuts"
+          <el-input
+            v-model="searchStr"
             style="width: 170px"
-            @change="onSelectDateFrom"
+            placeholder="Поиск по ДК"
+            clearable
           />
+          <div class="ml10">
+            <el-date-picker
+              v-model="dateFrom"
+              type="date"
+              placeholder="Показать с"
+              :disabled-date="disabledDate"
+              :shortcuts="shortcuts"
+              style="width: 170px"
+              @change="onSelectDateFrom"
+            />
+          </div>
           <div class="ml10">
             <el-date-picker
               v-model="dateTo"
@@ -94,6 +102,7 @@
       <Notes
         v-if="!isLoading && activeMenuIndex === 0"
         class="notes-page__widgets-item"
+        :search-str="searchStr"
         @select="onSelectNote"
       />
       <NotesStats v-if="!isLoading && activeMenuIndex === 1" />
@@ -161,6 +170,7 @@ export default {
     const dateFrom = ref("");
     const dateTo = ref("");
     const loading = ref(false);
+    const searchStr = ref("");
 
     const activeIncurrenciesIndex = ref(0);
     const inCurrencies = ref(DEFAULT_CURRENCIES);
@@ -299,6 +309,7 @@ export default {
     });
 
     return {
+      searchStr,
       activeMenuIndex,
       isLoading,
       editForm,

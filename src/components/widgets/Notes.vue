@@ -13,7 +13,7 @@
           <div class="widget-notes__list-item-field label">Примечание</div>
         </div>
         <el-empty
-          v-if="!filteredNotesList.length"
+          v-if="!notesList.length"
           :image-size="300"
           description="Данных нет"
         />
@@ -22,7 +22,7 @@
             active: selectedItem && selectedItem.apiKey === item.apiKey,
           }"
           class="widget-notes__list-item"
-          v-for="(item, ndx) in filteredNotesList.slice(0, countToShow)"
+          v-for="(item, ndx) in notesList.slice(0, countToShow)"
           :key="ndx"
           @click="selectRow(item)"
         >
@@ -60,7 +60,7 @@
         </div>
       </div>
       <div
-        v-if="filteredNotesList.length >= countToShow"
+        v-if="notesList.length >= countToShow"
         class="widget-notes__more"
         @click="showMore"
       >
@@ -70,7 +70,7 @@
   </div>
 </template>
 <script>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 // import { useStore } from "vuex";
 import { getNumFormat, toCurrency } from "@/helpers";
 import { NOTE_TYPES } from "@/config/noteTypes";
@@ -80,11 +80,33 @@ import useNotes from "@/compositions/useNotes";
 
 export default {
   components: {},
-  setup(_, { emit }) {
+  props: {
+    searchStr: {
+      type: String,
+      default: "",
+    },
+  },
+  setup(props, { emit }) {
     const store = useStore();
     const { filteredNotesList } = useNotes();
     // const store = useStore();
     const selectedItem = ref(null);
+
+    const notesList = computed(() => {
+      const search = props.searchStr.toLowerCase();
+
+      if (!search) {
+        return filteredNotesList.value;
+      }
+      return filteredNotesList.value.filter((item) => {
+        return (
+          item.client.toLowerCase().includes(search) ||
+          item.type.toLowerCase().includes(search) ||
+          item.inCurrency.toLowerCase().includes(search) ||
+          `${item.amount}`.toLowerCase().includes(search)
+        );
+      });
+    });
 
     const countToShow = ref(20);
     const countIncrement = ref(20);
@@ -102,7 +124,7 @@ export default {
     };
 
     return {
-      filteredNotesList,
+      notesList,
       selectedItem,
       moment,
       NOTE_TYPES,

@@ -71,4 +71,28 @@ html {
 .el-select-dropdown__item {
   font-family: Avenir, Helvetica, Arial, sans-serif !important;
 }
+
+.debet {
+  .el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell {
+    background: $lightRed !important;
+  }
+  .el-table tr {
+    background: $lightRed !important;
+  }
+  tr th .cell {
+    color: $colorRedDark !important;
+  }
+}
+
+.credit {
+  .el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell {
+    background: $lightGreen !important;
+  }
+  .el-table tr {
+    background: $lightGreen !important;
+  }
+  tr th .cell {
+    color: $colorGreenDark !important;
+  }
+}
 </style>

@@ -7,15 +7,23 @@
       <div class="filter">
         <!-- <Button title="Новая запись" @click="openForm" class="credit-btn" /> -->
         <div class="filter__stats">
-          <el-date-picker
-            v-model="dateFrom"
-            type="date"
-            placeholder="Показать с"
-            :disabled-date="disabledDate"
-            :shortcuts="shortcuts"
+          <el-input
+            v-model="searchStr"
             style="width: 170px"
-            @change="onSelectDateFrom"
+            placeholder="Поиск по тетради"
+            clearable
           />
+          <div class="ml10">
+            <el-date-picker
+              v-model="dateFrom"
+              type="date"
+              placeholder="Показать с"
+              :disabled-date="disabledDate"
+              :shortcuts="shortcuts"
+              style="width: 170px"
+              @change="onSelectDateFrom"
+            />
+          </div>
           <div class="ml10">
             <el-date-picker
               v-model="dateTo"
@@ -32,15 +40,21 @@
       <!-- tables -->
       <div v-if="!isLoading && !showStats" class="note-page__tables">
         <div class="note-page__tables-table">
-          <div class="title">USDT</div>
+          <div class="title">
+            USDT ({{
+              `Дебет: ${toCurrency(
+                dailyList("USDT")?.["sumDebetUSDT"]
+              )}, Кредит: ${toCurrency(dailyList("USDT")?.["sumCreditUSDT"])}`
+            }})
+          </div>
           <div class="form">
             <div class="form-field">
               <Input
                 v-model="amounUsd"
                 type="number"
                 gray
-                :red="amounUsd < 0"
-                :green="amounUsd > 0"
+                :red="activeOperationTypesIndex === 0"
+                :green="activeOperationTypesIndex === 1"
                 placeholder="USDT сумма"
                 class="base-input"
               />
@@ -64,30 +78,72 @@
                 Добавить
               </el-button>
             </div>
+            <div class="form-field ml10">
+              <CheckGroupButton
+                :items="operationTypes"
+                :active-index="activeOperationTypesIndex"
+                @check="onSelectOperationType"
+              />
+            </div>
           </div>
-          <el-table
-            empty-text="Нет данных"
-            :data="usdtList"
-            height="220"
-            style="width: 100%"
-          >
-            <el-table-column prop="amount" label="Сумма" width="180" />
-            <el-table-column prop="type" label="Тип" width="180" />
-            <el-table-column prop="comment" label="Инфо" />
-            <el-table-column prop="date" label="Дата" width="180" />
-          </el-table>
+          <div class="row-tables">
+            <div class="debet" style="width: 100%">
+              <el-table
+                empty-text="Нет данных"
+                :data="dailyList('USDT').debet"
+                height="220"
+                style="width: 100%"
+              >
+                <el-table-column prop="amount" label="Сумма" width="180" />
+                <el-table-column prop="comment" label="Инфо" />
+                <el-table-column width="20px">
+                  <template #default="scope">
+                    <div
+                      class="remove-item"
+                      @click="removeDailyNote(scope.$index, scope.row)"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div class="credit" style="width: 100%">
+              <el-table
+                empty-text="Нет данных"
+                :data="dailyList('USDT').credit"
+                height="220"
+                style="width: 100%"
+              >
+                <el-table-column prop="amount" label="Сумма" width="180" />
+                <el-table-column prop="comment" label="Инфо" />
+                <el-table-column width="20px">
+                  <template #default="scope">
+                    <div
+                      class="remove-item"
+                      @click="removeDailyNote(scope.$index, scope.row)"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
         </div>
         <!--  -->
         <div class="note-page__tables-table">
-          <div class="title">RUB</div>
+          <div class="title">
+            RUB ({{
+              `Дебет: ${toCurrency(
+                dailyList("RUB")?.["sumDebetRUB"]
+              )}, Кредит: ${toCurrency(dailyList("RUB")?.["sumCreditRUB"])}`
+            }})
+          </div>
           <div class="form">
             <div class="form-field">
               <Input
                 v-model="amountRub"
                 type="number"
                 gray
-                :red="amountRub < 0"
-                :green="amountRub > 0"
+                :red="activeOperationTypesIndex === 0"
+                :green="activeOperationTypesIndex === 1"
                 placeholder="RUB сумма"
                 class="base-input"
               />
@@ -111,30 +167,72 @@
                 Добавить
               </el-button>
             </div>
+            <div class="form-field ml10">
+              <CheckGroupButton
+                :items="operationTypes"
+                :active-index="activeOperationTypesIndex"
+                @check="onSelectOperationType"
+              />
+            </div>
           </div>
-          <el-table
-            empty-text="Нет данных"
-            :data="rubList"
-            height="220"
-            style="width: 100%"
-          >
-            <el-table-column prop="amount" label="Сумма" width="180" />
-            <el-table-column prop="type" label="Тип" width="180" />
-            <el-table-column prop="comment" label="Инфо" />
-            <el-table-column prop="date" label="Дата" width="180" />
-          </el-table>
+          <div class="row-tables">
+            <div class="debet" style="width: 100%">
+              <el-table
+                empty-text="Нет данных"
+                :data="dailyList('RUB').debet"
+                height="220"
+                style="width: 100%"
+              >
+                <el-table-column prop="amount" label="Сумма" width="180" />
+                <el-table-column prop="comment" label="Инфо" />
+                <el-table-column width="20px">
+                  <template #default="scope">
+                    <div
+                      class="remove-item"
+                      @click="removeDailyNote(scope.$index, scope.row)"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div class="credit" style="width: 100%">
+              <el-table
+                empty-text="Нет данных"
+                :data="dailyList('RUB').credit"
+                height="220"
+                style="width: 100%"
+              >
+                <el-table-column prop="amount" label="Сумма" width="180" />
+                <el-table-column prop="comment" label="Инфо" class="credit" />
+                <el-table-column width="20px">
+                  <template #default="scope">
+                    <div
+                      class="remove-item"
+                      @click="removeDailyNote(scope.$index, scope.row)"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
         </div>
         <!--  -->
         <div class="note-page__tables-table">
-          <div class="title">USD</div>
+          <div class="title">
+            USD ({{
+              `Дебет: ${toCurrency(
+                dailyList("USD")?.["sumDebetUSD"]
+              )}, Кредит: ${toCurrency(dailyList("USD")?.["sumCreditUSD"])}`
+            }})
+          </div>
           <div class="form">
             <div class="form-field">
               <Input
                 v-model="amountDol"
                 type="number"
                 gray
-                :red="amountDol < 0"
-                :green="amountDol > 0"
+                :red="activeOperationTypesIndex === 0"
+                :green="activeOperationTypesIndex === 1"
                 placeholder="USD сумма"
                 class="base-input"
               />
@@ -158,30 +256,72 @@
                 Добавить
               </el-button>
             </div>
+            <div class="form-field ml10">
+              <CheckGroupButton
+                :items="operationTypes"
+                :active-index="activeOperationTypesIndex"
+                @check="onSelectOperationType"
+              />
+            </div>
           </div>
-          <el-table
-            empty-text="Нет данных"
-            :data="dolList"
-            height="220"
-            style="width: 100%"
-          >
-            <el-table-column prop="amount" label="Сумма" width="180" />
-            <el-table-column prop="type" label="Тип" width="180" />
-            <el-table-column prop="comment" label="Инфо" />
-            <el-table-column prop="date" label="Дата" width="180" />
-          </el-table>
+          <div class="row-tables">
+            <div class="debet" style="width: 100%">
+              <el-table
+                empty-text="Нет данных"
+                :data="dailyList('USD').debet"
+                height="220"
+                style="width: 100%"
+              >
+                <el-table-column prop="amount" label="Сумма" width="180" />
+                <el-table-column prop="comment" label="Инфо" />
+                <el-table-column width="20px">
+                  <template #default="scope">
+                    <div
+                      class="remove-item"
+                      @click="removeDailyNote(scope.$index, scope.row)"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div class="credit" style="width: 100%">
+              <el-table
+                empty-text="Нет данных"
+                :data="dailyList('USD').credit"
+                height="220"
+                style="width: 100%"
+              >
+                <el-table-column prop="amount" label="Сумма" width="180" />
+                <el-table-column prop="comment" label="Инфо" />
+                <el-table-column width="20px">
+                  <template #default="scope">
+                    <div
+                      class="remove-item"
+                      @click="removeDailyNote(scope.$index, scope.row)"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
         </div>
         <!--  -->
         <div class="note-page__tables-table">
-          <div class="title">EUR</div>
+          <div class="title">
+            EUR ({{
+              `Дебет: ${toCurrency(
+                dailyList("EUR")?.["sumDebetEUR"]
+              )}, Кредит: ${toCurrency(dailyList("EUR")?.["sumCreditEUR"])}`
+            }})
+          </div>
           <div class="form">
             <div class="form-field">
               <Input
                 v-model="amountEur"
                 type="number"
                 gray
-                :red="amountEur < 0"
-                :green="amountEur > 0"
+                :red="activeOperationTypesIndex === 0"
+                :green="activeOperationTypesIndex === 1"
                 placeholder="EUR сумма"
                 class="base-input"
               />
@@ -205,30 +345,72 @@
                 Добавить
               </el-button>
             </div>
+            <div class="form-field ml10">
+              <CheckGroupButton
+                :items="operationTypes"
+                :active-index="activeOperationTypesIndex"
+                @check="onSelectOperationType"
+              />
+            </div>
           </div>
-          <el-table
-            empty-text="Нет данных"
-            :data="eurList"
-            height="220"
-            style="width: 100%"
-          >
-            <el-table-column prop="amount" label="Сумма" width="180" />
-            <el-table-column prop="type" label="Тип" width="180" />
-            <el-table-column prop="comment" label="Инфо" />
-            <el-table-column prop="date" label="Дата" width="180" />
-          </el-table>
+          <div class="row-tables">
+            <div class="debet" style="width: 100%">
+              <el-table
+                empty-text="Нет данных"
+                :data="dailyList('EUR').debet"
+                height="220"
+                style="width: 100%"
+              >
+                <el-table-column prop="amount" label="Сумма" width="180" />
+                <el-table-column prop="comment" label="Инфо" />
+                <el-table-column width="20px">
+                  <template #default="scope">
+                    <div
+                      class="remove-item"
+                      @click="removeDailyNote(scope.$index, scope.row)"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div class="credit" style="width: 100%">
+              <el-table
+                empty-text="Нет данных"
+                :data="dailyList('EUR').credit"
+                height="220"
+                style="width: 100%"
+              >
+                <el-table-column prop="amount" label="Сумма" width="180" />
+                <el-table-column prop="comment" label="Инфо" />
+                <el-table-column width="20px">
+                  <template #default="scope">
+                    <div
+                      class="remove-item"
+                      @click="removeDailyNote(scope.$index, scope.row)"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
         </div>
         <!--  -->
         <div class="note-page__tables-table">
-          <div class="title">WUSD</div>
+          <div class="title">
+            WUSD ({{
+              `Дебет: ${toCurrency(
+                dailyList("WUSD")?.["sumDebetWUSD"]
+              )}, Кредит: ${toCurrency(dailyList("WUSD")?.["sumCreditWUSD"])}`
+            }})
+          </div>
           <div class="form">
             <div class="form-field">
               <Input
                 v-model="amountWusd"
                 type="number"
                 gray
-                :red="amountWusd < 0"
-                :green="amountWusd > 0"
+                :red="activeOperationTypesIndex === 0"
+                :green="activeOperationTypesIndex === 1"
                 placeholder="WUSD сумма"
                 class="base-input"
               />
@@ -252,18 +434,54 @@
                 Добавить
               </el-button>
             </div>
+            <div class="form-field ml10">
+              <CheckGroupButton
+                :items="operationTypes"
+                :active-index="activeOperationTypesIndex"
+                @check="onSelectOperationType"
+              />
+            </div>
           </div>
-          <el-table
-            empty-text="Нет данных"
-            :data="wusdList"
-            height="220"
-            style="width: 100%"
-          >
-            <el-table-column prop="amount" label="Сумма" width="180" />
-            <el-table-column prop="type" label="Тип" width="180" />
-            <el-table-column prop="comment" label="Инфо" />
-            <el-table-column prop="date" label="Дата" width="180" />
-          </el-table>
+          <div class="row-tables">
+            <div class="debet" style="width: 100%">
+              <el-table
+                empty-text="Нет данных"
+                :data="dailyList('WUSD').debet"
+                height="220"
+                style="width: 100%"
+              >
+                <el-table-column prop="amount" label="Сумма" width="180" />
+                <el-table-column prop="comment" label="Инфо" />
+                <el-table-column width="20px">
+                  <template #default="scope">
+                    <div
+                      class="remove-item"
+                      @click="removeDailyNote(scope.$index, scope.row)"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div class="credit" style="width: 100%">
+              <el-table
+                empty-text="Нет данных"
+                :data="dailyList('WUSD').credit"
+                height="220"
+                style="width: 100%"
+              >
+                <el-table-column prop="amount" label="Сумма" width="180" />
+                <el-table-column prop="comment" label="Инфо" />
+                <el-table-column width="20px">
+                  <template #default="scope">
+                    <div
+                      class="remove-item"
+                      @click="removeDailyNote(scope.$index, scope.row)"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
         </div>
       </div>
       <!-- form -->
@@ -320,12 +538,6 @@
         </div>
       </div>
       <!-- end form -->
-      <!-- <DailyNotes
-        v-if="!isLoading && !showStats"
-        class="notes-page__widgets-item"
-        @select="onSelectNote"
-      />
-      <NotesStats v-if="!isLoading && showStats" /> -->
     </div>
     <!-- редактирование формы -->
     <teleport v-if="editForm" to="body">
@@ -352,7 +564,6 @@ import Input from "@/components/Input";
 import Modal from "@/components/Modal";
 import ModalContent from "@/components/ModalContent";
 import Form from "./components/Form";
-// import DailyNotes from "@/components/widgets/DailyNotes";
 // import Button from "@/components/Button";
 import CheckGroupButton from "@/components/CheckGroupButton";
 // import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
@@ -365,7 +576,6 @@ import { NOTE_TYPES } from "@/config/noteTypes";
 // import NotesStats from "@/components/widgets/NotesStats";
 import { ElNotification } from "element-plus";
 import useDailyNotes from "@/compositions/useDailyNotes";
-import moment from "moment";
 
 export default {
   components: {
@@ -375,7 +585,6 @@ export default {
     ModalContent,
     Form,
     Input,
-    // DailyNotes,
     // Button,
     CheckGroupButton,
     // NotesStats,
@@ -390,6 +599,7 @@ export default {
     const dateFrom = ref("");
     const dateTo = ref("");
     const loading = ref(false);
+    const searchStr = ref("");
     //
     const amounUsd = ref("");
     const commentUsd = ref("");
@@ -427,7 +637,7 @@ export default {
       const newOrderEntity = {
         date: Math.floor(+new Date() / 1000),
         clientId: findClient?.id,
-        type: amountWusd.value > 0 ? 1 : 0,
+        type: activeOperationTypesIndex.value,
         inCurrencyId: 4,
         amount: amountWusd.value > 0 ? amountWusd.value : -amountWusd.value,
         comment: commentWusd.value,
@@ -457,7 +667,7 @@ export default {
       const newOrderEntity = {
         date: Math.floor(+new Date() / 1000),
         clientId: findClient?.id,
-        type: amountEur.value > 0 ? 1 : 0,
+        type: activeOperationTypesIndex.value,
         inCurrencyId: 3,
         amount: amountEur.value > 0 ? amountEur.value : -amountEur.value,
         comment: commentEur.value,
@@ -487,7 +697,7 @@ export default {
       const newOrderEntity = {
         date: Math.floor(+new Date() / 1000),
         clientId: findClient?.id,
-        type: amountDol.value > 0 ? 1 : 0,
+        type: activeOperationTypesIndex.value,
         inCurrencyId: 2,
         amount: amountDol.value > 0 ? amountDol.value : -amountDol.value,
         comment: commentDol.value,
@@ -517,7 +727,7 @@ export default {
       const newOrderEntity = {
         date: Math.floor(+new Date() / 1000),
         clientId: findClient?.id,
-        type: amounUsd.value > 0 ? 1 : 0,
+        type: activeOperationTypesIndex.value,
         inCurrencyId: 0,
         amount: amounUsd.value > 0 ? amounUsd.value : -amounUsd.value,
         comment: commentUsd.value,
@@ -547,7 +757,7 @@ export default {
       const newOrderEntity = {
         date: Math.floor(+new Date() / 1000),
         clientId: findClient?.id,
-        type: amountRub.value > 0 ? 1 : 0,
+        type: activeOperationTypesIndex.value,
         inCurrencyId: 1,
         amount: amountRub.value > 0 ? amountRub.value : -amountRub.value,
         comment: commentRub.value,
@@ -568,65 +778,60 @@ export default {
     const amount = ref("");
     const comment = ref("");
 
-    const eurList = computed(() => {
-      return filteredNotesList.value
-        .filter((item) => item.inCurrency === "EUR")
-        .map((item) => {
-          return {
-            ...item,
-            date: moment(item.date).utcOffset(360).format("DD.MM, HH:mm"),
-            amount: toCurrency(item.amount),
-          };
-        });
-    });
+    const dailyList = (curr) => {
+      const search = searchStr.value.toLowerCase();
 
-    const wusdList = computed(() => {
-      return filteredNotesList.value
-        .filter((item) => item.inCurrency === "WUSD")
-        .map((item) => {
-          return {
-            ...item,
-            date: moment(item.date).utcOffset(360).format("DD.MM, HH:mm"),
-            amount: toCurrency(item.amount),
-          };
-        });
-    });
+      let list = filteredNotesList.value.filter((item) => {
+        return (
+          item.comment.toLowerCase().includes(search) ||
+          `${item.amount}`.toLowerCase().includes(search)
+        );
+      });
 
-    const usdtList = computed(() => {
-      return filteredNotesList.value
-        .filter((item) => item.inCurrency === "USDT")
-        .map((item) => {
-          return {
-            ...item,
-            date: moment(item.date).utcOffset(360).format("DD.MM, HH:mm"),
-            amount: toCurrency(item.amount),
-          };
-        });
-    });
+      if (!search) {
+        list = filteredNotesList.value;
+      }
 
-    const dolList = computed(() => {
-      return filteredNotesList.value
-        .filter((item) => item.inCurrency === "USD")
-        .map((item) => {
-          return {
-            ...item,
-            date: moment(item.date).utcOffset(360).format("DD.MM, HH:mm"),
-            amount: toCurrency(item.amount),
-          };
-        });
-    });
+      return {
+        [`sumDebet${curr}`]: list
+          .filter(
+            (item) => item.inCurrency === curr && item.type === NOTE_TYPES.debit
+          )
+          .reduce((prev, item) => {
+            return prev + item.amount;
+          }, 0),
+        [`sumCredit${curr}`]: list
+          .filter(
+            (item) =>
+              item.inCurrency === curr && item.type === NOTE_TYPES.credit
+          )
+          .reduce((prev, item) => {
+            return prev + item.amount;
+          }, 0),
+        debet: list
+          .filter(
+            (item) => item.inCurrency === curr && item.type === NOTE_TYPES.debit
+          )
+          .map((item) => {
+            return {
+              ...item,
+              amount: toCurrency(item.amount),
+            };
+          }),
 
-    const rubList = computed(() => {
-      return filteredNotesList.value
-        .filter((item) => item.inCurrency === "RUB")
-        .map((item) => {
-          return {
-            ...item,
-            date: moment(item.date).utcOffset(360).format("DD.MM, HH:mm"),
-            amount: toCurrency(item.amount),
-          };
-        });
-    });
+        credit: list
+          .filter(
+            (item) =>
+              item.inCurrency === curr && item.type === NOTE_TYPES.credit
+          )
+          .map((item) => {
+            return {
+              ...item,
+              amount: toCurrency(item.amount),
+            };
+          }),
+      };
+    };
 
     const onClientSelect = (val) => {
       selectedClient.value = val;
@@ -755,6 +960,10 @@ export default {
       clearForm();
     };
 
+    const removeDailyNote = async (_, item) => {
+      await store.dispatch("dailyNote/removeEntity", item);
+    };
+
     onMounted(() => {
       if (filterOptions.value.dateFrom) {
         dateFrom.value = filterOptions.value.dateFrom;
@@ -768,6 +977,7 @@ export default {
     });
 
     return {
+      searchStr,
       activeMenuIndex,
       isLoading,
       editForm,
@@ -776,6 +986,7 @@ export default {
       dateTo,
       shortcuts,
       loading,
+      removeDailyNote,
 
       // form
       operationTypes,
@@ -790,35 +1001,31 @@ export default {
       amounUsd,
       commentUsd,
       loadingUSDT,
-      usdtList,
       addUSDT,
 
       //
       amountDol,
       commentDol,
       loadingDOL,
-      dolList,
       addDOL,
 
       //
       amountRub,
       commentRub,
       loadingRUB,
-      rubList,
+      dailyList,
       addRUB,
 
       //
       amountEur,
       commentEur,
       loadingEUR,
-      eurList,
       addEUR,
 
       //
       amountWusd,
       commentWusd,
       loadingWusd,
-      wusdList,
       addWUSD,
 
       onClientSelect,
@@ -905,6 +1112,24 @@ export default {
     box-sizing: border-box;
     flex-wrap: wrap;
     margin-top: 20px;
+
+    .row-tables {
+      display: flex;
+      align-items: center;
+
+      .remove-item {
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+        background-image: url("~@/assets/icons/remove.png");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: 50%;
+        position: absolute;
+        right: 5px;
+        top: 13px;
+      }
+    }
   }
 
   &__tables-table {
