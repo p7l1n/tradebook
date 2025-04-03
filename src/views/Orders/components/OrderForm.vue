@@ -274,7 +274,7 @@ export default {
       if (props.editOrder) {
         const newOrderEntity = {
           id: props.editOrder.id,
-          date: props.editOrder.date,
+          date: Math.floor(props.editOrder.date / 1000),
           comment: "active",
           type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
           operatorId, // : selectedOperator.value,

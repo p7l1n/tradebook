@@ -91,7 +91,7 @@ export default {
           res.map((item) => {
             return {
               ...item,
-              date: item.date,
+              date: item.date * 1000,
               status: item.status === 0 ? false : true,
               type: getOrderTypeFromIndex(item.type),
               inCurrency: DEFAULT_CURRENCIES[item.inCurrencyId],

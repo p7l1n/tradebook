@@ -314,7 +314,7 @@ export default {
         return;
       }
       cashOutLoading.value = true;
-      const date = new Date();
+      const date = Math.floor(Date.now() / 1000);
       // новая запись в таблицу профит
       await store.dispatch("note/addNewProfit", {
         // id,

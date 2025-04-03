@@ -65,11 +65,10 @@ export default function useOrders() {
     const clientId = clientsList.value.find(
       (cl) => cl.name === selectedClient.value
     )?.id;
-    console.log(apiData.date, new Date(apiData.date));
 
     const newOrderEntity = {
       id: apiData.id,
-      date: apiData.date,
+      date: Math.floor(apiData.date / 1000),
       type: activeOperationTypesIndex.value,
       operatorId,
       clientId,

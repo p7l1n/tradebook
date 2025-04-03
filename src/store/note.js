@@ -45,7 +45,7 @@ export default {
           res.map((item) => {
             return {
               ...item,
-              date: +new Date(item.date),
+              date: item.date * 1000,
             };
           })
         );

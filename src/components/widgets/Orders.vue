@@ -83,11 +83,7 @@
             v-if="showFields?.date?.show"
             class="widget-orders__list-item-field"
           >
-            {{
-              moment(item.date * 1000)
-                .utcOffset(360)
-                .format("DD.MM, HH:mm")
-            }}
+            {{ moment(item.date).utcOffset(360).format("DD.MM, HH:mm") }}
           </div>
           <div
             v-if="showFields?.type?.show"
