@@ -50,7 +50,7 @@
         @input="onRateChange"
       />
     </div>
-    <div class="order-form__field">
+    <div v-if="false" class="order-form__field">
       <el-select
         v-model="selectedOperator"
         clearable

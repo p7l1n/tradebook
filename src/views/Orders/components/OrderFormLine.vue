@@ -68,7 +68,7 @@
           />
         </el-select>
       </div>
-      <div class="order-form__field ml10">
+      <div v-if="false" class="order-form__field ml10">
         <el-select
           v-model="selectedOperator"
           clearable
@@ -85,9 +85,6 @@
             :value="item.value"
           />
         </el-select>
-      </div>
-      <div class="order-form__field ml10">
-        <Button title="Очистить" @click="clearForm" />
       </div>
       <div class="order-form__field ml10">
         <el-button
@@ -110,6 +107,9 @@
         >
           {{ editOrder ? "Сохранить" : "Добавить" }}
         </el-button>
+      </div>
+      <div class="order-form__field ml10">
+        <Button title="Очистить" @click="clearForm" />
       </div>
     </div>
   </div>
