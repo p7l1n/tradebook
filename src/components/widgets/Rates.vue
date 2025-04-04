@@ -33,10 +33,10 @@
             {{ item.title }}
           </div>
           <div class="widget-rates__list-item-field green">
-            {{ getNumFormat(+item.buy || 0, item.points) }}
+            {{ getNumFormat(+item.buy - +item.spreadBuy || 0, item.points) }}
           </div>
           <div class="widget-rates__list-item-field red">
-            {{ getNumFormat(+item.sell || 0, item.points) }}
+            {{ getNumFormat(+item.sell + +item.spreadSell || 0, item.points) }}
           </div>
           <div class="widget-rates__list-item-field">-{{ item.spreadBuy }}</div>
           <div class="widget-rates__list-item-field">
@@ -53,12 +53,12 @@
       </div>
       <div class="input-field row">
         <Input
-          placeholder="Спред+"
+          placeholder="Покуп. -"
           class="mr15"
           v-model="spreadBuy"
           type="number"
         />
-        <Input placeholder="Спред-" v-model="spreadSell" type="number" />
+        <Input placeholder="Продаж. +" v-model="spreadSell" type="number" />
       </div>
       <div class="input-field row">
         <Input
@@ -174,8 +174,8 @@ export default {
         await store.dispatch("rates/updateRateEntity", {
           id: selectedItem.value.id,
           title: title.value,
-          buy: +buy.value - +spreadBuy.value,
-          sell: +sell.value + +spreadSell.value,
+          buy: +buy.value,
+          sell: +sell.value,
           spreadBuy: +spreadBuy.value,
           spreadSell: +spreadSell.value,
           apiKey: apiKey.value,
@@ -188,8 +188,8 @@ export default {
       } else {
         await store.dispatch("rates/addRateEntity", {
           title: title.value,
-          buy: +buy.value - +spreadBuy.value,
-          sell: +sell.value + +spreadSell.value,
+          buy: +buy.value,
+          sell: +sell.value,
           spreadBuy: +spreadBuy.value,
           spreadSell: +spreadSell.value,
           apiKey: apiKey.value,

@@ -42,7 +42,7 @@ export default {
       if (res && Array.isArray(res)) {
         commit(
           types.ADD_PROFIT_LIST,
-          res.map((item) => {
+          res.reverse().map((item) => {
             return {
               ...item,
               date: item.date * 1000,

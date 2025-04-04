@@ -40,7 +40,7 @@ export default {
       if (res && Array.isArray(res)) {
         commit(
           types.SET_NOTES,
-          res.map((item) => {
+          res.reverse().map((item) => {
             return {
               ...item,
               date: item.date * 1000,

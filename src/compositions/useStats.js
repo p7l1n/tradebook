@@ -124,10 +124,14 @@ export default function useStats() {
 
       if (+statsOrders[key].totalInCurrency > 0) {
         statsOrders[key].totalInUSDT =
-          +statsOrders[key].totalInCurrency / +ratesList.value[key]?.sell || 0;
+          +statsOrders[key].totalInCurrency /
+            (+ratesList.value[key]?.sell + +ratesList.value[key]?.spreadSell) ||
+          0;
       } else {
         statsOrders[key].totalInUSDT =
-          +statsOrders[key].totalInCurrency / +ratesList.value[key]?.buy || 0;
+          +statsOrders[key].totalInCurrency /
+            (+ratesList.value[key]?.buy - +ratesList.value[key]?.spreadBuy) ||
+          0;
       }
     });
 
