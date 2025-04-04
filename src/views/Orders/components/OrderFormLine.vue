@@ -17,7 +17,7 @@
           @input="onAmountInChange"
         />
       </div>
-      <div v-if="activeOperationTypesIndex != 2" class="order-form__field ml10">
+      <div class="order-form__field ml10">
         <Input
           placeholder="Курс"
           v-model="rateIn"
@@ -34,14 +34,14 @@
       </div>
     </div>
     <div class="order-form__row">
-      <div v-if="activeOperationTypesIndex != 2" class="order-form__field ml10">
+      <div class="order-form__field ml10">
         <CheckGroupButton
           :items="outCurrencies"
           :active-index="activeOutcurrenciesIndex"
           @check="onSelectOutCurrencies"
         />
       </div>
-      <div v-if="activeOperationTypesIndex != 2" class="order-form__field ml10">
+      <div class="order-form__field ml10">
         <Input
           placeholder="Сумма расход"
           v-model="amountOut"
@@ -50,7 +50,7 @@
           @input="onAmountOutChange"
         />
       </div>
-      <div class="order-form__field ml10">
+      <div v-if="activeOperationTypesIndex != 2" class="order-form__field ml10">
         <el-select
           v-model="selectedClient"
           clearable
@@ -144,14 +144,6 @@ export default {
       type: [null, Object],
       default: null,
     },
-    tradeInitialParam: {
-      type: String,
-      default: "",
-    },
-    tradeInitialOrderTypeIndex: {
-      type: [String, Number],
-      default: 0,
-    },
   },
   setup(props, { emit }) {
     const store = useStore();
@@ -217,10 +209,12 @@ export default {
 
     const onSelectInCurrencies = (ndx) => {
       activeIncurrenciesIndex.value = ndx;
+      amountIn.value = "";
     };
 
     const onSelectOutCurrencies = (ndx) => {
       activeOutcurrenciesIndex.value = ndx;
+      amountOut.value = "";
     };
 
     const onOperatorSelect = (val) => {
@@ -243,10 +237,10 @@ export default {
     };
 
     const addNewOrder = async () => {
-      if (!selectedClient.value || !amountIn.value || !selectedOperator.value) {
+      if (activeIncurrenciesIndex.value === activeOutcurrenciesIndex.value) {
         ElNotification({
           title: "Журнал сделок",
-          message: `Проверьте введенные данные`,
+          message: `Валюта прихода должна отличаться от валюты расхода`,
           type: "warning",
         });
         return;
@@ -254,7 +248,7 @@ export default {
 
       if (activeOperationTypesIndex.value !== 2) {
         // в выручке проверка на наличие курса не нужна
-        if (!rateIn.value) {
+        if (!amountIn.value || !rateIn.value || !selectedClient.value) {
           ElNotification({
             title: "Журнал сделок",
             message: `Проверьте введенные данные`,
@@ -267,14 +261,23 @@ export default {
       const operatorId = operatorList.value.find(
         (op) => op.name === selectedOperator.value
       )?.id;
-      const clientId = clientsList.value.find(
+      let clientId = clientsList.value.find(
         (cl) => cl.name === selectedClient.value
       )?.id;
 
       if (activeOperationTypesIndex.value == 2) {
         // выручка просто прибыль с 0 расходом
-        amountOut.value = 0;
-        rateIn.value = 0;
+        clientId = clientsList.value.find((cl) => cl.name === "Выручка")?.id;
+
+        if (!amountIn.value) {
+          amountIn.value = 0;
+        }
+        if (!amountOut.value) {
+          amountOut.value = 0;
+        }
+        if (!rateIn.value) {
+          rateIn.value = 0;
+        }
       }
 
       // edit
@@ -461,28 +464,6 @@ export default {
         activeOutcurrenciesIndex.value = outCurrencies.value.findIndex(
           (item) => item === props.editOrder.outCurrency
         );
-      } else {
-        // ["USDT", "RUB", "USD", "EUR", "WUSD"] from config queue fixed
-        activeOperationTypesIndex.value = props.tradeInitialOrderTypeIndex;
-        if (props.tradeInitialParam === "buyUSDT")
-          activeIncurrenciesIndex.value = 0;
-        if (props.tradeInitialParam === "sellUSDT")
-          activeOutcurrenciesIndex.value = 0;
-
-        if (props.tradeInitialParam === "buyUSD")
-          activeIncurrenciesIndex.value = 2;
-        if (props.tradeInitialParam === "sellUSD")
-          activeOutcurrenciesIndex.value = 2;
-
-        if (props.tradeInitialParam === "buyEUR")
-          activeIncurrenciesIndex.value = 3;
-        if (props.tradeInitialParam === "sellEUR")
-          activeOutcurrenciesIndex.value = 3;
-
-        if (props.tradeInitialParam === "buyWUSD")
-          activeIncurrenciesIndex.value = 4;
-        if (props.tradeInitialParam === "sellWUSD")
-          activeOutcurrenciesIndex.value = 4;
       }
     });
 

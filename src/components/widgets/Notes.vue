@@ -36,7 +36,7 @@
             {{ item.type }}
           </div>
           <div class="widget-notes__list-item-field">
-            {{ item.client }}
+            {{ parseLongName(item.client) }}
           </div>
           <div class="widget-notes__list-item-field">
             {{ item.inCurrency }}
@@ -77,6 +77,7 @@ import { NOTE_TYPES } from "@/config/noteTypes";
 import { useStore } from "vuex";
 import moment from "moment";
 import useNotes from "@/compositions/useNotes";
+import { parseLongName } from "@/helpers";
 
 export default {
   components: {},
@@ -134,7 +135,7 @@ export default {
       selectRow,
       remove,
       showMore,
-
+      parseLongName,
       toCurrency,
     };
   },

@@ -95,30 +95,28 @@
             v-if="showFields?.client?.show"
             class="widget-orders__list-item-field"
           >
-            {{ item.client }}
+            {{ parseLongName(item.client) }}
           </div>
           <div
             v-if="showFields?.operator?.show"
             class="widget-orders__list-item-field"
           >
-            {{ item.operator }}
+            {{ parseLongName(item.operator) }}
           </div>
           <div class="widget-orders__list-item-field green">
-            {{ item.inCurrency }}
+            {{ item.inAmount !== 0 ? item.inCurrency : "" }}
           </div>
           <div class="widget-orders__list-item-field strong">
-            {{ toCurrency(item.inAmount) }}
+            {{ item.inAmount !== 0 ? toCurrency(item.inAmount) : "" }}
           </div>
           <div class="widget-orders__list-item-field">
-            {{ item.rate }}
+            {{ item.rate !== 0 ? item.rate : "" }}
           </div>
           <div class="widget-orders__list-item-field red">
-            {{ ORDER_TYPES.trade !== item.type ? item.outCurrency : "" }}
+            {{ item.outAmount !== 0 ? item.outCurrency : "" }}
           </div>
           <div class="widget-orders__list-item-field strong">
-            {{
-              ORDER_TYPES.trade !== item.type ? toCurrency(item.outAmount) : ""
-            }}
+            {{ item.outAmount !== 0 ? toCurrency(item.outAmount) : "" }}
           </div>
           <div
             v-if="showFields?.hint?.show"
@@ -158,6 +156,7 @@ import { ORDER_TYPES } from "@/config/orderTypes";
 import moment from "moment";
 import useStats from "@/compositions/useStats";
 import useOrders from "@/compositions/useOrders";
+import { parseLongName } from "@/helpers";
 
 export default {
   components: {},
@@ -241,6 +240,7 @@ export default {
       showFields,
       countToShow,
       countIncrement,
+      parseLongName,
       showMore,
       getNumFormat,
       selectRow,

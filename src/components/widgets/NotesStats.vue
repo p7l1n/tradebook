@@ -16,7 +16,7 @@
         :key="ndx"
       >
         <div class="widget-total__list-item-field strong">
-          {{ item.client }}
+          {{ parseLongName(item.client) }}
         </div>
         <div
           :class="{
@@ -72,6 +72,7 @@
 // import { useStore } from "vuex";
 import useStatsNotes from "@/compositions/useStatsNotes";
 import { toCurrency } from "@/helpers";
+import { parseLongName } from "@/helpers";
 
 export default {
   props: {
@@ -83,11 +84,12 @@ export default {
   setup() {
     const { allStats } = useStatsNotes();
 
-    console.log("allStats", allStats.value);
+    // console.log("allStats", allStats.value);
 
     return {
       allStats,
       toCurrency,
+      parseLongName,
     };
   },
 };

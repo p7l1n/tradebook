@@ -158,7 +158,8 @@ export default {
         selectedItem.value &&
         ((selectedItem.value.name === "Прибыль" &&
           selectedItem.value.type === "Прибыль") ||
-          selectedItem.value.name === "Тетрадь")
+          selectedItem.value.name === "Тетрадь" ||
+          selectedItem.value.name === "Выручка")
       );
     });
 

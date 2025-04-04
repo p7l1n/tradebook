@@ -97,7 +97,7 @@ export default {
     const { allStats, profitUsdt } = useStats();
 
     const ratesList = computed(() => store.getters["rates/rates"]);
-    console.log("allStats", allStats.value);
+    // console.log("allStats", allStats.value);
 
     // const profitUsdt = computed(() => {
     //   let sum = 0;

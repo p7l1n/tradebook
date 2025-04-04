@@ -2,19 +2,6 @@
   <div class="orders-page">
     <SubMenu :active-index="activeMenuIndex" @selectMenu="onSelectMenu" />
     <div :class="{ isLoading }" class="orders-page__widgets">
-      <!-- быстрый доступ к покупке -->
-      <TradeMenu
-        v-if="false && activeMenuIndex === 0"
-        @buyUSDT="setTradeParam"
-        @sellUSDT="setTradeParam"
-        @buyUSD="setTradeParam"
-        @sellUSD="setTradeParam"
-        @buyEUR="setTradeParam"
-        @sellEUR="setTradeParam"
-        @buyWUSD="setTradeParam"
-        @sellWUSD="setTradeParam"
-        @selectOrderType="onSelectOrderType"
-      />
       <div v-if="activeMenuIndex === 0" class="orders-page__edit">
         <CheckButton
           yes-title="Редакт."
@@ -76,12 +63,7 @@
           :title="selectedOrder ? 'Редактирование сделки' : 'Новая сделка'"
           v-click-away="closeForm"
         >
-          <OrderForm
-            @close="closeForm"
-            :edit-order="selectedOrder"
-            :trade-initial-param="tradeInitialParam"
-            :trade-initial-order-type-index="tradeInitialOrderTypeIndex"
-          />
+          <OrderForm @close="closeForm" :edit-order="selectedOrder" />
         </ModalContent>
       </Modal>
     </teleport>
@@ -101,7 +83,6 @@
 <script>
 import SubMenu from "./components/SubMenu";
 import Settings from "./components/Settings";
-import TradeMenu from "./components/TradeMenu";
 import FilterOrders from "./components/FilterOrders";
 import Orders from "@/components/widgets/Orders";
 import Loader from "@/components/Loader";
@@ -124,7 +105,6 @@ export default {
   components: {
     SubMenu,
     Settings,
-    TradeMenu,
     Loader,
     Orders,
     Modal,
@@ -143,8 +123,6 @@ export default {
     const editOrderForm = ref(false);
     const editOrdersFields = ref(false);
     const selectedOrder = ref(null);
-    const tradeInitialParam = ref("");
-    const tradeInitialOrderTypeIndex = ref(0);
     const editModeFlag = ref(false);
     const collectionsIds = ref([]);
 
@@ -182,16 +160,6 @@ export default {
       editOrdersFields.value = false;
     };
 
-    const setTradeParam = (param) => {
-      tradeInitialParam.value = param;
-      editOrderForm.value = true;
-      selectedOrder.value = null;
-    };
-
-    const onSelectOrderType = (param) => {
-      tradeInitialOrderTypeIndex.value = param;
-    };
-
     const onCheckEdit = (val) => {
       editModeFlag.value = val;
       if (!editModeFlag.value) {
@@ -225,8 +193,6 @@ export default {
       editOrderForm,
       editOrdersFields,
       selectedOrder,
-      tradeInitialParam,
-      tradeInitialOrderTypeIndex,
       filterOptions,
       editModeFlag,
       collectionsIds,
@@ -236,11 +202,9 @@ export default {
       onSelectOrder,
       onEditOrdersFields,
       closeEditOrdersFields,
-      setTradeParam,
       onCheckEdit,
       onCollect,
       removeOrders,
-      onSelectOrderType,
     };
   },
 };

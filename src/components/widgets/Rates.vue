@@ -16,8 +16,8 @@
           <div class="widget-rates__list-item-field label"></div>
           <div class="widget-rates__list-item-field label">Покупка</div>
           <div class="widget-rates__list-item-field label">Продажа</div>
-          <div class="widget-rates__list-item-field label">Спред+</div>
-          <div class="widget-rates__list-item-field label">Спред-</div>
+          <div class="widget-rates__list-item-field label">Покуп. -</div>
+          <div class="widget-rates__list-item-field label">Продаж. +</div>
         </div>
         <div
           :class="{
@@ -33,14 +33,14 @@
             {{ item.title }}
           </div>
           <div class="widget-rates__list-item-field green">
-            {{ getNumFormat(+item.buy + +item.spreadBuy || 0, item.points) }}
+            {{ getNumFormat(+item.buy || 0, item.points) }}
           </div>
           <div class="widget-rates__list-item-field red">
-            {{ getNumFormat(+item.sell - +item.spreadSell || 0, item.points) }}
+            {{ getNumFormat(+item.sell || 0, item.points) }}
           </div>
-          <div class="widget-rates__list-item-field">+{{ item.spreadBuy }}</div>
+          <div class="widget-rates__list-item-field">-{{ item.spreadBuy }}</div>
           <div class="widget-rates__list-item-field">
-            -{{ item.spreadSell }}
+            +{{ item.spreadSell }}
           </div>
         </div>
       </div>
@@ -174,10 +174,10 @@ export default {
         await store.dispatch("rates/updateRateEntity", {
           id: selectedItem.value.id,
           title: title.value,
-          buy: buy.value,
-          sell: sell.value,
-          spreadBuy: spreadBuy.value,
-          spreadSell: spreadSell.value,
+          buy: +buy.value - +spreadBuy.value,
+          sell: +sell.value + +spreadSell.value,
+          spreadBuy: +spreadBuy.value,
+          spreadSell: +spreadSell.value,
           apiKey: apiKey.value,
           points: points.value,
           inCurrencyId: getIndexOfTitle(title.value),
@@ -188,10 +188,10 @@ export default {
       } else {
         await store.dispatch("rates/addRateEntity", {
           title: title.value,
-          buy: buy.value,
-          sell: sell.value,
-          spreadBuy: spreadBuy.value,
-          spreadSell: spreadSell.value,
+          buy: +buy.value - +spreadBuy.value,
+          sell: +sell.value + +spreadSell.value,
+          spreadBuy: +spreadBuy.value,
+          spreadSell: +spreadSell.value,
           apiKey: apiKey.value,
           points: points.value,
         });

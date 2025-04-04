@@ -12,9 +12,9 @@ export default function useStats() {
   const initialStats = computed(() => store.getters["stats/stats"]);
 
   const filterOptions = computed(() => store.getters["orders/filter"]);
-  console.log("ratesList", ratesList.value);
-  console.log("ordersList", ordersList.value);
-  console.log("filter", filterOptions.value);
+  // console.log("ratesList", ratesList.value);
+  // console.log("ordersList", ordersList.value);
+  // console.log("filter", filterOptions.value);
 
   const filteredOrdersList = computed(() => {
     return ordersList.value

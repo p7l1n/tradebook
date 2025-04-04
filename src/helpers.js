@@ -28,3 +28,8 @@ export const isTodayBetweenDates = (date1, date2) => {
 
   return isSameDay(new Date(date1)) && isSameDay(new Date(date2));
 };
+
+export const parseLongName = (name = "") => {
+  const str = name.split("@")[0];
+  return str.length >= 12 ? `${str.slice(0, 10)}...` : str;
+};

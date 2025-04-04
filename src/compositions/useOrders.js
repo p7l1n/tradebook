@@ -55,8 +55,15 @@ export default function useOrders() {
 
     if (activeOperationTypesIndex.value == 2) {
       // выручка просто прибыль с 0 расходом
-      amountOut.value = 0;
-      rateIn.value = 0;
+      if (!amountIn.value) {
+        amountIn.value = 0;
+      }
+      if (!amountOut.value) {
+        amountOut.value = 0;
+      }
+      if (!rateIn.value) {
+        rateIn.value = 0;
+      }
     }
 
     const operatorId = operatorList.value.find(

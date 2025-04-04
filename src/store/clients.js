@@ -29,7 +29,7 @@ export default {
       if (res && Array.isArray(res)) {
         commit(
           types.ADD_CLIENT_LIST,
-          res.map((item) => {
+          res.reverse().map((item) => {
             return {
               ...item,
               type: getContragentFromIndex(item.type),
