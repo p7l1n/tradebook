@@ -237,15 +237,6 @@ export default {
     };
 
     const addNewOrder = async () => {
-      if (activeIncurrenciesIndex.value === activeOutcurrenciesIndex.value) {
-        ElNotification({
-          title: "Журнал сделок",
-          message: `Валюта прихода должна отличаться от валюты расхода`,
-          type: "warning",
-        });
-        return;
-      }
-
       if (activeOperationTypesIndex.value !== 2) {
         // в выручке проверка на наличие курса не нужна
         if (!amountIn.value || !rateIn.value || !selectedClient.value) {
@@ -425,27 +416,36 @@ export default {
 
     const onAmountInChange = () => {
       setTimeout(() => {
-        if (amountIn.value && amountOut.value && rateIn.value) {
+        if (
+          !amountIn.value ||
+          (amountIn.value && amountOut.value && rateIn.value)
+        ) {
           rateIn.value = "";
         }
         calcValues();
-      }, 500);
+      }, 100);
     };
     const onAmountOutChange = () => {
       setTimeout(() => {
-        if (amountIn.value && amountOut.value && rateIn.value) {
+        if (
+          !amountOut.value ||
+          (amountIn.value && amountOut.value && rateIn.value)
+        ) {
           rateIn.value = "";
         }
         calcValues();
-      }, 500);
+      }, 100);
     };
     const onRateChange = () => {
       setTimeout(() => {
-        if (amountIn.value && amountOut.value && rateIn.value) {
+        if (
+          !rateIn.value ||
+          (amountIn.value && amountOut.value && rateIn.value)
+        ) {
           amountOut.value = "";
         }
         calcValues();
-      }, 500);
+      }, 100);
     };
 
     onMounted(() => {
