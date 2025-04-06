@@ -1,6 +1,6 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ appVersion }}</div>
+  <div class="app-version">{{ "p1.0.1" }}</div>
   <router-view />
 </template>
 <script>
@@ -45,7 +45,6 @@ export default {
 
     return {
       userInfo,
-      appVersion: process.env.VUE_APP_VERSION_PROD,
     };
   },
 };
