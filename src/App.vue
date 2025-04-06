@@ -45,7 +45,7 @@ export default {
 
     return {
       userInfo,
-      appVersion: process.env.VUE_APP_VERSION_PROD
+      appVersion: process.env.VUE_APP_VERSION_PROD,
     };
   },
 };
