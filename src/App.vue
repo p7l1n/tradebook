@@ -1,5 +1,6 @@
 <template>
   <MainMenu v-if="userInfo" />
+  <div class="app-version">{{ appVersion }}</div>
   <router-view />
 </template>
 <script>
@@ -44,6 +45,7 @@ export default {
 
     return {
       userInfo,
+      appVersion: process.env.VUE_APP_VERSION_PROD
     };
   },
 };
@@ -96,5 +98,14 @@ html {
   tr th .cell {
     color: $colorGreenDark !important;
   }
+}
+
+.app-version {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  font-weight: bold;
+  font-size: 10px;
+  z-index: 10;
 }
 </style>
