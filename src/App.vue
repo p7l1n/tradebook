@@ -1,6 +1,6 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.0.1" }}</div>
+  <div class="app-version">{{ "p1.0.2" }}</div>
   <router-view />
 </template>
 <script>
@@ -100,7 +100,7 @@ html {
 }
 
 .app-version {
-  position: absolute;
+  position: fixed;
   right: 3px;
   bottom: 3px;
   font-weight: bold;

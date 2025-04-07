@@ -202,12 +202,10 @@ export default {
 
     const onSelectInCurrencies = (ndx) => {
       activeIncurrenciesIndex.value = ndx;
-      amountIn.value = "";
     };
 
     const onSelectOutCurrencies = (ndx) => {
       activeOutcurrenciesIndex.value = ndx;
-      amountOut.value = "";
     };
 
     const onOperatorSelect = (val) => {
