@@ -101,7 +101,7 @@
       </div>
     </div>
     <div class="order-form__agent">
-      <div class="order-form__field mb0">
+      <div class="order-form__field mb0 row">
         <el-select
           v-model="selectedAgent"
           clearable
@@ -118,6 +118,12 @@
             :value="item.value"
           />
         </el-select>
+        <Button
+          title="Очистить"
+          @click="clearFormAgent"
+          class="ml10"
+          style="height: 36px; width: 120px"
+        />
       </div>
       <div class="order-form__field mb0" style="width: 100%">
         <CheckGroupButton
@@ -293,6 +299,13 @@ export default {
       amountAgent.value = "";
       rateAgent.value = "";
       rateIn.value = "";
+    };
+
+    const clearFormAgent = () => {
+      amountAgent.value = "";
+      rateAgent.value = "";
+      amountAgent.value = "";
+      activeAgentcurrenciesIndex.value = 0;
     };
 
     const addNewOrder = async () => {
@@ -640,6 +653,7 @@ export default {
       operatorItems,
       clientItems,
       loading,
+      clearFormAgent,
       onSelectOperationType,
       onSelectInCurrencies,
       onSelectOutCurrencies,
