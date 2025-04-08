@@ -89,6 +89,26 @@ export default {
         commit(
           types.SET_ORDERS,
           res.reverse().map((item) => {
+            // calc in
+            let kassaAmountIn = 0;
+            let kassaAmountOut = 0;
+
+            if (item.agentAmount !== 0) {
+              if (item.agentCurrencyId === item.inCurrencyId) {
+                kassaAmountIn = item.inAmount - item.agentAmount;
+              }
+
+              if (item.agentCurrencyId === item.outCurrencyId) {
+                kassaAmountOut = item.outAmount + item.agentAmount;
+              }
+            }
+            if (kassaAmountOut === 0) {
+              kassaAmountOut = item.outAmount;
+            }
+            if (kassaAmountIn === 0) {
+              kassaAmountIn = item.inAmount;
+            }
+            // calc out
             return {
               ...item,
               date: item.date * 1000,
@@ -102,6 +122,8 @@ export default {
                 clients.find((c) => c.id === item.operatorId)?.name || "???",
               agent: clients.find((c) => c.id === item.agentId)?.name || "",
               agentCurrency: DEFAULT_CURRENCIES[item.agentCurrencyId],
+              kassaAmountIn,
+              kassaAmountOut,
             };
           })
         );

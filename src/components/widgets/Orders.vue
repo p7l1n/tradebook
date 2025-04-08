@@ -107,7 +107,7 @@
             {{ item.inAmount !== 0 ? item.inCurrency : "" }}
           </div>
           <div class="widget-orders__list-item-field strong">
-            {{ item.inAmount !== 0 ? toCurrency(item.inAmount) : "" }}
+            {{ getAmountIn(item) }}
           </div>
           <div class="widget-orders__list-item-field">
             {{
@@ -122,7 +122,7 @@
             {{ item.outAmount !== 0 ? item.outCurrency : "" }}
           </div>
           <div class="widget-orders__list-item-field strong">
-            {{ item.outAmount !== 0 ? toCurrency(item.outAmount) : "" }}
+            {{ getAmountOut(item) }}
           </div>
           <div
             v-if="showFields?.hint?.show"
@@ -261,6 +261,24 @@ export default {
       await store.dispatch("orders/removeOrderEntity", item);
     };
 
+    const getAmountIn = (item) => {
+      if (item.kassaAmountIn === item.inAmount) {
+        return item.inAmount !== 0 ? toCurrency(item.inAmount) : "";
+      }
+      return item.inAmount !== 0
+        ? `${toCurrency(item.inAmount)} (${toCurrency(item.kassaAmountIn)})`
+        : "";
+    };
+
+    const getAmountOut = (item) => {
+      if (item.kassaAmountOut === item.outAmount) {
+        return item.outAmount !== 0 ? toCurrency(item.outAmount) : "";
+      }
+      return item.outAmount !== 0
+        ? `${toCurrency(item.outAmount)} (${toCurrency(item.kassaAmountOut)})`
+        : "";
+    };
+
     return {
       ORDER_TYPES,
       ordersList,
@@ -278,6 +296,8 @@ export default {
       getHint,
       getOutAmount,
       onChangeStatus,
+      getAmountIn,
+      getAmountOut,
     };
   },
 };

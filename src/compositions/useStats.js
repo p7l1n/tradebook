@@ -82,9 +82,11 @@ export default function useStats() {
 
     // calc total
     filteredOrdersList.value.forEach((order) => {
+      // kassAmountOut
+      console.log(order);
       if (order.status) {
-        statsOrders[order.inCurrency].totalInCurrency += +order.inAmount;
-        statsOrders[order.outCurrency].totalInCurrency -= +order.outAmount;
+        statsOrders[order.inCurrency].totalInCurrency += +order.kassaAmountIn;
+        statsOrders[order.outCurrency].totalInCurrency -= +order.kassaAmountOut;
       } else {
         statsOrders[order.inCurrency].totalInCurrency += 0;
         statsOrders[order.outCurrency].totalInCurrency -= 0;

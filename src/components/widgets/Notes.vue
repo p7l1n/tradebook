@@ -168,7 +168,7 @@ export default {
       delete newData.inCurrency;
       delete newData.isProfit;
       newData.category = 1; // жк
-      newData.type = 0; // дебет
+      newData.type = 1; // дебет
       newData.date = Math.floor((newData.date + 10800000) / 1000);
       newData.comment = "Перенос посредника";
       loading.value = true;
