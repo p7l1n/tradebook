@@ -1,5 +1,5 @@
 <template>
-  <div class="order-form">
+  <div class="order-form" tabindex="0" @keydown.enter="addNewOrder">
     <div class="order-form__field">
       <CheckGroupButton
         label="Тип операции"
@@ -86,6 +86,42 @@
         />
       </el-select>
     </div>
+    <!-- посредник -->
+    <div v-if="editOrder.agentAmount" class="order-form__field mb0">
+      <el-select
+        v-model="selectedAgent"
+        clearable
+        filterable
+        placeholder="Посредник"
+        style="width: 100%"
+        size="large"
+        @change="onAgentSelect"
+      >
+        <el-option
+          v-for="item in clientItems"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </div>
+    <div v-if="editOrder.agentAmount" class="order-form__field mb0">
+      <CheckGroupButton
+        :items="agentCurrencies"
+        :active-index="activeAgentcurrenciesIndex"
+        @check="onSelectAgentCurrencies"
+      />
+    </div>
+    <div v-if="editOrder.agentAmount" class="order-form__field mb0 row">
+      <Input placeholder="Сумма" v-model="amountAgent" type="number" />
+      <Input
+        placeholder="Курс"
+        v-model="rateAgent"
+        type="number"
+        class="ml10"
+      />
+    </div>
+    <!--  -->
     <div class="order-form__btns">
       <Button title="Очистить" @click="clearForm" />
       <el-button
@@ -102,7 +138,6 @@
         type="success"
         :loading="loading"
         class="base-btn ml10"
-        @enter="addNewOrder"
         @click="addNewOrder"
       >
         {{ editOrder ? "Сохранить" : "Добавить" }}
@@ -144,21 +179,27 @@ export default {
   setup(props, { emit }) {
     const store = useStore();
     const selectedOperator = ref(null);
+    const selectedAgent = ref(null);
     const selectedClient = ref(null);
     const operationTypes = ref([
       ORDER_TYPES.order,
       ORDER_TYPES.move,
       ORDER_TYPES.trade,
     ]);
+    const lastInputMode = ref("");
     const activeOperationTypesIndex = ref(0);
+    const activeAgentcurrenciesIndex = ref(0);
     const activeIncurrenciesIndex = ref(0);
     const activeOutcurrenciesIndex = ref(0);
 
+    const agentCurrencies = ref(DEFAULT_CURRENCIES);
     const inCurrencies = ref(DEFAULT_CURRENCIES);
     const outCurrencies = ref(DEFAULT_CURRENCIES);
 
     const amountIn = ref("");
     const amountOut = ref("");
+    const amountAgent = ref("");
+    const rateAgent = ref("");
     const rateIn = ref("");
 
     const loadingRemove = ref(false);
@@ -204,6 +245,10 @@ export default {
       activeIncurrenciesIndex.value = ndx;
     };
 
+    const onSelectAgentCurrencies = (ndx) => {
+      activeAgentcurrenciesIndex.value = ndx;
+    };
+
     const onSelectOutCurrencies = (ndx) => {
       activeOutcurrenciesIndex.value = ndx;
     };
@@ -217,6 +262,8 @@ export default {
     };
 
     const clearForm = () => {
+      activeAgentcurrenciesIndex.value = 0;
+      selectedAgent.value = null;
       activeOperationTypesIndex.value = 0;
       activeIncurrenciesIndex.value = 0;
       activeOutcurrenciesIndex.value = 0;
@@ -224,6 +271,8 @@ export default {
       selectedOperator.value = null;
       amountIn.value = "";
       amountOut.value = "";
+      amountAgent.value = "";
+      rateAgent.value = "";
       rateIn.value = "";
     };
 
@@ -238,10 +287,24 @@ export default {
           });
           return;
         }
+
+        if (rateAgent.value || amountAgent.value || selectedAgent.value) {
+          if (!rateAgent.value || !amountAgent.value || !selectedAgent.value) {
+            ElNotification({
+              title: "Журнал сделок",
+              message: `Не все данные по посреднику заполнены`,
+              type: "warning",
+            });
+            return;
+          }
+        }
       }
 
       const operatorId = operatorList.value.find(
         (op) => op.name === selectedOperator.value
+      )?.id;
+      const agentId = clientsList.value.find(
+        (op) => op.name === selectedAgent.value
       )?.id;
       let clientId = clientsList.value.find(
         (cl) => cl.name === selectedClient.value
@@ -268,6 +331,12 @@ export default {
           id: props.editOrder.id,
           date: Math.floor((props.editOrder.date + 10800000) / 1000),
           comment: "active",
+
+          agentId: agentId || 0,
+          agentCurrencyId: activeAgentcurrenciesIndex.value || 0,
+          agentAmount: amountAgent.value || 0,
+          agentRate: rateAgent.value || 0,
+
           type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
           operatorId, // : selectedOperator.value,
           clientId, // selectedClient.value,
@@ -406,6 +475,7 @@ export default {
     };
 
     const onAmountInChange = () => {
+      lastInputMode.value = "in";
       setTimeout(() => {
         if (
           !amountIn.value ||
@@ -418,6 +488,7 @@ export default {
     };
 
     const onAmountOutChange = () => {
+      lastInputMode.value = "out";
       setTimeout(() => {
         if (
           !amountOut.value ||
@@ -434,14 +505,29 @@ export default {
           !rateIn.value ||
           (amountIn.value && amountOut.value && rateIn.value)
         ) {
-          amountOut.value = "";
+          if (lastInputMode.value === "out") {
+            amountIn.value = "";
+          } else {
+            amountOut.value = "";
+          }
         }
         calcValues();
       }, 100);
     };
 
+    const onAgentSelect = (val) => {
+      selectedAgent.value = val;
+    };
+
     onMounted(() => {
       if (props.editOrder) {
+        selectedAgent.value = props.editOrder.agent;
+        amountAgent.value = props.editOrder.agentAmount;
+        rateAgent.value = props.editOrder.agentRate;
+        activeAgentcurrenciesIndex.value = agentCurrencies.value.findIndex(
+          (item) => item === props.editOrder.agentCurrency
+        );
+
         selectedOperator.value = props.editOrder.operator;
         activeOperationTypesIndex.value = operationTypes.value.findIndex(
           (item) => item === props.editOrder.type
@@ -463,12 +549,17 @@ export default {
       operationTypes,
       activeOperationTypesIndex,
       activeIncurrenciesIndex,
+      activeAgentcurrenciesIndex,
       activeOutcurrenciesIndex,
+      agentCurrencies,
       inCurrencies,
       outCurrencies,
       amountIn,
       amountOut,
+      amountAgent,
+      rateAgent,
       rateIn,
+      selectedAgent,
       selectedOperator,
       selectedClient,
       operatorItems,
@@ -476,6 +567,7 @@ export default {
       loading,
       loadingRemove,
       onSelectOperationType,
+      onSelectAgentCurrencies,
       onSelectInCurrencies,
       onSelectOutCurrencies,
       onOperatorSelect,
@@ -486,6 +578,7 @@ export default {
       onAmountInChange,
       onAmountOutChange,
       onRateChange,
+      onAgentSelect,
     };
   },
 };
@@ -494,6 +587,15 @@ export default {
 .order-form {
   display: flex;
   flex-direction: column;
+
+  .row {
+    display: flex;
+    align-items: center;
+  }
+
+  .ml10 {
+    margin-left: 10px;
+  }
 
   &__field {
     margin-bottom: 15px;

@@ -1,5 +1,5 @@
 <template>
-  <div class="widget-clients-wrap">
+  <div class="widget-clients-wrap" tabindex="0" @keydown.enter="updateEntity">
     <!-- edit -->
     <el-input
       v-model="searchStr"
@@ -41,7 +41,6 @@
           :loading="loading"
           class="base-btn"
           style="margin-left: 10px"
-          @enter="updateEntity"
           @click="updateEntity"
         >
           {{ isEditing ? "Сохранить" : "Добавить" }}

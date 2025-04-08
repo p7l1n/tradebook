@@ -67,7 +67,7 @@ export default {
       }
     },
     async addNewEntity({ dispatch }, value) {
-      const res = await postQuery("Notes", value);
+      const res = await postQuery("Notes", value); // { ...value, category: 2 }
       if (res.id) {
         await dispatch("fetchNotes");
       }

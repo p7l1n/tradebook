@@ -41,7 +41,7 @@ export default {
 .check-button {
   display: flex;
   flex-direction: column;
-  width: 250px;
+  min-width: 250px;
 
   &__label {
     font-size: 14px;

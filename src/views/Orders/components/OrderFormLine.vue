@@ -1,5 +1,5 @@
 <template>
-  <div class="order-form">
+  <div class="order-form" tabindex="0" @keydown.enter="addNewOrder">
     <div class="order-form__row">
       <div class="order-form__field ml10">
         <CheckGroupButton
@@ -102,7 +102,6 @@
           type="success"
           :loading="loading"
           class="base-btn"
-          @enter="addNewOrder"
           @click="addNewOrder"
         >
           {{ editOrder ? "Сохранить" : "Добавить" }}
@@ -110,6 +109,41 @@
       </div>
       <div class="order-form__field ml10">
         <Button title="Очистить" @click="clearForm" />
+      </div>
+    </div>
+    <div class="order-form__agent">
+      <div class="order-form__field mb0">
+        <el-select
+          v-model="selectedAgent"
+          clearable
+          filterable
+          placeholder="Посредник"
+          style="width: 100%"
+          size="large"
+          @change="onAgentSelect"
+        >
+          <el-option
+            v-for="item in clientItems"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </div>
+      <div class="order-form__field mb0" style="width: 100%">
+        <CheckGroupButton
+          :items="agentCurrencies"
+          :active-index="activeAgentcurrenciesIndex"
+          @check="onSelectAgentCurrencies"
+        />
+      </div>
+      <div class="row">
+        <div class="order-form__field mb0">
+          <Input placeholder="Сумма" v-model="amountAgent" type="number" />
+        </div>
+        <div class="order-form__field mb0 ml10">
+          <Input placeholder="Курс" v-model="rateAgent" type="number" />
+        </div>
       </div>
     </div>
   </div>
@@ -149,20 +183,26 @@ export default {
     const store = useStore();
     const selectedOperator = ref(null);
     const selectedClient = ref(null);
+    const selectedAgent = ref(null);
     const operationTypes = ref([
       ORDER_TYPES.order,
       ORDER_TYPES.move,
       ORDER_TYPES.trade,
     ]);
+    const lastInputMode = ref("");
     const activeOperationTypesIndex = ref(0);
+    const activeAgentcurrenciesIndex = ref(0);
     const activeIncurrenciesIndex = ref(0);
     const activeOutcurrenciesIndex = ref(0);
 
+    const agentCurrencies = ref(DEFAULT_CURRENCIES);
     const inCurrencies = ref(DEFAULT_CURRENCIES);
     const outCurrencies = ref(DEFAULT_CURRENCIES);
 
     const amountIn = ref("");
     const amountOut = ref("");
+    const amountAgent = ref("");
+    const rateAgent = ref("");
     const rateIn = ref("");
 
     const loadingRemove = ref(false);
@@ -215,6 +255,10 @@ export default {
       activeOutcurrenciesIndex.value = ndx;
     };
 
+    const onSelectAgentCurrencies = (ndx) => {
+      activeAgentcurrenciesIndex.value = ndx;
+    };
+
     const onOperatorSelect = (val) => {
       selectedOperator.value = val;
     };
@@ -223,7 +267,13 @@ export default {
       selectedClient.value = val;
     };
 
+    const onAgentSelect = (val) => {
+      selectedAgent.value = val;
+    };
+
     const clearForm = () => {
+      activeAgentcurrenciesIndex.value = 0;
+      selectedAgent.value = null;
       activeOperationTypesIndex.value = 0;
       activeIncurrenciesIndex.value = 0;
       activeOutcurrenciesIndex.value = 0;
@@ -231,6 +281,8 @@ export default {
       selectedOperator.value = defaultContragent.value;
       amountIn.value = "";
       amountOut.value = "";
+      amountAgent.value = "";
+      rateAgent.value = "";
       rateIn.value = "";
     };
 
@@ -245,10 +297,24 @@ export default {
           });
           return;
         }
+
+        if (rateAgent.value || amountAgent.value || selectedAgent.value) {
+          if (!rateAgent.value || !amountAgent.value || !selectedAgent.value) {
+            ElNotification({
+              title: "Журнал сделок",
+              message: `Не все данные по посреднику заполнены`,
+              type: "warning",
+            });
+            return;
+          }
+        }
       }
 
       const operatorId = operatorList.value.find(
         (op) => op.name === selectedOperator.value
+      )?.id;
+      const agentId = clientsList.value.find(
+        (op) => op.name === selectedAgent.value
       )?.id;
       let clientId = clientsList.value.find(
         (cl) => cl.name === selectedClient.value
@@ -293,6 +359,7 @@ export default {
       }
 
       // add new
+      console.log("agentId", agentId);
 
       const newOrderEntity = {
         // id: `${Math.random()}`.slice(2),
@@ -301,6 +368,10 @@ export default {
         type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
         operatorId, // selectedOperator.value,
         clientId, // selectedClient.value,
+        agentId: agentId || 0,
+        agentCurrencyId: activeAgentcurrenciesIndex.value || 0,
+        agentAmount: amountAgent.value || 0,
+        agentRate: rateAgent.value || 0,
         inCurrencyId: activeIncurrenciesIndex.value, // inCurrencies.value[activeIncurrenciesIndex.value],
         inAmount: +amountIn.value,
         rate: rateIn.value,
@@ -413,6 +484,7 @@ export default {
     };
 
     const onAmountInChange = () => {
+      lastInputMode.value = "in";
       setTimeout(() => {
         if (
           !amountIn.value ||
@@ -424,6 +496,7 @@ export default {
       }, 100);
     };
     const onAmountOutChange = () => {
+      lastInputMode.value = "out";
       setTimeout(() => {
         if (
           !amountOut.value ||
@@ -440,7 +513,11 @@ export default {
           !rateIn.value ||
           (amountIn.value && amountOut.value && rateIn.value)
         ) {
-          amountOut.value = "";
+          if (lastInputMode.value === "out") {
+            amountIn.value = "";
+          } else {
+            amountOut.value = "";
+          }
         }
         calcValues();
       }, 100);
@@ -468,15 +545,20 @@ export default {
     return {
       operationTypes,
       activeOperationTypesIndex,
+      activeAgentcurrenciesIndex,
       activeIncurrenciesIndex,
       activeOutcurrenciesIndex,
+      agentCurrencies,
       inCurrencies,
       outCurrencies,
       amountIn,
       amountOut,
+      amountAgent,
+      rateAgent,
       rateIn,
       selectedOperator,
       selectedClient,
+      selectedAgent,
       operatorItems,
       clientItems,
       loading,
@@ -484,8 +566,10 @@ export default {
       onSelectOperationType,
       onSelectInCurrencies,
       onSelectOutCurrencies,
+      onSelectAgentCurrencies,
       onOperatorSelect,
       onClientSelect,
+      onAgentSelect,
       clearForm,
       addNewOrder,
       removeOrder,
@@ -498,11 +582,18 @@ export default {
 </script>
 <style lang="scss" scoped>
 .order-form {
+  position: relative;
   background-color: $panelColorActive;
   padding: 10px;
   border-radius: $controlRadius;
   display: flex;
   flex-direction: column;
+
+  &__agent {
+    position: absolute;
+    right: 20px;
+    top: 5px;
+  }
 
   .ml10 {
     margin-left: 10px;
@@ -517,8 +608,17 @@ export default {
     align-items: center;
   }
 
+  .row {
+    display: flex;
+    align-items: center;
+  }
+
   &__field {
     margin-bottom: 15px;
+
+    &.mb0 {
+      margin-bottom: 1px;
+    }
   }
 }
 </style>

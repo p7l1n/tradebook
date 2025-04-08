@@ -100,6 +100,8 @@ export default {
                 clients.find((c) => c.id === item.clientId)?.name || "???",
               operator:
                 clients.find((c) => c.id === item.operatorId)?.name || "???",
+              agent: clients.find((c) => c.id === item.agentId)?.name || "",
+              agentCurrency: DEFAULT_CURRENCIES[item.agentCurrencyId],
             };
           })
         );

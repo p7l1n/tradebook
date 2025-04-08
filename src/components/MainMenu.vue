@@ -34,6 +34,7 @@ export default {
       { title: "Балансы", route: "balances" },
       { title: "Журнал СД", route: "orders" },
       { title: "Журнал ДК", route: "notes" },
+      { title: "Посредники", route: "agents" },
       { title: "Тетрадь", route: "dailynotes" },
       { title: "Контрагенты", route: "clients" },
     ]);

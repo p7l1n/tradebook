@@ -2,17 +2,37 @@
   <div class="note-page">
     <SubMenu :active-index="activeMenuIndex" @selectMenu="onSelectMenu" />
     <div :class="{ isLoading }" class="note-page__widgets">
+      <div v-if="activeMenuIndex === 0" class="note-page__edit">
+        <CheckButton
+          yes-title="Редакт."
+          no-title="Выкл"
+          :checked="editModeFlag"
+          @check="onCheckEdit"
+        />
+        <div v-if="activeMenuIndex === 0 && collectionsIds.length">
+          <el-button
+            type="warning"
+            :loading="loadingRemove"
+            class="base-btn ml10"
+            style="height: 30px"
+            @click="removeOrders"
+          >
+            Удалить
+          </el-button>
+        </div>
+      </div>
       <Loader v-if="isLoading && activeMenuIndex === 0" />
       <div class="filter">
         <!-- <Button title="Новая запись" @click="openForm" class="credit-btn" /> -->
-        <div v-if="activeMenuIndex === 0" class="filter__stats">
+        <div class="filter__stats">
           <el-input
+            v-if="activeMenuIndex < 2"
             v-model="searchStr"
             style="width: 170px"
             placeholder="Поиск по ДК"
             clearable
           />
-          <div class="ml10">
+          <div v-if="activeMenuIndex === 0" class="ml10">
             <el-date-picker
               v-model="dateFrom"
               type="date"
@@ -23,7 +43,7 @@
               @change="onSelectDateFrom"
             />
           </div>
-          <div class="ml10">
+          <div v-if="activeMenuIndex === 0" class="ml10">
             <el-date-picker
               v-model="dateTo"
               type="date"
@@ -34,14 +54,25 @@
               @change="onSelectDateTo"
             />
           </div>
-          <div class="filter__profit ml10">
-            <span>Снятий на сумму: </span
-            >{{ toCurrency(profitUsdtHistory) }} USDT
+          <div
+            v-if="activeMenuIndex === 2"
+            class="filter__stats"
+            style="height: 32px"
+          >
+            <div class="filter__profit ml10">
+              <span>Снятий на сумму: </span
+              >{{ toCurrency(profitUsdtHistory) }} USDT
+            </div>
           </div>
         </div>
       </div>
       <!-- form -->
-      <div v-if="activeMenuIndex === 0" class="note-page__form">
+      <div
+        v-if="activeMenuIndex === 0"
+        class="note-page__form"
+        tabindex="0"
+        @keydown.enter="addNew"
+      >
         <CheckGroupButton
           :items="operationTypes"
           :active-index="activeOperationTypesIndex"
@@ -91,7 +122,6 @@
             :loading="loading"
             class="base-btn"
             style="width: 120px"
-            @enter="addNew"
             @click="addNew"
           >
             Добавить
@@ -103,9 +133,15 @@
         v-if="!isLoading && activeMenuIndex === 0"
         class="notes-page__widgets-item"
         :search-str="searchStr"
+        :editing="editModeFlag"
+        :ids="collectionsIds"
+        @collect="onCollect"
         @select="onSelectNote"
       />
-      <NotesStats v-if="!isLoading && activeMenuIndex === 1" />
+      <NotesStats
+        v-if="!isLoading && activeMenuIndex === 1"
+        :search-str="searchStr"
+      />
       <ProfitHistory
         v-if="!isLoading && activeMenuIndex === 2"
         class="notes-page__widgets-item"
@@ -146,6 +182,7 @@ import { toCurrency } from "@/helpers";
 import { NOTE_TYPES } from "@/config/noteTypes";
 import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
 import { ElNotification } from "element-plus";
+import CheckButton from "@/components/CheckButton";
 
 export default {
   components: {
@@ -160,6 +197,7 @@ export default {
     // Button,
     Input,
     CheckGroupButton,
+    CheckButton,
   },
   setup() {
     const { profitUsdtHistory } = useNotes();
@@ -171,6 +209,9 @@ export default {
     const dateTo = ref("");
     const loading = ref(false);
     const searchStr = ref("");
+    const collectionsIds = ref([]);
+    const editModeFlag = ref(false);
+    const loadingRemove = ref(false);
 
     const activeIncurrenciesIndex = ref(0);
     const inCurrencies = ref(DEFAULT_CURRENCIES);
@@ -299,6 +340,37 @@ export default {
       clearForm();
     };
 
+    const onCheckEdit = (val) => {
+      editModeFlag.value = val;
+      if (!editModeFlag.value) {
+        collectionsIds.value = [];
+      }
+    };
+
+    const removeOrders = async () => {
+      loadingRemove.value = true;
+      collectionsIds.value.forEach(async (id) => {
+        await store.dispatch("dailyNote/removeEntity", { id });
+      });
+      loadingRemove.value = false;
+
+      ElNotification({
+        title: "Успешно",
+        message: `Выбранные записи удалены`,
+        type: "success",
+      });
+    };
+
+    const onCollect = (id) => {
+      if (collectionsIds.value.includes(id)) {
+        collectionsIds.value = collectionsIds.value.filter(
+          (collId) => collId != id
+        );
+      } else {
+        collectionsIds.value.push(id);
+      }
+    };
+
     onMounted(() => {
       if (filterOptions.value.dateFrom) {
         dateFrom.value = filterOptions.value.dateFrom;
@@ -328,6 +400,10 @@ export default {
       activeOperationTypesIndex,
       activeIncurrenciesIndex,
       inCurrencies,
+      // edit
+      editModeFlag,
+      collectionsIds,
+      loadingRemove,
 
       toCurrency,
       disabledDate,
@@ -343,6 +419,9 @@ export default {
       onSelectOperationType,
       onSelectInCurrencies,
       addNew,
+      removeOrders,
+      onCheckEdit,
+      onCollect,
     };
   },
 };
@@ -352,6 +431,15 @@ export default {
 @import "@/assets/styles/base.scss";
 
 .note-page {
+  position: relative;
+
+  &__edit {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 5px;
+  }
+
   .ml10 {
     margin-left: 10px;
   }

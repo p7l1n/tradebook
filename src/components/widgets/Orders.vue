@@ -71,7 +71,7 @@
             size="large"
             class="toggler"
             @click.stop="() => {}"
-            @change="onChangeStatus(item)"
+            @change="loading ? () => {} : onChangeStatus(item)"
           />
           <div
             v-if="showFields?.id?.show"
@@ -89,7 +89,7 @@
             v-if="showFields?.type?.show"
             class="widget-orders__list-item-field strong clicked"
           >
-            {{ item.type }}
+            {{ item.type }}{{ item.agent ? "(П)" : "" }}
           </div>
           <div
             v-if="showFields?.client?.show"
@@ -110,7 +110,13 @@
             {{ item.inAmount !== 0 ? toCurrency(item.inAmount) : "" }}
           </div>
           <div class="widget-orders__list-item-field">
-            {{ item.rate !== 0 ? item.rate : "" }}
+            {{
+              item.rate !== 0
+                ? item.agent
+                  ? `${item.rate}(${item.agentRate})`
+                  : item.rate
+                : ""
+            }}
           </div>
           <div class="widget-orders__list-item-field red">
             {{ item.outAmount !== 0 ? item.outCurrency : "" }}
@@ -157,6 +163,7 @@ import moment from "moment";
 import useStats from "@/compositions/useStats";
 import useOrders from "@/compositions/useOrders";
 import { parseLongName } from "@/helpers";
+import { ElNotification } from "element-plus";
 
 export default {
   components: {},
@@ -174,16 +181,9 @@ export default {
     const { getOrderAPIFormat } = useOrders();
     const { filteredOrdersList: ordersList } = useStats();
     const store = useStore();
-    const selectedItem = ref(null);
-    const title = ref("");
-    const buy = ref("");
-    const sell = ref("");
-    const spreadBuy = ref("");
-    const spreadSell = ref("");
-    const apiKey = ref("");
-    const points = ref("");
     const countToShow = ref(20);
     const countIncrement = ref(20);
+    const loading = ref(false);
 
     const showMore = () => {
       countToShow.value += countIncrement.value;
@@ -192,6 +192,7 @@ export default {
     // const ratesList = computed(() => store.getters["rates/rates"]);
     // const ordersList = computed(() => store.getters["orders/orders"]);
     const showFields = computed(() => store.getters["orders/showFields"]);
+    const agentNotesList = computed(() => store.getters["agents/notes"]);
 
     const selectRow = (item) => {
       if (props.editing) {
@@ -216,8 +217,44 @@ export default {
       return toCurrency(+item.inAmount * +item.rate);
     };
 
-    const onChangeStatus = (item) => {
-      store.dispatch("orders/updateOrderEntity", getOrderAPIFormat(item));
+    const onChangeStatus = async (item) => {
+      const order = getOrderAPIFormat(item);
+      const status = item.status;
+      loading.value = true;
+
+      await store.dispatch("orders/updateOrderEntity", order);
+      if (order.agentId === 0) {
+        loading.value = false;
+        return;
+      }
+      if (status === true) {
+        // добавить в жк
+        await store.dispatch("dailyNote/addNewEntity", {
+          amount: order.agentAmount,
+          category: 2,
+          comment: `${order.id}`, // link id with order
+          clientId: order.agentId,
+          inCurrencyId: order.agentCurrencyId,
+          date: Math.floor((+new Date() + 10800000) / 1000),
+          type: 1,
+        });
+      }
+      if (status === false) {
+        const findForRemove = agentNotesList.value.find((note) => {
+          return note.comment == item.id;
+        });
+
+        if (findForRemove) {
+          await store.dispatch("dailyNote/removeEntity", findForRemove);
+        } else {
+          ElNotification({
+            title: "Удаление посредники",
+            message: `Запись по посреднику не найдена`,
+            type: "warning",
+          });
+        }
+      }
+      loading.value = false;
     };
 
     const remove = async (item) => {
@@ -227,15 +264,7 @@ export default {
     return {
       ORDER_TYPES,
       ordersList,
-      title,
-      buy,
-      sell,
-      spreadBuy,
-      spreadSell,
-      apiKey,
-      points,
-      //
-      selectedItem,
+      loading,
       moment,
       showFields,
       countToShow,

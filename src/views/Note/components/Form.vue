@@ -1,5 +1,5 @@
 <template>
-  <div class="note-form">
+  <div class="note-form1231" tabindex="0" @keydown.enter="addNew">
     <div class="note-form__field">
       <CheckGroupButton
         label="Тип записи"
@@ -65,7 +65,6 @@
         :loading="loading"
         class="base-btn ml10"
         style="width: 120px"
-        @enter="addNew"
         @click="addNew"
       >
         {{ editNote ? "Сохранить" : "Добавить" }}

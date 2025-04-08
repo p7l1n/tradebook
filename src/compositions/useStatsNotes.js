@@ -13,11 +13,40 @@ export default function useStatsNotes() {
   );
 
   const dailyNotesList = computed(() => store.getters["dailyNote/notes"]);
+  const agentsNotesList = computed(() =>
+    store.getters["agents/notes"].map((item) => {
+      return {
+        ...item,
+        client: "Посредники", // объединить всех посредников в одно целое
+      };
+    })
+  );
 
   const allStats = computed(() => {
     const map = new Map();
 
-    [...notesList.value, ...dailyNotesList.value].forEach(
+    [
+      ...notesList.value,
+      ...dailyNotesList.value,
+      ...agentsNotesList.value,
+    ].forEach(({ client, inCurrency, amount, type }) => {
+      if (!map.has(client)) {
+        map.set(client, { client, amounts: {} });
+      }
+
+      const clientData = map.get(client);
+      clientData.amounts[inCurrency] =
+        (clientData.amounts[inCurrency] || 0) +
+        (NOTE_TYPES.debit === type ? -amount : +amount);
+    });
+
+    return Array.from(map.values());
+  });
+
+  const allStatsAgents = computed(() => {
+    const map = new Map();
+
+    [...store.getters["agents/notes"]].forEach(
       ({ client, inCurrency, amount, type }) => {
         if (!map.has(client)) {
           map.set(client, { client, amounts: {} });
@@ -35,5 +64,6 @@ export default function useStatsNotes() {
 
   return {
     allStats,
+    allStatsAgents,
   };
 }

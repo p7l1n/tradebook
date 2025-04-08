@@ -1,9 +1,11 @@
 <template>
   <div :class="{ maxWidth }" class="widget-total">
-    <div class="widget-total__title">Статистика (ТЕТРАДЬ + ЖУРНАЛ ДК)</div>
+    <div class="widget-total__title">
+      {{ isAgents ? "Посредники" : "Статистика (ТЕТРАДЬ + ЖУРНАЛ ДК)" }}
+    </div>
     <div class="widget-total__list">
       <div class="widget-total__list-item">
-        <div class="widget-total__list-item-field label"></div>
+        <div class="widget-total__list-item-field long label"></div>
         <div class="widget-total__list-item-field label">USDT</div>
         <div class="widget-total__list-item-field label">RUB</div>
         <div class="widget-total__list-item-field label">USD</div>
@@ -12,11 +14,11 @@
       </div>
       <div
         class="widget-total__list-item"
-        v-for="(item, ndx) in allStats"
+        v-for="(item, ndx) in statsList"
         :key="ndx"
       >
-        <div class="widget-total__list-item-field strong">
-          {{ parseLongName(item.client) }}
+        <div class="widget-total__list-item-field long strong">
+          {{ item.client }}
         </div>
         <div
           :class="{
@@ -73,6 +75,7 @@
 import useStatsNotes from "@/compositions/useStatsNotes";
 import { toCurrency } from "@/helpers";
 import { parseLongName } from "@/helpers";
+import { computed } from "vue";
 
 export default {
   props: {
@@ -80,14 +83,32 @@ export default {
       type: Boolean,
       default: false,
     },
+    isAgents: {
+      type: Boolean,
+      default: false,
+    },
+    searchStr: {
+      type: String,
+      default: "",
+    },
   },
-  setup() {
-    const { allStats } = useStatsNotes();
+  setup(props) {
+    const { allStats, allStatsAgents } = useStatsNotes();
+
+    const statsList = computed(() => {
+      const list = props.isAgents ? allStatsAgents.value : allStats.value;
+      if (!props.searchStr.length) {
+        return list;
+      }
+      return list.filter((item) =>
+        item.client.toLowerCase().includes(props.searchStr.toLowerCase())
+      );
+    });
 
     // console.log("allStats", allStats.value);
 
     return {
-      allStats,
+      statsList,
       toCurrency,
       parseLongName,
     };
@@ -146,6 +167,10 @@ export default {
     align-items: center;
     width: 120px;
     height: 40px;
+
+    &.long {
+      width: 250px;
+    }
 
     &.strong {
       color: $textColorBlack;

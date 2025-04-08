@@ -1,7 +1,9 @@
 <template>
   <div class="widget-notes-wrap">
     <div class="widget-notes">
-      <div class="widget-notes__title">Журнал ДК</div>
+      <div class="widget-notes__title">
+        {{ isAgents ? "Посредники" : "Журнал ДК" }}
+      </div>
       <div class="widget-notes__list">
         <div class="widget-notes__list-item">
           <!-- <div class="widget-notes__list-item-field label">ID</div> -->
@@ -10,7 +12,9 @@
           <div class="widget-notes__list-item-field label">Контрагент</div>
           <div class="widget-notes__list-item-field label">Валюта</div>
           <div class="widget-notes__list-item-field label">Сумма</div>
-          <div class="widget-notes__list-item-field label">Примечание</div>
+          <div class="widget-notes__list-item-field label">
+            {{ isAgents ? "Действие" : "Примечание" }}
+          </div>
         </div>
         <el-empty
           v-if="!notesList.length"
@@ -20,6 +24,7 @@
         <div
           :class="{
             active: selectedItem && selectedItem.apiKey === item.apiKey,
+            editing: editing && ids.includes(item.id),
           }"
           class="widget-notes__list-item"
           v-for="(item, ndx) in notesList.slice(0, countToShow)"
@@ -51,9 +56,19 @@
             {{ toCurrency(item.amount) }}
           </div>
           <div class="widget-notes__list-item-field strong">
-            {{ item.comment }}
+            <el-button
+              v-if="isAgents"
+              type="warning"
+              :loading="loading && activeRemoveNdx === ndx"
+              size="small"
+              @click="updateEntity(item, ndx)"
+            >
+              Перенести в ДК
+            </el-button>
+            {{ isAgents ? "" : item.comment }}
           </div>
           <div
+            v-if="!isAgents"
             class="widget-notes__list-item-field remove"
             @click.stop="remove(item)"
           ></div>
@@ -77,6 +92,7 @@ import { NOTE_TYPES } from "@/config/noteTypes";
 import { useStore } from "vuex";
 import moment from "moment";
 import useNotes from "@/compositions/useNotes";
+import useAgentsNotes from "@/compositions/useAgentsNotes";
 import { parseLongName } from "@/helpers";
 
 export default {
@@ -86,12 +102,28 @@ export default {
       type: String,
       default: "",
     },
+    editing: {
+      type: Boolean,
+      default: false,
+    },
+    ids: {
+      type: Array,
+      default: () => [],
+    },
+    isAgents: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props, { emit }) {
     const store = useStore();
-    const { filteredNotesList } = useNotes();
+    const { filteredNotesList } = props.isAgents
+      ? useAgentsNotes()
+      : useNotes();
     // const store = useStore();
     const selectedItem = ref(null);
+    const loading = ref(false);
+    const activeRemoveNdx = ref(-1);
 
     const notesList = computed(() => {
       const search = props.searchStr.toLowerCase();
@@ -117,6 +149,10 @@ export default {
     };
 
     const selectRow = (item) => {
+      if (props.editing) {
+        emit("collect", item.id);
+        return;
+      }
       emit("select", item);
     };
 
@@ -124,9 +160,28 @@ export default {
       await store.dispatch("dailyNote/removeEntity", item);
     };
 
+    const updateEntity = async (item, ndx) => {
+      activeRemoveNdx.value = ndx;
+      const newData = { ...item };
+
+      delete newData.client;
+      delete newData.inCurrency;
+      delete newData.isProfit;
+      newData.category = 1; // жк
+      newData.type = 0; // дебет
+      newData.date = Math.floor((newData.date + 10800000) / 1000);
+      newData.comment = "Перенос посредника";
+      loading.value = true;
+      await store.dispatch("dailyNote/updateEntity", newData);
+      loading.value = false;
+      activeRemoveNdx.value = -1;
+    };
+
     return {
       notesList,
       selectedItem,
+      loading,
+      activeRemoveNdx,
       moment,
       NOTE_TYPES,
       countIncrement,
@@ -137,6 +192,7 @@ export default {
       showMore,
       parseLongName,
       toCurrency,
+      updateEntity,
     };
   },
 };
@@ -160,6 +216,7 @@ export default {
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  padding-bottom: 10px;
 
   &__title {
     position: absolute;
@@ -189,6 +246,10 @@ export default {
     align-items: center;
     cursor: pointer;
     position: relative;
+
+    &.editing {
+      background-color: #ccc;
+    }
 
     &.active {
       background-color: $colorRowGrayActive;

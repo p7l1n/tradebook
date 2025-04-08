@@ -6,6 +6,7 @@ import clients from "./clients";
 import note from "./note";
 import dailyNote from "./dailyNote";
 import auth from "./auth";
+import agents from "./agents";
 
 export default createStore({
   state: {},
@@ -20,5 +21,6 @@ export default createStore({
     note,
     dailyNote,
     auth,
+    agents,
   },
 });
