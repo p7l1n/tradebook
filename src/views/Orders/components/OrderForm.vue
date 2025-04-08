@@ -113,12 +113,18 @@
       />
     </div>
     <div v-if="editOrder.agentAmount" class="order-form__field mb0 row">
-      <Input placeholder="Сумма" v-model="amountAgent" type="number" />
+      <Input
+        placeholder="Сумма"
+        v-model="amountAgent"
+        type="number"
+        @input="onAmountAgentChange"
+      />
       <Input
         placeholder="Курс"
         v-model="rateAgent"
         type="number"
         class="ml10"
+        @input="onRateAgentChange"
       />
     </div>
     <!--  -->
@@ -246,6 +252,17 @@ export default {
     };
 
     const onSelectAgentCurrencies = (ndx) => {
+      if (
+        activeIncurrenciesIndex.value !== ndx &&
+        activeOutcurrenciesIndex.value !== ndx
+      ) {
+        ElNotification({
+          title: "Журнал сделок",
+          message: `Валюта посредника не совпадает с валютами сделки`,
+          type: "warning",
+        });
+        return;
+      }
       activeAgentcurrenciesIndex.value = ndx;
     };
 
@@ -354,27 +371,6 @@ export default {
         emit("close");
         return;
       }
-
-      // add new
-
-      const newOrderEntity = {
-        // id: `${Math.random()}`.slice(2),
-        date: Math.floor((+new Date() + 10800000) / 1000),
-        type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
-        operatorId, // selectedOperator.value,
-        clientId, // selectedClient.value,
-        inCurrencyId: activeIncurrenciesIndex.value, // inCurrencies.value[activeIncurrenciesIndex.value],
-        inAmount: +amountIn.value,
-        rate: rateIn.value,
-        outCurrencyId: activeOutcurrenciesIndex.value, // outCurrencies.value[activeOutcurrenciesIndex.value],
-        outAmount: +amountOut.value,
-        status: 0,
-      };
-      loading.value = true;
-      await store.dispatch("orders/addNewOrderEntity", newOrderEntity);
-      loading.value = false;
-      clearForm();
-      emit("close");
     };
 
     const removeOrder = async () => {
@@ -382,6 +378,92 @@ export default {
       await store.dispatch("orders/removeOrderEntity", props.editOrder);
       loadingRemove.value = false;
       emit("close");
+    };
+
+    const calcValuesCustom = (amountIn, amountOut, rateIn) => {
+      let rate = "";
+      let amIn = "";
+      let amOut = "";
+      const myCurrency =
+        DEFAULT_CURRENCIES_SHORT[activeOutcurrenciesIndex.value];
+      const yourCurrency =
+        DEFAULT_CURRENCIES_SHORT[activeIncurrenciesIndex.value];
+
+      if (myCurrency === "р" || myCurrency === "т") {
+        if (amountIn && amountOut) {
+          rate = getNumFormat(amountOut / amountIn, 4);
+        }
+        if (amountIn && !amountOut && rateIn) {
+          amOut = getNumFormat(rateIn * amountIn, 4);
+        }
+        if (amountOut && !amountIn && rateIn) {
+          amIn = getNumFormat(amountOut / rateIn, 4);
+        }
+      } else {
+        if (amountIn && amountOut) {
+          rate = getNumFormat(amountIn / amountOut, 4);
+        }
+        if (amountIn && !amountOut && rateIn) {
+          amOut = getNumFormat(amountIn / rateIn, 4);
+        }
+        if (amountOut && !amountIn && rateIn) {
+          amIn = getNumFormat(amountOut * rateIn, 4);
+        }
+      }
+      if (myCurrency === "т" && yourCurrency === "р") {
+        if (amountIn && amountOut) {
+          rate = getNumFormat(amountIn / amountOut, 4);
+        }
+        if (amountIn && !amountOut && rateIn) {
+          amOut = getNumFormat(amountIn / rateIn, 4);
+        }
+        if (amountOut && !amountIn && rateIn) {
+          amIn = getNumFormat(amountOut * rateIn, 4);
+        }
+      }
+
+      if (myCurrency === "т" && yourCurrency === "е") {
+        if (amountIn && amountOut) {
+          rate = getNumFormat(amountOut / amountIn, 4);
+        }
+        if (amountIn && !amountOut && rateIn) {
+          amOut = getNumFormat(amountIn * rateIn, 4);
+        }
+        if (amountOut && !amountIn && rateIn) {
+          amIn = getNumFormat(amountOut / rateIn, 4);
+        }
+      }
+      if (
+        myCurrency === "т" &&
+        (yourCurrency === "б" || yourCurrency === "д")
+      ) {
+        if (amountIn && amountOut) {
+          rate = getNumFormat(amountIn / amountOut, 4);
+        }
+        if (amountIn && !amountOut && rateIn) {
+          amOut = getNumFormat(amountIn / rateIn, 4);
+        }
+        if (amountOut && !amountIn && rateIn) {
+          amIn = getNumFormat(amountOut * rateIn, 4);
+        }
+      }
+      if ((myCurrency === "б" || myCurrency === "д") && yourCurrency === "т") {
+        if (amountIn && amountOut) {
+          rate = getNumFormat(amountOut / amountIn, 4);
+        }
+        if (amountIn && !amountOut && rateIn) {
+          amOut = getNumFormat(amountIn * rateIn, 4);
+        }
+        if (amountOut && !amountIn && rateIn) {
+          amIn = getNumFormat(amountOut / rateIn, 4);
+        }
+      }
+
+      return {
+        rate: rate || rateIn,
+        amIn: amIn || amountIn,
+        amOut: amOut || amountOut,
+      };
     };
 
     const calcValues = () => {
@@ -515,6 +597,39 @@ export default {
       }, 100);
     };
 
+    const onAmountAgentChange = () => {
+      let result = {};
+      rateAgent.value = "";
+
+      if (activeAgentcurrenciesIndex.value === activeIncurrenciesIndex.value) {
+        result = calcValuesCustom(
+          +amountIn.value - +amountAgent.value,
+          amountOut.value
+        );
+      }
+      if (activeAgentcurrenciesIndex.value === activeOutcurrenciesIndex.value) {
+        result = calcValuesCustom(
+          amountIn.value,
+          +amountOut.value + +amountAgent.value
+        );
+      }
+      rateAgent.value = result.rate;
+    };
+
+    const onRateAgentChange = () => {
+      let result = {};
+      amountAgent.value = "";
+
+      if (activeAgentcurrenciesIndex.value === activeIncurrenciesIndex.value) {
+        result = calcValuesCustom("", amountOut.value, rateAgent.value);
+        amountAgent.value = (+amountIn.value - +result.amIn).toFixed(4);
+      }
+      if (activeAgentcurrenciesIndex.value === activeOutcurrenciesIndex.value) {
+        result = calcValuesCustom(+amountIn.value, "", rateAgent.value);
+        amountAgent.value = (+result.amOut - +amountOut.value).toFixed(4);
+      }
+    };
+
     const onAgentSelect = (val) => {
       selectedAgent.value = val;
     };
@@ -579,6 +694,8 @@ export default {
       onAmountOutChange,
       onRateChange,
       onAgentSelect,
+      onAmountAgentChange,
+      onRateAgentChange,
     };
   },
 };

@@ -88,17 +88,6 @@
       </div>
       <div class="order-form__field ml10">
         <el-button
-          v-if="editOrder"
-          type="warning"
-          :loading="loadingRemove"
-          class="base-btn ml10"
-          @click="removeOrder"
-        >
-          Удалить
-        </el-button>
-      </div>
-      <div class="order-form__field">
-        <el-button
           type="success"
           :loading="loading"
           class="base-btn"
@@ -139,10 +128,20 @@
       </div>
       <div class="row">
         <div class="order-form__field mb0">
-          <Input placeholder="Сумма" v-model="amountAgent" type="number" />
+          <Input
+            placeholder="Сумма"
+            v-model="amountAgent"
+            type="number"
+            @input="onAmountAgentChange"
+          />
         </div>
         <div class="order-form__field mb0 ml10">
-          <Input placeholder="Курс" v-model="rateAgent" type="number" />
+          <Input
+            placeholder="Курс"
+            v-model="rateAgent"
+            type="number"
+            @input="onRateAgentChange"
+          />
         </div>
       </div>
     </div>
@@ -160,7 +159,7 @@ import {
 } from "@/config/defaultCurrencies";
 
 import { useStore } from "vuex";
-import { onMounted, ref, computed } from "vue";
+import { ref, computed } from "vue";
 import { getNumFormat } from "@/helpers";
 
 import { ElSelect } from "element-plus";
@@ -205,7 +204,6 @@ export default {
     const rateAgent = ref("");
     const rateIn = ref("");
 
-    const loadingRemove = ref(false);
     const loading = ref(false);
 
     const defaultContragent = computed(() => store.getters["auth/user"]?.sub);
@@ -256,6 +254,17 @@ export default {
     };
 
     const onSelectAgentCurrencies = (ndx) => {
+      if (
+        activeIncurrenciesIndex.value !== ndx &&
+        activeOutcurrenciesIndex.value !== ndx
+      ) {
+        ElNotification({
+          title: "Журнал сделок",
+          message: `Валюта посредника не совпадает с валютами сделки`,
+          type: "warning",
+        });
+        return;
+      }
       activeAgentcurrenciesIndex.value = ndx;
     };
 
@@ -335,31 +344,7 @@ export default {
         }
       }
 
-      // edit
-      if (props.editOrder) {
-        const newOrderEntity = {
-          id: props.editOrder.id,
-          date: props.editOrder.date,
-          type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
-          operatorId, // : selectedOperator.value,
-          clientId, // selectedClient.value,
-          inCurrencyId: activeIncurrenciesIndex.value, // inCurrencies.value[activeIncurrenciesIndex.value],
-          inAmount: +amountIn.value,
-          rate: rateIn.value,
-          outCurrencyId: activeOutcurrenciesIndex.value, // outCurrencies.value[activeOutcurrenciesIndex.value],
-          outAmount: +amountOut.value,
-          status: props.editOrder.status,
-        };
-        loading.value = true;
-        await store.dispatch("orders/updateOrderEntity", newOrderEntity);
-        loading.value = false;
-        clearForm();
-        emit("close");
-        return;
-      }
-
       // add new
-      console.log("agentId", agentId);
 
       const newOrderEntity = {
         // id: `${Math.random()}`.slice(2),
@@ -386,11 +371,90 @@ export default {
       emit("close");
     };
 
-    const removeOrder = async () => {
-      loadingRemove.value = true;
-      await store.dispatch("orders/removeOrderEntity", props.editOrder);
-      loadingRemove.value = false;
-      emit("close");
+    const calcValuesCustom = (amountIn, amountOut, rateIn) => {
+      let rate = "";
+      let amIn = "";
+      let amOut = "";
+      const myCurrency =
+        DEFAULT_CURRENCIES_SHORT[activeOutcurrenciesIndex.value];
+      const yourCurrency =
+        DEFAULT_CURRENCIES_SHORT[activeIncurrenciesIndex.value];
+
+      if (myCurrency === "р" || myCurrency === "т") {
+        if (amountIn && amountOut) {
+          rate = getNumFormat(amountOut / amountIn, 4);
+        }
+        if (amountIn && !amountOut && rateIn) {
+          amOut = getNumFormat(rateIn * amountIn, 4);
+        }
+        if (amountOut && !amountIn && rateIn) {
+          amIn = getNumFormat(amountOut / rateIn, 4);
+        }
+      } else {
+        if (amountIn && amountOut) {
+          rate = getNumFormat(amountIn / amountOut, 4);
+        }
+        if (amountIn && !amountOut && rateIn) {
+          amOut = getNumFormat(amountIn / rateIn, 4);
+        }
+        if (amountOut && !amountIn && rateIn) {
+          amIn = getNumFormat(amountOut * rateIn, 4);
+        }
+      }
+      if (myCurrency === "т" && yourCurrency === "р") {
+        if (amountIn && amountOut) {
+          rate = getNumFormat(amountIn / amountOut, 4);
+        }
+        if (amountIn && !amountOut && rateIn) {
+          amOut = getNumFormat(amountIn / rateIn, 4);
+        }
+        if (amountOut && !amountIn && rateIn) {
+          amIn = getNumFormat(amountOut * rateIn, 4);
+        }
+      }
+
+      if (myCurrency === "т" && yourCurrency === "е") {
+        if (amountIn && amountOut) {
+          rate = getNumFormat(amountOut / amountIn, 4);
+        }
+        if (amountIn && !amountOut && rateIn) {
+          amOut = getNumFormat(amountIn * rateIn, 4);
+        }
+        if (amountOut && !amountIn && rateIn) {
+          amIn = getNumFormat(amountOut / rateIn, 4);
+        }
+      }
+      if (
+        myCurrency === "т" &&
+        (yourCurrency === "б" || yourCurrency === "д")
+      ) {
+        if (amountIn && amountOut) {
+          rate = getNumFormat(amountIn / amountOut, 4);
+        }
+        if (amountIn && !amountOut && rateIn) {
+          amOut = getNumFormat(amountIn / rateIn, 4);
+        }
+        if (amountOut && !amountIn && rateIn) {
+          amIn = getNumFormat(amountOut * rateIn, 4);
+        }
+      }
+      if ((myCurrency === "б" || myCurrency === "д") && yourCurrency === "т") {
+        if (amountIn && amountOut) {
+          rate = getNumFormat(amountOut / amountIn, 4);
+        }
+        if (amountIn && !amountOut && rateIn) {
+          amOut = getNumFormat(amountIn * rateIn, 4);
+        }
+        if (amountOut && !amountIn && rateIn) {
+          amIn = getNumFormat(amountOut / rateIn, 4);
+        }
+      }
+
+      return {
+        rate: rate || rateIn,
+        amIn: amIn || amountIn,
+        amOut: amOut || amountOut,
+      };
     };
 
     const calcValues = () => {
@@ -523,24 +587,38 @@ export default {
       }, 100);
     };
 
-    onMounted(() => {
-      if (props.editOrder) {
-        selectedOperator.value = props.editOrder.operator;
-        activeOperationTypesIndex.value = operationTypes.value.findIndex(
-          (item) => item === props.editOrder.type
-        );
-        selectedClient.value = props.editOrder.client;
-        activeIncurrenciesIndex.value = inCurrencies.value.findIndex(
-          (item) => item === props.editOrder.inCurrency
-        );
-        amountIn.value = props.editOrder.inAmount;
-        amountOut.value = props.editOrder.outAmount;
-        rateIn.value = props.editOrder.rate;
-        activeOutcurrenciesIndex.value = outCurrencies.value.findIndex(
-          (item) => item === props.editOrder.outCurrency
+    const onAmountAgentChange = () => {
+      let result = {};
+      rateAgent.value = "";
+
+      if (activeAgentcurrenciesIndex.value === activeIncurrenciesIndex.value) {
+        result = calcValuesCustom(
+          +amountIn.value - +amountAgent.value,
+          amountOut.value
         );
       }
-    });
+      if (activeAgentcurrenciesIndex.value === activeOutcurrenciesIndex.value) {
+        result = calcValuesCustom(
+          amountIn.value,
+          +amountOut.value + +amountAgent.value
+        );
+      }
+      rateAgent.value = result.rate;
+    };
+
+    const onRateAgentChange = () => {
+      let result = {};
+      amountAgent.value = "";
+
+      if (activeAgentcurrenciesIndex.value === activeIncurrenciesIndex.value) {
+        result = calcValuesCustom("", amountOut.value, rateAgent.value);
+        amountAgent.value = (+amountIn.value - +result.amIn).toFixed(4);
+      }
+      if (activeAgentcurrenciesIndex.value === activeOutcurrenciesIndex.value) {
+        result = calcValuesCustom(+amountIn.value, "", rateAgent.value);
+        amountAgent.value = (+result.amOut - +amountOut.value).toFixed(4);
+      }
+    };
 
     return {
       operationTypes,
@@ -562,7 +640,6 @@ export default {
       operatorItems,
       clientItems,
       loading,
-      loadingRemove,
       onSelectOperationType,
       onSelectInCurrencies,
       onSelectOutCurrencies,
@@ -572,10 +649,11 @@ export default {
       onAgentSelect,
       clearForm,
       addNewOrder,
-      removeOrder,
       onAmountInChange,
       onAmountOutChange,
       onRateChange,
+      onAmountAgentChange,
+      onRateAgentChange,
     };
   },
 };
