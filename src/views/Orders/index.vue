@@ -60,6 +60,9 @@
     <teleport v-if="editOrderForm" to="body">
       <Modal>
         <ModalContent
+          :style="{
+            width: selectedOrder.agent ? '700px' : 'auto',
+          }"
           :title="selectedOrder ? 'Редактирование сделки' : 'Новая сделка'"
           v-click-away="closeForm"
         >

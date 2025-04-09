@@ -87,45 +87,48 @@
       </el-select>
     </div>
     <!-- посредник -->
-    <div v-if="editOrder.agentAmount" class="order-form__field mb0">
-      <el-select
-        v-model="selectedAgent"
-        clearable
-        filterable
-        placeholder="Посредник"
-        style="width: 100%"
-        size="large"
-        @change="onAgentSelect"
-      >
-        <el-option
-          v-for="item in clientItems"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+    <div class="order-form__agent">
+      <div v-if="editOrder.agentAmount" class="order-form__field mb0">
+        <div class="label">Посредник</div>
+        <el-select
+          v-model="selectedAgent"
+          clearable
+          filterable
+          placeholder="Посредник"
+          style="width: 100%"
+          size="large"
+          @change="onAgentSelect"
+        >
+          <el-option
+            v-for="item in clientItems"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </div>
+      <div v-if="editOrder.agentAmount" class="order-form__field mb0">
+        <CheckGroupButton
+          :items="agentCurrencies"
+          :active-index="activeAgentcurrenciesIndex"
+          @check="onSelectAgentCurrencies"
         />
-      </el-select>
-    </div>
-    <div v-if="editOrder.agentAmount" class="order-form__field mb0">
-      <CheckGroupButton
-        :items="agentCurrencies"
-        :active-index="activeAgentcurrenciesIndex"
-        @check="onSelectAgentCurrencies"
-      />
-    </div>
-    <div v-if="editOrder.agentAmount" class="order-form__field mb0 row">
-      <Input
-        placeholder="Сумма"
-        v-model="amountAgent"
-        type="number"
-        @input="onAmountAgentChange"
-      />
-      <Input
-        placeholder="Курс"
-        v-model="rateAgent"
-        type="number"
-        class="ml10"
-        @input="onRateAgentChange"
-      />
+      </div>
+      <div v-if="editOrder.agentAmount" class="order-form__field mb0 row">
+        <Input
+          placeholder="Сумма"
+          v-model="amountAgent"
+          type="number"
+          @input="onAmountAgentChange"
+        />
+        <Input
+          placeholder="Курс"
+          v-model="rateAgent"
+          type="number"
+          class="ml10"
+          @input="onRateAgentChange"
+        />
+      </div>
     </div>
     <!--  -->
     <div class="order-form__btns">
@@ -703,7 +706,22 @@ export default {
 <style lang="scss" scoped>
 .order-form {
   display: flex;
+  width: 360px;
   flex-direction: column;
+  position: relative;
+
+  &__agent {
+    position: absolute;
+    right: -340px;
+    top: 0;
+
+    .label {
+      font-size: 14px;
+      color: #444;
+      text-align: left;
+      margin-bottom: 5px;
+    }
+  }
 
   .row {
     display: flex;
