@@ -83,11 +83,13 @@ export default {
           message: `Данное снятие не найдено в журнале ДК`,
           type: "error",
         });
-        removeLoading.value = false;
-        return;
+        // removeLoading.value = false;
+        // return;
       }
       try {
-        await store.dispatch("dailyNote/removeEntity", noteDKItem);
+        if (noteDKItem) {
+          await store.dispatch("dailyNote/removeEntity", noteDKItem);
+        }
         await store.dispatch("note/removeProfit", profitItem);
         ElNotification({
           title: "Отменено",

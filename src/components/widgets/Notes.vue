@@ -29,7 +29,7 @@
           class="widget-notes__list-item"
           v-for="(item, ndx) in notesList.slice(0, countToShow)"
           :key="ndx"
-          @click="selectRow(item)"
+          @click="!item.isProfit && selectRow(item)"
         >
           <!-- <div class="widget-notes__list-item-field">
             {{ `${item.id}`.slice(0, 9) }}
@@ -68,7 +68,7 @@
             {{ isAgents ? "" : item.comment }}
           </div>
           <div
-            v-if="!isAgents"
+            v-if="!isAgents && !item.isProfit"
             class="widget-notes__list-item-field remove"
             @click.stop="remove(item)"
           ></div>
