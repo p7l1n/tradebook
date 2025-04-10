@@ -16,6 +16,9 @@ export const CONTRAGENTS = {
   profit: "Прибыль",
   client: "Клиент",
   operator: "Оператор",
+  //
+  note: "Тетрадь",
+  billing: "Выручка",
 };
 
 export const getContragentFromIndex = (index) => {

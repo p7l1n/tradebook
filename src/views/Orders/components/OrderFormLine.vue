@@ -182,6 +182,7 @@ import { getNumFormat } from "@/helpers";
 import { ElSelect } from "element-plus";
 import { ElNotification } from "element-plus";
 import { numberFormatter, numberParser } from "@/formatters";
+import { filterWithOutSystem } from "@/filters";
 
 export default {
   components: {
@@ -248,14 +249,16 @@ export default {
     });
 
     const clientItems = computed(() => {
-      return [...new Set(clientsList.value.map((item) => item.name))].map(
-        (item) => {
-          return {
-            title: item,
-            value: item,
-          };
-        }
-      );
+      return [
+        ...new Set(
+          clientsList.value.filter(filterWithOutSystem).map((item) => item.name)
+        ),
+      ].map((item) => {
+        return {
+          title: item,
+          value: item,
+        };
+      });
     });
 
     const onSelectOperationType = (ndx) => {

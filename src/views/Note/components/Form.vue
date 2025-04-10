@@ -88,6 +88,7 @@ import { onMounted, ref, computed } from "vue";
 
 import { ElSelect } from "element-plus";
 import { numberFormatter, numberParser } from "@/formatters";
+import { filterWithOutSystem } from "@/filters";
 
 export default {
   components: {
@@ -119,14 +120,16 @@ export default {
 
     const clientsList = computed(() => store.getters["clients/clients"]);
     const clientItems = computed(() => {
-      return [...new Set(clientsList.value.map((item) => item.name))].map(
-        (item) => {
-          return {
-            title: item,
-            value: item,
-          };
-        }
-      );
+      return [
+        ...new Set(
+          clientsList.value.filter(filterWithOutSystem).map((item) => item.name)
+        ),
+      ].map((item) => {
+        return {
+          title: item,
+          value: item,
+        };
+      });
     });
 
     const onSelectOperationType = (ndx) => {
