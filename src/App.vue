@@ -1,6 +1,6 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.0.5" }}</div>
+  <div class="app-version">{{ "p1.0.6" }}</div>
   <router-view />
 </template>
 <script>
@@ -97,6 +97,25 @@ html {
   tr th .cell {
     color: $colorGreenDark !important;
   }
+}
+.el-input__wrapper {
+  background-color: #746f6f21 !important;
+}
+.green {
+  .el-input__wrapper {
+    background-color: $lightGreen !important;
+  }
+}
+
+.red {
+  .el-input__wrapper {
+    background-color: $lightRed !important;
+  }
+}
+
+.el-input__wrapper,
+.el-input__wrapper.is-focus {
+  box-shadow: none !important;
 }
 
 .app-version {

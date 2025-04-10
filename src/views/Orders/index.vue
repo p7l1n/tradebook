@@ -61,7 +61,7 @@
       <Modal>
         <ModalContent
           :style="{
-            width: selectedOrder.agent ? '700px' : 'auto',
+            width: selectedOrder.agent ? '720px' : 'auto',
           }"
           :title="selectedOrder ? 'Редактирование сделки' : 'Новая сделка'"
           v-click-away="closeForm"

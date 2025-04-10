@@ -35,12 +35,16 @@
       />
     </div>
     <div class="note-form__field">
-      <Input
+      <el-input
         placeholder="Сумма"
-        :red="activeOperationTypesIndex === 0"
-        :green="activeOperationTypesIndex === 1"
         v-model="amount"
-        type="number"
+        :class="{
+          red: activeOperationTypesIndex === 0,
+          green: activeOperationTypesIndex === 1,
+        }"
+        :formatter="numberFormatter"
+        :parser="numberParser"
+        class="base-input"
       />
     </div>
     <div class="note-form__field">
@@ -83,6 +87,7 @@ import { useStore } from "vuex";
 import { onMounted, ref, computed } from "vue";
 
 import { ElSelect } from "element-plus";
+import { numberFormatter, numberParser } from "@/formatters";
 
 export default {
   components: {
@@ -234,6 +239,8 @@ export default {
       clearForm,
       addNew,
       remove,
+      numberFormatter,
+      numberParser,
     };
   },
 };

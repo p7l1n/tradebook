@@ -9,19 +9,22 @@
         />
       </div>
       <div class="order-form__field ml10">
-        <Input
+        <el-input
           placeholder="Сумма приход"
-          :green="true"
           v-model="amountIn"
-          type="number"
+          :formatter="numberFormatter"
+          :parser="numberParser"
+          class="base-input green"
           @input="onAmountInChange"
         />
       </div>
       <div class="order-form__field ml10">
-        <Input
+        <el-input
           placeholder="Курс"
           v-model="rateIn"
-          type="number"
+          :formatter="numberFormatter"
+          :parser="numberParser"
+          class="base-input"
           @input="onRateChange"
         />
       </div>
@@ -42,11 +45,12 @@
         />
       </div>
       <div class="order-form__field ml10">
-        <Input
+        <el-input
           placeholder="Сумма расход"
           v-model="amountOut"
-          red
-          type="number"
+          :formatter="numberFormatter"
+          :parser="numberParser"
+          class="base-input red"
           @input="onAmountOutChange"
         />
       </div>
@@ -134,18 +138,26 @@
       </div>
       <div class="row">
         <div class="order-form__field mb0">
-          <Input
+          <el-input
             placeholder="Сумма"
             v-model="amountAgent"
-            type="number"
+            :formatter="numberFormatter"
+            :parser="numberParser"
+            :class="{
+              green: activeAgentcurrenciesIndex === activeIncurrenciesIndex,
+              red: activeAgentcurrenciesIndex === activeOutcurrenciesIndex,
+            }"
+            class="base-input"
             @input="onAmountAgentChange"
           />
         </div>
         <div class="order-form__field mb0 ml10">
-          <Input
+          <el-input
             placeholder="Курс"
             v-model="rateAgent"
-            type="number"
+            :formatter="numberFormatter"
+            :parser="numberParser"
+            class="base-input"
             @input="onRateAgentChange"
           />
         </div>
@@ -154,7 +166,6 @@
   </div>
 </template>
 <script>
-import Input from "@/components/Input";
 import Button from "@/components/Button";
 import CheckGroupButton from "@/components/CheckGroupButton";
 import { ORDER_TYPES } from "@/config/orderTypes";
@@ -170,10 +181,10 @@ import { getNumFormat } from "@/helpers";
 
 import { ElSelect } from "element-plus";
 import { ElNotification } from "element-plus";
+import { numberFormatter, numberParser } from "@/formatters";
 
 export default {
   components: {
-    Input,
     Button,
     CheckGroupButton,
     ElSelect,
@@ -653,6 +664,8 @@ export default {
       operatorItems,
       clientItems,
       loading,
+      numberFormatter,
+      numberParser,
       clearFormAgent,
       onSelectOperationType,
       onSelectInCurrencies,

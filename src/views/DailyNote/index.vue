@@ -49,13 +49,15 @@
           </div>
           <div class="form">
             <div class="form-field">
-              <Input
+              <el-input
                 v-model="amounUsd"
-                type="number"
-                gray
-                :red="activeOperationTypesIndex === 0"
-                :green="activeOperationTypesIndex === 1"
                 placeholder="USDT сумма"
+                :formatter="numberFormatter"
+                :parser="numberParser"
+                :class="{
+                  red: activeOperationTypesIndex === 0,
+                  green: activeOperationTypesIndex === 1,
+                }"
                 class="base-input"
               />
             </div>
@@ -138,13 +140,15 @@
           </div>
           <div class="form">
             <div class="form-field">
-              <Input
+              <el-input
                 v-model="amountRub"
-                type="number"
-                gray
-                :red="activeOperationTypesIndex === 0"
-                :green="activeOperationTypesIndex === 1"
                 placeholder="RUB сумма"
+                :formatter="numberFormatter"
+                :parser="numberParser"
+                :class="{
+                  red: activeOperationTypesIndex === 0,
+                  green: activeOperationTypesIndex === 1,
+                }"
                 class="base-input"
               />
             </div>
@@ -227,13 +231,15 @@
           </div>
           <div class="form">
             <div class="form-field">
-              <Input
+              <el-input
                 v-model="amountDol"
-                type="number"
-                gray
-                :red="activeOperationTypesIndex === 0"
-                :green="activeOperationTypesIndex === 1"
                 placeholder="USD сумма"
+                :formatter="numberFormatter"
+                :parser="numberParser"
+                :class="{
+                  red: activeOperationTypesIndex === 0,
+                  green: activeOperationTypesIndex === 1,
+                }"
                 class="base-input"
               />
             </div>
@@ -316,13 +322,15 @@
           </div>
           <div class="form">
             <div class="form-field">
-              <Input
+              <el-input
                 v-model="amountEur"
-                type="number"
-                gray
-                :red="activeOperationTypesIndex === 0"
-                :green="activeOperationTypesIndex === 1"
                 placeholder="EUR сумма"
+                :formatter="numberFormatter"
+                :parser="numberParser"
+                :class="{
+                  red: activeOperationTypesIndex === 0,
+                  green: activeOperationTypesIndex === 1,
+                }"
                 class="base-input"
               />
             </div>
@@ -405,13 +413,15 @@
           </div>
           <div class="form">
             <div class="form-field">
-              <Input
+              <el-input
                 v-model="amountWusd"
-                type="number"
-                gray
-                :red="activeOperationTypesIndex === 0"
-                :green="activeOperationTypesIndex === 1"
                 placeholder="WUSD сумма"
+                :formatter="numberFormatter"
+                :parser="numberParser"
+                :class="{
+                  red: activeOperationTypesIndex === 0,
+                  green: activeOperationTypesIndex === 1,
+                }"
                 class="base-input"
               />
             </div>
@@ -576,6 +586,7 @@ import { NOTE_TYPES } from "@/config/noteTypes";
 // import NotesStats from "@/components/widgets/NotesStats";
 import { ElNotification } from "element-plus";
 import useDailyNotes from "@/compositions/useDailyNotes";
+import { numberFormatter, numberParser } from "@/formatters";
 
 export default {
   components: {
@@ -1041,6 +1052,8 @@ export default {
       onSelectDateFrom,
       onSelectDateTo,
       onSelectOperationType,
+      numberFormatter,
+      numberParser,
     };
   },
 };

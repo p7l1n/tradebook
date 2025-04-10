@@ -48,32 +48,59 @@
     <!-- edit -->
     <div v-if="editMode" class="widget-rates__edit-form">
       <div class="input-field row">
-        <Input placeholder="Покупка" class="mr15" v-model="buy" type="number" />
-        <Input placeholder="Продажа" v-model="sell" type="number" />
-      </div>
-      <div class="input-field row">
-        <Input
-          placeholder="Покуп. -"
-          class="mr15"
-          v-model="spreadBuy"
-          type="number"
+        <el-input
+          placeholder="Покупка"
+          v-model="buy"
+          :formatter="numberFormatter"
+          :parser="numberParser"
+          class="base-input green mr15"
         />
-        <Input placeholder="Продаж. +" v-model="spreadSell" type="number" />
+        <el-input
+          placeholder="Продажа"
+          v-model="sell"
+          :formatter="numberFormatter"
+          :parser="numberParser"
+          class="base-input red mr15"
+        />
+      </div>
+      <div class="input-field row">
+        <el-input
+          placeholder="Покуп. -"
+          v-model="spreadBuy"
+          :formatter="numberFormatter"
+          :parser="numberParser"
+          class="base-input mr15"
+        />
+        <el-input
+          placeholder="Продаж. +"
+          v-model="spreadSell"
+          :formatter="numberFormatter"
+          :parser="numberParser"
+          class="base-input mr15"
+        />
       </div>
       <div class="input-field row">
         <Input
+          v-if="false"
           placeholder="Валюта"
           :disabled="isEditing"
           class="mr15"
           v-model="title"
         />
         <Input
+          v-if="false"
           placeholder="Тикер (API)"
           :disabled="isEditing"
           v-model="apiKey"
           class="mr15"
         />
-        <Input placeholder="Округление" v-model="points" type="number" />
+        <el-input
+          placeholder="Округление"
+          v-model="points"
+          :formatter="numberFormatter"
+          :parser="numberParser"
+          class="base-input mr15"
+        />
       </div>
       <el-button
         type="warning"
@@ -104,6 +131,7 @@ import Input from "@/components/Input";
 // import Button from "@/components/Button";
 // import CheckButton from "@/components/CheckButton";
 import { getNumFormat } from "@/helpers";
+import { numberFormatter, numberParser } from "@/formatters";
 
 export default {
   components: {
@@ -240,6 +268,8 @@ export default {
       updateEntity,
       removeRateEntity,
       onCheckUpdatePrice,
+      numberFormatter,
+      numberParser,
     };
   },
 };

@@ -2,60 +2,67 @@
   <div class="balances">
     <div class="balances-item">
       <div class="label">RUB</div>
-      <Input
+      <el-input
         placeholder="RUB"
         v-model="rubAmount"
-        type="number"
+        :formatter="numberFormatter"
+        :parser="numberParser"
+        class="base-input"
         @input="onRubInput"
       />
     </div>
     <div class="balances-item">
       <div class="label">USD</div>
-      <Input
+      <el-input
         placeholder="USD"
         v-model="usdAmount"
-        type="number"
+        :formatter="numberFormatter"
+        :parser="numberParser"
+        class="base-input"
         @input="onUsdInput"
       />
     </div>
     <div class="balances-item">
       <div class="label">EUR</div>
-      <Input
+      <el-input
         placeholder="EUR"
         v-model="eurAmount"
-        type="number"
+        :formatter="numberFormatter"
+        :parser="numberParser"
+        class="base-input"
         @input="onEurInput"
       />
     </div>
     <div class="balances-item">
       <div class="label">USDT</div>
-      <Input
+      <el-input
         placeholder="USDT"
         v-model="usdtAmount"
-        type="number"
+        :formatter="numberFormatter"
+        :parser="numberParser"
+        class="base-input"
         @input="onUsdtInput"
       />
     </div>
     <div class="balances-item">
       <div class="label">WUSD</div>
-      <Input
+      <el-input
         placeholder="WUSD"
         v-model="wusdAmount"
-        type="number"
+        :formatter="numberFormatter"
+        :parser="numberParser"
+        class="base-input"
         @input="onWusdInput"
       />
     </div>
   </div>
 </template>
 <script>
-import Input from "../Input";
 import { onMounted, ref, computed } from "vue";
 import { useStore } from "vuex";
+import { numberFormatter, numberParser } from "@/formatters";
 
 export default {
-  components: {
-    Input,
-  },
   setup() {
     const store = useStore();
     const rubAmount = ref("");
@@ -123,6 +130,8 @@ export default {
       onEurInput,
       onUsdtInput,
       onWusdInput,
+      numberFormatter,
+      numberParser,
     };
   },
 };
@@ -131,7 +140,7 @@ export default {
 .balances {
   width: 350px;
   padding: 15px;
-  background-color: $colorRowGrayActive;
+  background-color: $panelColorLight;
   border-radius: $borderRadius;
 }
 

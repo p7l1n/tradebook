@@ -105,12 +105,16 @@
           </el-select>
         </div>
         <div class="note-page__form-field">
-          <Input
+          <el-input
             placeholder="Сумма"
-            :red="activeOperationTypesIndex === 0"
-            :green="activeOperationTypesIndex === 1"
             v-model="amount"
-            type="number"
+            :class="{
+              red: activeOperationTypesIndex === 0,
+              green: activeOperationTypesIndex === 1,
+            }"
+            :formatter="numberFormatter"
+            :parser="numberParser"
+            class="base-input"
           />
         </div>
         <div class="note-page__form-field">
@@ -183,6 +187,7 @@ import { NOTE_TYPES } from "@/config/noteTypes";
 import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
 import { ElNotification } from "element-plus";
 import CheckButton from "@/components/CheckButton";
+import { numberFormatter, numberParser } from "@/formatters";
 
 export default {
   components: {
@@ -422,6 +427,8 @@ export default {
       removeOrders,
       onCheckEdit,
       onCollect,
+      numberFormatter,
+      numberParser,
     };
   },
 };
