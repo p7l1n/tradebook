@@ -391,6 +391,7 @@ export default {
       selectedCurrIn.value = filterOptions.value.inCurrency;
       selectedCurrOut.value = filterOptions.value.outCurrency;
       showStats.value = filterOptions.value.showStats;
+      selectedStatus.value = filterOptions.value.status;
 
       currentDate.value = new Date();
     });
