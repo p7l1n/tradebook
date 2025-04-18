@@ -20,7 +20,7 @@
     >
       <div class="row">
         {{ userInfo?.sub?.split("@")[0] }}
-        <span>({{ organizationName }})</span>
+        <span>{{ organizationName ? `(${organizationName})` : "" }}</span>
       </div>
       <div class="icon" />
     </div>
