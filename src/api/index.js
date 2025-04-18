@@ -6,6 +6,8 @@ const routes = {
   Notes: "Журнал/Тетрадь",
   Clients: "Контрагенты",
   Orders: "Заявки",
+  Organizations: "Кассы",
+  // Claims: "Пользователи",
 };
 
 const getError = (err) => {
@@ -13,6 +15,7 @@ const getError = (err) => {
     err?.response?.data?.title ||
     err?.response?.data[0]?.description ||
     err?.response?.statusText || // err.response.status === 401
+    err?.response?.data ||
     "Unknown API error"
   );
 };
@@ -21,8 +24,14 @@ const BASE_URL = process.env.VUE_APP_API_URL;
 import { ElNotification } from "element-plus";
 
 export const postQuery = async (url, params = {}) => {
+  const isAdmin = store.getters["auth/isAdmin"];
+  const organizationId = store.getters["settings/organizationId"];
+
   let res;
 
+  if (isAdmin) {
+    params.organizationId = organizationId;
+  }
   try {
     res = await axios.post(`${BASE_URL}${url}`, params, {
       headers: {
@@ -60,7 +69,14 @@ export const postQuery = async (url, params = {}) => {
 
 export const putQuery = async (url, params = {}) => {
   let res;
+
   delete params.id;
+  const isAdmin = store.getters["auth/isAdmin"];
+  const organizationId = store.getters["settings/organizationId"];
+
+  if (isAdmin) {
+    params.organizationId = organizationId;
+  }
 
   try {
     res = await axios.put(`${BASE_URL}${url}`, params, {
@@ -134,10 +150,19 @@ export const deleteQuery = async (url) => {
 };
 
 export const getQuery = async (url, params = {}) => {
+  const isAdmin = store.getters["auth/isAdmin"];
+  const organizationId = store.getters["settings/organizationId"];
+
   let res;
+  let urlQuery = "";
+
+  if (isAdmin) {
+    params.organizationId = organizationId;
+    urlQuery = `?organizationId=${organizationId}`;
+  }
 
   try {
-    res = await axios(`${BASE_URL}${url}`, {
+    res = await axios(`${BASE_URL}${url}${urlQuery}`, {
       method: "GET",
       data: {
         params,

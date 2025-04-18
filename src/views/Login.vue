@@ -1,5 +1,5 @@
 <template>
-  <div class="login-page">
+  <div class="login-page" :class="{ registerMode }">
     <div class="login-form wrap">
       <el-tabs
         v-model="tabName"
@@ -7,33 +7,13 @@
         type="border-card"
         @tab-click="onTabClick"
       >
-        <el-tab-pane label="Авторизация" name="login" class="login-form">
-          <div class="login-form__icon"></div>
-          <div class="login-form__field mt25">
-            <el-input
-              v-model="userName"
-              placeholder="Email"
-              clearable
-              class="base-input"
-            />
-          </div>
-          <div class="login-form__field">
-            <el-input
-              v-model="password"
-              placeholder="Пароль"
-              clearable
-              type="password"
-              class="base-input"
-            />
-          </div>
-          <div class="login-form__login-btn" @click="login">
-            <el-button type="success" :loading="loading" class="base-btn"
-              >Логин</el-button
-            >
-          </div>
-        </el-tab-pane>
         <!-- reg -->
-        <el-tab-pane label="Регистрация" name="register" class="login-form">
+        <el-tab-pane
+          v-if="registerMode"
+          label="Регистрация"
+          name="register"
+          class="login-form"
+        >
           <div class="login-form__icon"></div>
           <div class="login-form__field mt25">
             <el-input
@@ -67,6 +47,36 @@
             >
           </div>
         </el-tab-pane>
+        <el-tab-pane
+          v-if="!registerMode"
+          label="Авторизация"
+          name="login"
+          class="login-form"
+        >
+          <div class="login-form__icon"></div>
+          <div class="login-form__field mt25">
+            <el-input
+              v-model="userName"
+              placeholder="Email"
+              clearable
+              class="base-input"
+            />
+          </div>
+          <div class="login-form__field">
+            <el-input
+              v-model="password"
+              placeholder="Пароль"
+              clearable
+              type="password"
+              class="base-input"
+            />
+          </div>
+          <div class="login-form__login-btn" @click="login">
+            <el-button type="success" :loading="loading" class="base-btn"
+              >Логин</el-button
+            >
+          </div>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -78,11 +88,17 @@ import { ElNotification } from "element-plus";
 
 export default {
   components: {},
-  setup() {
+  props: {
+    registerMode: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  setup(props, { emit }) {
     const userName = ref("");
     const password = ref("");
     const passwordRepeat = ref("");
-    const tabName = ref("login");
+    const tabName = ref(props.registerMode ? "register" : "login");
     const store = useStore();
     const loading = ref(false);
 
@@ -125,6 +141,11 @@ export default {
         });
 
         loading.value = false;
+
+        if (props.registerMode) {
+          emit("registered");
+          return;
+        }
 
         if (res.success) {
           clearForm();
@@ -172,6 +193,13 @@ export default {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50%;
+
+  &.registerMode {
+    display: flex;
+    padding-top: 80px;
+    align-items: flex-start;
+    background-color: initial;
+  }
 }
 
 .login-form {

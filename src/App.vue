@@ -1,6 +1,6 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.0.6" }}</div>
+  <div class="app-version">{{ "p1.1.0" }}</div>
   <router-view />
 </template>
 <script>
@@ -15,17 +15,38 @@ export default {
   setup() {
     const store = useStore();
     const userInfo = computed(() => store.getters["auth/user"]);
+    const isAdmin = computed(() => store.getters["auth/isAdmin"]);
+    const organizationId = computed(
+      () => store.getters["settings/organizationId"]
+    );
+
+    const initApp = async () => {
+      await store.dispatch("stats/fetchCurrencies");
+      await store.dispatch("rates/fetchRates");
+      await store.dispatch("clients/fetchContragents");
+      await store.dispatch("dailyNote/fetchNotes");
+      await store.dispatch("note/fetchProfitHistory");
+      await store.dispatch("orders/fetchOrders");
+      if (isAdmin.value) {
+        await store.dispatch("claims/fetchClaimList");
+        await store.dispatch("settings/fetchOrganizations");
+      }
+    };
+
+    watch(
+      () => organizationId.value,
+      async (organizationId) => {
+        if (organizationId) {
+          await initApp();
+        }
+      }
+    );
 
     watch(
       () => userInfo.value?.jwt,
       async (jwt) => {
         if (jwt) {
-          await store.dispatch("stats/fetchCurrencies");
-          await store.dispatch("rates/fetchRates");
-          await store.dispatch("clients/fetchContragents");
-          await store.dispatch("dailyNote/fetchNotes");
-          await store.dispatch("note/fetchProfitHistory");
-          await store.dispatch("orders/fetchOrders");
+          await initApp();
         }
       }
     );
@@ -33,12 +54,7 @@ export default {
     onMounted(async () => {
       setTimeout(async () => {
         if (userInfo.value?.jwt) {
-          await store.dispatch("stats/fetchCurrencies");
-          await store.dispatch("rates/fetchRates");
-          await store.dispatch("clients/fetchContragents");
-          await store.dispatch("dailyNote/fetchNotes");
-          await store.dispatch("note/fetchProfitHistory");
-          await store.dispatch("orders/fetchOrders");
+          initApp();
         }
       }, 500);
     });

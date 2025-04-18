@@ -1,5 +1,5 @@
 // import { getRates } from "@/api/getRates";
-import { getQuery, postQuery, putQuery } from "@/api";
+import { getQuery, postQuery, putQuery, deleteQuery } from "@/api";
 
 const types = {
   ADD_RATE_ENTITY: "ADD_RATE_ENTITY",
@@ -104,6 +104,11 @@ export default {
       const res = await getQuery("Rates");
       if (res && Array.isArray(res)) {
         res.forEach((rate) => {
+          // if (rate.id === 1) rate.title = "RUB";
+          // if (rate.id === 2) rate.title = "USD";
+          // if (rate.id === 3) rate.title = "EUR";
+          // if (rate.id === 4) rate.title = "WUSD";
+          // if (rate.id === 5) rate.title = "USDT";
           if (state.rates[rate.title]) {
             commit(types.ADD_RATE_ENTITY, rate);
           }
@@ -151,8 +156,12 @@ export default {
         return;
       }
     },
-    removeRateEntity({ commit }, key) {
-      commit(types.REMOVE_RATE_ENTITY, key);
+    async removeRateEntity({ dispatch }, value) {
+      const res = await deleteQuery(`Rates/${value.id}`);
+      await dispatch("fetchRates");
+      if (res.error) {
+        return;
+      }
     },
     async updateRateEntity({ dispatch }, entity) {
       const res = await putQuery(`Rates/${entity.id}`, entity);

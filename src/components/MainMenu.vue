@@ -18,32 +18,48 @@
         $store.dispatch('auth/logout', null);
       "
     >
-      {{ userInfo?.sub?.split("@")[0] }}
+      <div class="row">
+        {{ userInfo?.sub?.split("@")[0] }}
+        <span>({{ organizationName }})</span>
+      </div>
       <div class="icon" />
     </div>
   </div>
 </template>
 <script>
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { useStore } from "vuex";
 
 export default {
   setup() {
     const store = useStore();
-    const menuItems = ref([
-      { title: "Балансы", route: "balances" },
-      { title: "Журнал СД", route: "orders" },
-      { title: "Журнал ДК", route: "notes" },
-      { title: "Посредники", route: "agents" },
-      { title: "Тетрадь", route: "dailynotes" },
-      { title: "Контрагенты", route: "clients" },
-    ]);
 
     const userInfo = computed(() => store.getters["auth/user"]);
+    const isAdmin = computed(() => store.getters["auth/isAdmin"]);
+    const organizationName = computed(
+      () => store.getters["settings/organizationName"]
+    );
+
+    const menuItems = computed(() => {
+      const items = [
+        { title: "Балансы", route: "balances" },
+        { title: "Журнал СД", route: "orders" },
+        { title: "Журнал ДК", route: "notes" },
+        { title: "Посредники", route: "agents" },
+        { title: "Тетрадь", route: "dailynotes" },
+        { title: "Контрагенты", route: "clients" },
+      ];
+      if (isAdmin.value) {
+        items.push({ title: "Настройки", route: "settings" });
+      }
+
+      return items;
+    });
 
     return {
       menuItems,
       userInfo,
+      organizationName,
     };
   },
 };
@@ -93,6 +109,16 @@ export default {
     color: $textColorWhite;
     font-weight: bold;
     cursor: pointer;
+
+    .row {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    span {
+      font-size: 13px;
+    }
 
     .icon {
       cursor: pointer;

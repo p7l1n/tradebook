@@ -24,6 +24,8 @@ createPersistedState({
     // "dailyNote.filter",
     // "stats.stats",
     "auth.user",
+    "settings.organizationsList",
+    "settings.organizationId",
   ],
 })(store);
 

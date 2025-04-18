@@ -15,6 +15,7 @@ export default {
 
   getters: {
     user: (state) => state.user,
+    isAdmin: (state) => !!state.user?.isAdmin,
   },
 
   mutations: {
@@ -34,6 +35,10 @@ export default {
       }
       if (res.token) {
         const userInfo = parseJwt(res.token);
+        // console.log("userInfo", userInfo);
+        if (userInfo.isAdmin == "false") {
+          delete userInfo.isAdmin;
+        }
 
         commit(types.ADD_USER, { ...userInfo, jwt: res.token });
         router.push("/balances");

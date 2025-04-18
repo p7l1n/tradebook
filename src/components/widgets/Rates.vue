@@ -9,6 +9,7 @@
         @check="onCheckUpdatePrice"
       />
     </div> -->
+    <!-- <div @click="update">ОБНОВИТЬ</div> -->
     <div class="widget-rates">
       <div class="widget-rates__title">Курс валют</div>
       <div class="widget-rates__list">
@@ -47,6 +48,14 @@
     </div>
     <!-- edit -->
     <div v-if="editMode" class="widget-rates__edit-form">
+      <div v-if="false" class="input-field row">
+        <Input
+          placeholder="Валюта"
+          :disabled="isEditing"
+          class="mr15"
+          v-model="title"
+        />
+      </div>
       <div class="input-field row">
         <el-input
           placeholder="Покупка"
@@ -201,7 +210,7 @@ export default {
       if (isEditing.value) {
         await store.dispatch("rates/updateRateEntity", {
           id: selectedItem.value.id,
-          title: title.value,
+          title: selectedItem.value.title,
           buy: +buy.value,
           sell: +sell.value,
           spreadBuy: +spreadBuy.value,
@@ -242,7 +251,21 @@ export default {
       store.dispatch("rates/setUpdateFromServer", val);
     };
 
-    onMounted(() => {
+    const update = async () => {
+      await store.dispatch("rates/addRateEntity", {
+        title: "USDT",
+        buy: 0,
+        sell: 0,
+        spreadBuy: 0,
+        spreadSell: 0,
+        apiKey: "usdt",
+        points: 3,
+        inCurrencyId: 5,
+        organizationId: 5,
+      });
+    };
+
+    onMounted(async () => {
       selectRow(ratesList.value["RUB"]);
     });
 
@@ -270,6 +293,7 @@ export default {
       onCheckUpdatePrice,
       numberFormatter,
       numberParser,
+      update,
     };
   },
 };

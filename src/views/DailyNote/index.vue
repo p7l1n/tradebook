@@ -645,6 +645,14 @@ export default {
       const findClient = clientsList.value.find(
         (item) => item.name === "Тетрадь"
       );
+      if (!findClient) {
+        ElNotification({
+          title: "Тетрадь",
+          message: `Добавьте контрагент тетрадь`,
+          type: "warning",
+        });
+        return;
+      }
       const newOrderEntity = {
         date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
@@ -675,6 +683,14 @@ export default {
       const findClient = clientsList.value.find(
         (item) => item.name === "Тетрадь"
       );
+      if (!findClient) {
+        ElNotification({
+          title: "Тетрадь",
+          message: `Добавьте контрагент тетрадь`,
+          type: "warning",
+        });
+        return;
+      }
       const newOrderEntity = {
         date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
@@ -705,6 +721,14 @@ export default {
       const findClient = clientsList.value.find(
         (item) => item.name === "Тетрадь"
       );
+      if (!findClient) {
+        ElNotification({
+          title: "Тетрадь",
+          message: `Добавьте контрагент тетрадь`,
+          type: "warning",
+        });
+        return;
+      }
       const newOrderEntity = {
         date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
@@ -735,6 +759,16 @@ export default {
       const findClient = clientsList.value.find(
         (item) => item.name === "Тетрадь"
       );
+
+      if (!findClient) {
+        ElNotification({
+          title: "Тетрадь",
+          message: `Добавьте контрагент тетрадь`,
+          type: "warning",
+        });
+        return;
+      }
+
       const newOrderEntity = {
         date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
@@ -765,6 +799,14 @@ export default {
       const findClient = clientsList.value.find(
         (item) => item.name === "Тетрадь"
       );
+      if (!findClient) {
+        ElNotification({
+          title: "Тетрадь",
+          message: `Добавьте контрагент тетрадь`,
+          type: "warning",
+        });
+        return;
+      }
       const newOrderEntity = {
         date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
