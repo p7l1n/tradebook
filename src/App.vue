@@ -1,6 +1,6 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.1.0" }}</div>
+  <div class="app-version">{{ "p1.1.1" }}</div>
   <router-view />
 </template>
 <script>
@@ -27,9 +27,9 @@ export default {
       await store.dispatch("dailyNote/fetchNotes");
       await store.dispatch("note/fetchProfitHistory");
       await store.dispatch("orders/fetchOrders");
+      await store.dispatch("settings/fetchOrganizations");
       if (isAdmin.value) {
         await store.dispatch("claims/fetchClaimList");
-        await store.dispatch("settings/fetchOrganizations");
       }
     };
 

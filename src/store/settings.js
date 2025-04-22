@@ -16,8 +16,10 @@ export default {
     organizationId: (state) => state.organizationId,
     organizationsList: (state) => state.organizationsList,
     organizationName: (state) =>
-      state.organizationsList.find((org) => org.id == state.organizationId)
-        ?.name || "",
+      state.organizationsList.length === 1
+        ? state.organizationsList[0]?.name || ""
+        : state.organizationsList.find((org) => org.id == state.organizationId)
+            ?.name || "",
   },
 
   mutations: {
