@@ -75,6 +75,7 @@
 import useStatsNotes from "@/compositions/useStatsNotes";
 import { toCurrency } from "@/helpers";
 import { parseLongName } from "@/helpers";
+import { sortByKey } from "@/helpers";
 import { computed } from "vue";
 
 export default {
@@ -97,12 +98,12 @@ export default {
 
     const statsList = computed(() => {
       const list = props.isAgents ? allStatsAgents.value : allStats.value;
-      if (!props.searchStr.length) {
-        return list;
-      }
-      return list.filter((item) =>
-        item.client.toLowerCase().includes(props.searchStr.toLowerCase())
-      );
+      const filteredList = !props.searchStr.length
+        ? list
+        : list.filter((item) =>
+            item.client.toLowerCase().includes(props.searchStr.toLowerCase())
+          );
+      return sortByKey(filteredList, "client");
     });
 
     // console.log("allStats", allStats.value);

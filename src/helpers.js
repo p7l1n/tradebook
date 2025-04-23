@@ -33,3 +33,13 @@ export const parseLongName = (name = "") => {
   const str = name.split("@")[0];
   return str.length >= 12 ? `${str.slice(0, 10)}...` : str;
 };
+
+export const sortByKey = (array, key, direction = "asc") => {
+  return [...array].sort((a, b) => {
+    const aValue = a[key].toLowerCase();
+    const bValue = b[key].toLowerCase();
+    return direction === "asc"
+      ? aValue.localeCompare(bValue)
+      : bValue.localeCompare(aValue);
+  });
+};
