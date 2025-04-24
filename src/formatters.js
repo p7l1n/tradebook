@@ -1,18 +1,18 @@
 export const numberFormatter = (value) => {
-  const cleaned = String(value).replace(/[^\d.]/g, "");
-  const [intPart, decPart] = cleaned.split(".");
+  const cleaned = String(value).replace(/[^\d.,]/g, "");
+  const [intPart, decPart] = cleaned.split(/[,.]/);
   const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   return decPart !== undefined ? `${formattedInt}.${decPart}` : formattedInt;
 };
 
 export const numberParser = (value) => {
-  let cleaned = value.replace(/[^\d.]/g, "");
-  const firstDotIndex = cleaned.indexOf(".");
-  if (firstDotIndex !== -1) {
-    // оставляем только первую точку, остальные удаляем
+  let cleaned = value.replace(/[^\d.,]/g, "");
+  const separatorIndex = cleaned.search(/[,.]/);
+  if (separatorIndex !== -1) {
+    // оставляем только первый разделитель (точку или запятую), остальные удаляем
     cleaned =
-      cleaned.slice(0, firstDotIndex + 1) +
-      cleaned.slice(firstDotIndex + 1).replace(/\./g, "");
+      cleaned.slice(0, separatorIndex + 1) +
+      cleaned.slice(separatorIndex + 1).replace(/[,.]/g, "");
   }
   return cleaned;
 };
