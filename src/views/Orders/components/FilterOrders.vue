@@ -1,5 +1,9 @@
 <template>
   <div class="filter-orders">
+    <ExportButton
+      class="filter-orders__export"
+      :collection="filteredOrdersList"
+    />
     <div class="filter-orders__section">
       <!-- search -->
       <div class="filter-orders__item">
@@ -141,7 +145,7 @@
 </template>
 <script>
 import { ElSelect, ElNotification } from "element-plus";
-
+import ExportButton from "@/components/ExportButton";
 import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import useStats from "@/compositions/useStats";
@@ -155,7 +159,7 @@ import {
 
 export default {
   setup() {
-    const { profitUsdt } = useStats();
+    const { profitUsdt, filteredOrdersList } = useStats();
     const { isCashOutedToday } = useNotes();
     const store = useStore();
     const selectedDate = ref(null);
@@ -417,6 +421,7 @@ export default {
       isCashOutedToday,
       cashOutLoading,
       profitUsdt,
+      filteredOrdersList,
 
       toCurrency,
       disabledDate,
@@ -434,6 +439,7 @@ export default {
   },
   components: {
     ElSelect,
+    ExportButton,
   },
 };
 </script>
@@ -443,6 +449,13 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
+  position: relative;
+
+  &__export {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
 
   &__section {
     display: flex;
