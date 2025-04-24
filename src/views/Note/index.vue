@@ -23,6 +23,12 @@
       </div>
       <Loader v-if="isLoading && activeMenuIndex === 0" />
       <div class="filter">
+        <ExportButton
+          v-if="activeMenuIndex === 0"
+          :collection="filteredNotesList"
+          :is-dk="true"
+          class="filter__export"
+        />
         <!-- <Button title="Новая запись" @click="openForm" class="credit-btn" /> -->
         <div class="filter__stats">
           <el-input
@@ -189,6 +195,7 @@ import { ElNotification } from "element-plus";
 import CheckButton from "@/components/CheckButton";
 import { numberFormatter, numberParser } from "@/formatters";
 import { filterWithOutSystem } from "@/filters";
+import ExportButton from "@/components/ExportButton";
 
 export default {
   components: {
@@ -204,9 +211,10 @@ export default {
     Input,
     CheckGroupButton,
     CheckButton,
+    ExportButton,
   },
   setup() {
-    const { profitUsdtHistory } = useNotes();
+    const { profitUsdtHistory, filteredNotesList } = useNotes();
     const store = useStore();
     const activeMenuIndex = ref(0);
     const editForm = ref(false);
@@ -412,6 +420,7 @@ export default {
       editModeFlag,
       collectionsIds,
       loadingRemove,
+      filteredNotesList,
 
       toCurrency,
       disabledDate,
@@ -459,6 +468,13 @@ export default {
     justify-content: space-between;
     width: 100%;
     margin-bottom: 10px;
+    position: relative;
+
+    &__export {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
 
     &__stats {
       display: flex;

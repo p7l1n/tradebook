@@ -121,6 +121,7 @@ export default {
       ? useAgentsNotes()
       : useNotes();
     // const store = useStore();
+
     const selectedItem = ref(null);
     const loading = ref(false);
     const activeRemoveNdx = ref(-1);
