@@ -35,6 +35,7 @@
         <el-select
           v-model="selectedStatus"
           clearable
+          filterable
           placeholder="Выберите статус"
           style="width: 170px"
           @change="onStatusSelect"
@@ -54,6 +55,7 @@
           v-model="selectedClient"
           clearable
           placeholder="Выберите клиента"
+          filterable
           style="width: 170px"
           @change="onClientSelect"
         >
@@ -73,6 +75,7 @@
           clearable
           placeholder="Выберите оператора"
           style="width: 170px"
+          filterable
           @change="onOperatorSelect"
         >
           <el-option
@@ -91,6 +94,7 @@
           clearable
           placeholder="Выберите приход"
           style="width: 170px"
+          filterable
           @change="onCurrInSelect"
         >
           <el-option
@@ -108,6 +112,7 @@
           v-model="selectedCurrOut"
           clearable
           placeholder="Выберите расход"
+          filterable
           style="width: 170px"
           @change="onCurrOutSelect"
         >
