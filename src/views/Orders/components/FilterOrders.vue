@@ -311,6 +311,7 @@ export default {
 
     const cashOut = async () => {
       // const id = `${Math.random()}`.slice(2);
+      const profitSum = profitUsdt.value;
 
       const clientId = clientsList.value.find(
         (cl) => cl.type === "Прибыль" && cl.name === "Прибыль"
@@ -330,7 +331,7 @@ export default {
       await store.dispatch("note/addNewProfit", {
         // id,
         date,
-        amount: profitUsdt.value,
+        amount: profitSum,
       });
       // дулируем как КРЕДИТ в тетрадь
       const res = await store.dispatch("dailyNote/addNewEntity", {
@@ -339,7 +340,7 @@ export default {
         type: 1, // NOTE_TYPES.credit,
         clientId,
         inCurrencyId: 0, // usdt
-        amount: profitUsdt.value,
+        amount: profitSum,
         comment: NOTE_COMMENT_TYPES.cashOut,
         category: 1,
         isProfit: true,
@@ -379,7 +380,7 @@ export default {
 
       ElNotification({
         title: "Успешно",
-        message: `Снятие кассы на сумму ${toCurrency(profitUsdt.value)}`,
+        message: `Снятие кассы на сумму ${toCurrency(profitSum)}`,
         type: "success",
       });
     };
