@@ -126,7 +126,7 @@
       </div>
     </div>
     <div class="filter-orders__section row">
-      <div v-if="isCashOutedToday" class="cashouted">Касса снята</div>
+      <div v-if="false" class="cashouted">Касса снята</div>
       <el-button
         v-if="showCashOut"
         type="success"
@@ -156,6 +156,7 @@ import { useStore } from "vuex";
 import useStats from "@/compositions/useStats";
 import useNotes from "@/compositions/useNotes";
 import { toCurrency, isTodayBetweenDates } from "@/helpers";
+import useOrders from "@/compositions/useOrders";
 import {
   // NOTE_TYPES,
   NOTE_COMMENT_TYPES,
@@ -165,6 +166,7 @@ import {
 export default {
   setup() {
     const { profitUsdt, filteredOrdersList } = useStats();
+    const { getOrderAPIFormat } = useOrders();
     const { isCashOutedToday } = useNotes();
     const store = useStore();
     const selectedDate = ref(null);
@@ -180,7 +182,7 @@ export default {
 
     const ordersList = computed(() => store.getters["orders/orders"]);
     const filterOptions = computed(() => store.getters["orders/filter"]);
-    const notesList = computed(() => store.getters["note/notes"]);
+    // const notesList = computed(() => store.getters["note/notes"]);
     const clientsList = computed(() => store.getters["clients/clients"]);
 
     const disabledDate = (time) => {
@@ -342,8 +344,24 @@ export default {
         category: 1,
         isProfit: true,
       });
+
+      if (res.error) {
+        cashOutLoading.value = false;
+        return;
+      }
+
+      const data = await Promise.all(
+        filteredOrdersList.value
+          .filter((order) => order.status === true)
+          .map(async (order) => {
+            const newOrder = getOrderAPIFormat(order);
+            newOrder.comment = "payed";
+            return await store.dispatch("orders/updateOrderEntity", newOrder);
+          })
+      );
+      console.log("orders stats", data);
+      await store.dispatch("orders/fetchOrders");
       cashOutLoading.value = false;
-      if (res.error) return;
       // const newOrderEntity = {
       //   id,
       //   date: +new Date(),
@@ -368,28 +386,30 @@ export default {
 
     // возможность снятия прибыли
     const showCashOut = computed(() => {
-      const localFilter = { ...filterOptions.value };
-      delete localFilter.date; // удаляем поля которые не нужны в фильтре для проверки пустого
-      delete localFilter.showStats;
+      return filteredOrdersList.value.filter((item) => item.status === true)
+        .length;
+      // const localFilter = { ...filterOptions.value };
+      // delete localFilter.date; // удаляем поля которые не нужны в фильтре для проверки пустого
+      // delete localFilter.showStats;
 
-      // проверяем что фильтр скинут чтобы не попало ничего кроме сегодняшнего дня
-      const isNotClearFilter = Object.keys(localFilter).some((filterKey) => {
-        return !!localFilter[filterKey];
-      });
+      // // проверяем что фильтр скинут чтобы не попало ничего кроме сегодняшнего дня
+      // const isNotClearFilter = Object.keys(localFilter).some((filterKey) => {
+      //   return !!localFilter[filterKey];
+      // });
 
-      if (!selectedDate.value) return; // если дата не выбрана не показываем
+      // if (!selectedDate.value) return; // если дата не выбрана не показываем
 
-      // проверяем что выбрана в фильтре только сегодняшняя дата и равна сегодняшнему дню и фильтр пуст
-      return (
-        !isNotClearFilter && // фильтр пуст
-        isTodayBetweenDates(currentDate.value, selectedDate.value) && // сегодняшний день
-        !notesList.value.find((note) => {
-          return (
-            note.comment === NOTE_COMMENT_TYPES.cashOut &&
-            isTodayBetweenDates(selectedDate.value, note.date)
-          );
-        })
-      );
+      // // проверяем что выбрана в фильтре только сегодняшняя дата и равна сегодняшнему дню и фильтр пуст
+      // return (
+      //   !isNotClearFilter && // фильтр пуст
+      //   isTodayBetweenDates(currentDate.value, selectedDate.value) && // сегодняшний день
+      //   !notesList.value.find((note) => {
+      //     return (
+      //       note.comment === NOTE_COMMENT_TYPES.cashOut &&
+      //       isTodayBetweenDates(selectedDate.value, note.date)
+      //     );
+      //   })
+      // );
     });
 
     onMounted(() => {

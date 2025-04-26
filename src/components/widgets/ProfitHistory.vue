@@ -7,7 +7,9 @@
           <!-- <div class="widget-profits__list-item-field label">ID</div> -->
           <div class="widget-profits__list-item-field label">Дата</div>
           <div class="widget-profits__list-item-field label">Сумма</div>
-          <div class="widget-profits__list-item-field label">Действие</div>
+          <div v-if="false" class="widget-profits__list-item-field label">
+            Действие
+          </div>
         </div>
         <el-empty
           v-if="!filteredProfitHistory.length"
@@ -32,7 +34,10 @@
           <div class="widget-profits__list-item-field strong green">
             {{ toCurrency(item.amount) }}
           </div>
-          <div class="widget-profits__list-item-field strong green">
+          <div
+            v-if="false"
+            class="widget-profits__list-item-field strong green"
+          >
             <el-button
               size="small"
               type="danger"

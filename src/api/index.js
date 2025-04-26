@@ -87,11 +87,14 @@ export const putQuery = async (url, params = {}) => {
     });
 
     if (routes[url.split("/")[0]]) {
-      ElNotification({
-        title: routes[url.split("/")[0]],
-        message: `Запись изменена`,
-        type: "warning",
-      });
+      if (url.split("/")[0] !== "Orders") {
+        // не показывать сообщение для заявок
+        ElNotification({
+          title: routes[url.split("/")[0]],
+          message: `Запись изменена`,
+          type: "warning",
+        });
+      }
     }
 
     if (res.data) {

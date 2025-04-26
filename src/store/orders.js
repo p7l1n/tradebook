@@ -88,44 +88,47 @@ export default {
       if (res && Array.isArray(res)) {
         commit(
           types.SET_ORDERS,
-          res.reverse().map((item) => {
-            // calc in
-            let kassaAmountIn = 0;
-            let kassaAmountOut = 0;
+          res
+            .reverse()
+            .filter((item) => item.comment !== "payed")
+            .map((item) => {
+              // calc in
+              let kassaAmountIn = 0;
+              let kassaAmountOut = 0;
 
-            if (item.agentAmount !== 0) {
-              if (item.agentCurrencyId === item.inCurrencyId) {
-                kassaAmountIn = item.inAmount - item.agentAmount;
-              }
+              if (item.agentAmount !== 0) {
+                if (item.agentCurrencyId === item.inCurrencyId) {
+                  kassaAmountIn = item.inAmount - item.agentAmount;
+                }
 
-              if (item.agentCurrencyId === item.outCurrencyId) {
-                kassaAmountOut = item.outAmount + item.agentAmount;
+                if (item.agentCurrencyId === item.outCurrencyId) {
+                  kassaAmountOut = item.outAmount + item.agentAmount;
+                }
               }
-            }
-            if (kassaAmountOut === 0) {
-              kassaAmountOut = item.outAmount;
-            }
-            if (kassaAmountIn === 0) {
-              kassaAmountIn = item.inAmount;
-            }
-            // calc out
-            return {
-              ...item,
-              date: item.date * 1000,
-              status: item.status === 0 ? false : true,
-              type: getOrderTypeFromIndex(item.type),
-              inCurrency: DEFAULT_CURRENCIES[item.inCurrencyId],
-              outCurrency: DEFAULT_CURRENCIES[item.outCurrencyId],
-              client:
-                clients.find((c) => c.id === item.clientId)?.name || "???",
-              operator:
-                clients.find((c) => c.id === item.operatorId)?.name || "???",
-              agent: clients.find((c) => c.id === item.agentId)?.name || "",
-              agentCurrency: DEFAULT_CURRENCIES[item.agentCurrencyId],
-              kassaAmountIn,
-              kassaAmountOut,
-            };
-          })
+              if (kassaAmountOut === 0) {
+                kassaAmountOut = item.outAmount;
+              }
+              if (kassaAmountIn === 0) {
+                kassaAmountIn = item.inAmount;
+              }
+              // calc out
+              return {
+                ...item,
+                date: item.date * 1000,
+                status: item.status === 0 ? false : true,
+                type: getOrderTypeFromIndex(item.type),
+                inCurrency: DEFAULT_CURRENCIES[item.inCurrencyId],
+                outCurrency: DEFAULT_CURRENCIES[item.outCurrencyId],
+                client:
+                  clients.find((c) => c.id === item.clientId)?.name || "???",
+                operator:
+                  clients.find((c) => c.id === item.operatorId)?.name || "???",
+                agent: clients.find((c) => c.id === item.agentId)?.name || "",
+                agentCurrency: DEFAULT_CURRENCIES[item.agentCurrencyId],
+                kassaAmountIn,
+                kassaAmountOut,
+              };
+            })
         );
       }
       if (res.error) {
