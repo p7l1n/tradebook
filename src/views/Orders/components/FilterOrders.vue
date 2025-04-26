@@ -350,7 +350,7 @@ export default {
         return;
       }
 
-      const data = await Promise.all(
+      await Promise.all(
         filteredOrdersList.value
           .filter((order) => order.status === true)
           .map(async (order) => {
@@ -359,7 +359,7 @@ export default {
             return await store.dispatch("orders/updateOrderEntity", newOrder);
           })
       );
-      console.log("orders stats", data);
+
       await store.dispatch("orders/fetchOrders");
       cashOutLoading.value = false;
       // const newOrderEntity = {
