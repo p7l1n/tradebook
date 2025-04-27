@@ -36,7 +36,11 @@ export default {
 
       return props.collection.map((item) => {
         return {
-          Статус: item.status == true ? "Выполнено" : "В ожидании",
+          Статус: item.comment.includes("payed")
+            ? "Закрыта"
+            : item.status == true
+            ? "Выполнена"
+            : "В ожидании",
           Дата: moment(item.date).utcOffset(180).format("DD.MM, HH:mm"),
           Тип: item.type,
           Клиент: item.client,
