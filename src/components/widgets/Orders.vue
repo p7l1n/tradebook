@@ -60,13 +60,20 @@
         <div
           :class="{
             editing: editing && ids.includes(item.id),
+            payed: item?.comment?.includes('payed') && item.status === false,
           }"
           class="widget-orders__list-item"
           v-for="(item, ndx) in ordersList.slice(0, countToShow)"
           :key="ndx"
-          @click="selectRow(item)"
+          @click="
+            !(item?.comment?.includes('payed') && item.status === false) &&
+              selectRow(item)
+          "
         >
           <el-checkbox
+            v-show="
+              !(item?.comment?.includes('payed') && item.status === false)
+            "
             v-model="item.status"
             size="large"
             class="toggler"
@@ -139,6 +146,7 @@
             }}
           </div>
           <div
+            v-show="!item?.comment?.includes('payed')"
             class="widget-orders__list-item-field remove"
             @click.stop="remove(item)"
           ></div>
@@ -361,6 +369,10 @@ export default {
 
     &.editing {
       background-color: #ccc;
+    }
+
+    &.payed {
+      background-color: #d4e3d5;
     }
 
     &.active {

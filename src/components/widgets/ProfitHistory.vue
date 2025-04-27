@@ -34,10 +34,7 @@
           <div class="widget-profits__list-item-field strong green">
             {{ toCurrency(item.amount) }}
           </div>
-          <div
-            v-if="false"
-            class="widget-profits__list-item-field strong green"
-          >
+          <div class="widget-profits__list-item-field strong green">
             <el-button
               size="small"
               type="danger"
@@ -59,6 +56,8 @@ import { NOTE_TYPES } from "@/config/noteTypes";
 import moment from "moment";
 import { ElNotification } from "element-plus";
 import useNotes from "@/compositions/useNotes";
+import useOrders from "@/compositions/useOrders";
+import useStats from "@/compositions/useStats";
 
 export default {
   components: {},
@@ -66,6 +65,9 @@ export default {
     const store = useStore();
     const selectedItem = ref(null);
     const removeLoading = ref(false);
+
+    const { filteredOrdersList } = useStats();
+    const { getOrderAPIFormat } = useOrders();
 
     const { filteredProfitHistory } = useNotes();
     const notesList = computed(() => store.getters["note/notes"]);
@@ -96,6 +98,19 @@ export default {
           await store.dispatch("dailyNote/removeEntity", noteDKItem);
         }
         await store.dispatch("note/removeProfit", profitItem);
+
+        await Promise.all(
+          filteredOrdersList.value
+            .filter((order) => order.comment.includes(profitItem.date))
+            .map(async (order) => {
+              const newOrder = getOrderAPIFormat(order);
+              newOrder.comment = "";
+              newOrder.status = 0;
+              return await store.dispatch("orders/updateOrderEntity", newOrder);
+            })
+        );
+        await store.dispatch("orders/fetchOrders");
+
         ElNotification({
           title: "Отменено",
           message: `Снятие кассы на сумму ${toCurrency(profitItem.amount)}`,

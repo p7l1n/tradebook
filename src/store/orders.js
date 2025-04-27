@@ -90,7 +90,7 @@ export default {
           types.SET_ORDERS,
           res
             .reverse()
-            .filter((item) => item.comment !== "payed")
+            // .filter((item) => item.comment !== "payed")
             .map((item) => {
               // calc in
               let kassaAmountIn = 0;

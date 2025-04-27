@@ -356,7 +356,8 @@ export default {
           .filter((order) => order.status === true)
           .map(async (order) => {
             const newOrder = getOrderAPIFormat(order);
-            newOrder.comment = "payed";
+            newOrder.comment = `payed${(date - 10800) * 1000}`;
+            newOrder.status = 0;
             return await store.dispatch("orders/updateOrderEntity", newOrder);
           })
       );
