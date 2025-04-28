@@ -36,6 +36,7 @@
           </div>
           <div class="widget-profits__list-item-field strong green">
             <el-button
+              v-if="ndx === 0"
               size="small"
               type="danger"
               :loading="removeLoading"

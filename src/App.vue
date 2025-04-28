@@ -1,11 +1,11 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.1.8" }}</div>
+  <div class="app-version">{{ "p1.1.9" }}</div>
   <router-view />
 </template>
 <script>
 import MainMenu from "@/components/MainMenu";
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted, watch, ref, onBeforeUnmount } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -51,12 +51,21 @@ export default {
       }
     );
 
+    const timer = ref(null);
+
     onMounted(async () => {
       setTimeout(async () => {
         if (userInfo.value?.jwt) {
           initApp();
+          timer.value = setInterval(() => {
+            initApp();
+          }, 30000);
         }
       }, 500);
+    });
+
+    onBeforeUnmount(() => {
+      clearInterval(timer.value);
     });
 
     return {
