@@ -104,7 +104,7 @@ export default {
             .filter((order) => order.comment.includes(profitItem.date))
             .map(async (order) => {
               const newOrder = getOrderAPIFormat(order);
-              newOrder.comment = "";
+              newOrder.comment = "active";
               newOrder.status = 0;
               return await store.dispatch("orders/updateOrderEntity", newOrder);
             })
