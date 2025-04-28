@@ -144,6 +144,17 @@ export default {
 
     const onSelectMenu = (ndx) => {
       activeMenuIndex.value = ndx;
+      if (ndx === 1) {
+        store.dispatch("orders/setFilterOption", {
+          key: "showPayed",
+          value: true,
+        });
+      } else {
+        store.dispatch("orders/setFilterOption", {
+          key: "showPayed",
+          value: false,
+        });
+      }
     };
 
     const closeForm = () => {
@@ -187,6 +198,10 @@ export default {
     };
 
     onMounted(async () => {
+      store.dispatch("orders/setFilterOption", {
+        key: "showPayed",
+        value: false,
+      });
       // await store.dispatch("rates/fetchRates");
     });
 

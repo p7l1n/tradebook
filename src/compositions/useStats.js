@@ -31,6 +31,9 @@ export default function useStats() {
           : true;
       })
       .filter((r) =>
+        filterOptions.value.showPayed ? true : !r.comment.includes("payed")
+      )
+      .filter((r) =>
         filterOptions.value.status == null
           ? true
           : filterOptions.value.status === "Исполнено"

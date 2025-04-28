@@ -20,6 +20,7 @@ export default {
       outCurrency: null,
       date: null,
       showStats: null,
+      showPayed: false,
     },
     showFields: {
       id: {
