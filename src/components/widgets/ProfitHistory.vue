@@ -116,9 +116,6 @@ export default {
           order.comment.includes(profitItem.date)
         );
 
-        console.log("list", list, profitItem.date);
-        console.log("full", filteredOrdersList.value);
-
         await Promise.all(
           list.map(async (order) => {
             const newOrder = getOrderAPIFormat(order);
