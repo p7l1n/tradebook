@@ -57,9 +57,9 @@ export default {
       setTimeout(async () => {
         if (userInfo.value?.jwt) {
           initApp();
-          timer.value = setInterval(() => {
-            initApp();
-          }, 30000);
+          // timer.value = setInterval(() => {
+          //   initApp();
+          // }, 30000);
         }
       }, 500);
     });
