@@ -1,6 +1,6 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.1.9" }}</div>
+  <div class="app-version">{{ "p1.1.10" }}</div>
   <router-view />
 </template>
 <script>
@@ -57,9 +57,9 @@ export default {
       setTimeout(async () => {
         if (userInfo.value?.jwt) {
           initApp();
-          timer.value = setInterval(() => {
-            initApp();
-          }, 30000);
+          // timer.value = setInterval(() => {
+          //   initApp();
+          // }, 30000);
         }
       }, 500);
     });

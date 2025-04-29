@@ -160,7 +160,7 @@ import useOrders from "@/compositions/useOrders";
 import {
   // NOTE_TYPES,
   NOTE_COMMENT_TYPES,
-  // CONTRAGENTS,
+  CONTRAGENTS,
 } from "@/config/noteTypes";
 
 export default {
@@ -309,6 +309,12 @@ export default {
       });
     };
 
+    const operatorList = computed(() =>
+      store.getters["clients/clients"].filter(
+        (item) => item.type === CONTRAGENTS.operator
+      )
+    );
+
     const cashOut = async () => {
       // const id = `${Math.random()}`.slice(2);
       const profitSum = profitUsdt.value;
@@ -351,17 +357,49 @@ export default {
         return;
       }
 
+      const operatorId = operatorList.value.find(
+        (op) => op.name === store.getters["auth/user"]?.sub
+      )?.id;
+
+      const clientCashId = clientsList.value.find(
+        (cl) => cl.name === "Выручка"
+      )?.id;
+
+      const orderCashout = {
+        date,
+        type: 2,
+        operatorId,
+        clientId: clientCashId,
+        inCurrencyId: 0,
+        inAmount: 0,
+        outCurrencyId: 0,
+        outAmount: profitSum,
+        rate: 0,
+        status: 1,
+        comment: `payed${(date - 10800) * 1000}`,
+        agentId: 0,
+        agentCurrencyId: 0,
+        agentAmount: 0,
+        agentRate: 0,
+      };
+
+      // отсеять уже зеленые + не трогать те что выручка тип + отмеченные галочкой
       await Promise.all(
         filteredOrdersList.value
-          .filter((order) => order.status === true)
+          .filter(
+            (order) =>
+              order.status === true &&
+              order.type !== 2 &&
+              !order.comment.includes("payed")
+          )
           .map(async (order) => {
             const newOrder = getOrderAPIFormat(order);
             newOrder.comment = `payed${(date - 10800) * 1000}`;
-            newOrder.status = 0;
+            newOrder.status = 1;
             return await store.dispatch("orders/updateOrderEntity", newOrder);
           })
       );
-
+      await store.dispatch("orders/addNewOrderEntity", orderCashout);
       await store.dispatch("orders/fetchOrders");
       cashOutLoading.value = false;
       // const newOrderEntity = {

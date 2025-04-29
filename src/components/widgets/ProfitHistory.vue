@@ -84,6 +84,10 @@ export default {
       const noteDKItem = notesList.value.find(
         (dk) => dk.date === profitItem.date
       );
+      // ищем в журнале СД выручку
+      const orderCashout = filteredOrdersList.value.find(
+        (sd) => sd.date === profitItem.date
+      );
 
       if (!noteDKItem) {
         ElNotification({
@@ -94,21 +98,33 @@ export default {
         // removeLoading.value = false;
         // return;
       }
+      // удаляем выручку из заявок
+      try {
+        await store.dispatch("orders/removeOrderEntity", orderCashout);
+      } catch (err) {
+        ElNotification({
+          title: "Ошибка",
+          message: `Не получилось удалить выручку в заявках на эту сумму`,
+          type: "error",
+        });
+      }
+
       try {
         if (noteDKItem) {
           await store.dispatch("dailyNote/removeEntity", noteDKItem);
         }
         await store.dispatch("note/removeProfit", profitItem);
+        const list = filteredOrdersList.value.filter((order) =>
+          order.comment.includes(profitItem.date)
+        );
 
         await Promise.all(
-          filteredOrdersList.value
-            .filter((order) => order.comment.includes(profitItem.date))
-            .map(async (order) => {
-              const newOrder = getOrderAPIFormat(order);
-              newOrder.comment = "active";
-              newOrder.status = 0;
-              return await store.dispatch("orders/updateOrderEntity", newOrder);
-            })
+          list.map(async (order) => {
+            const newOrder = getOrderAPIFormat(order);
+            newOrder.comment = "active";
+            newOrder.status = 1;
+            return await store.dispatch("orders/updateOrderEntity", newOrder);
+          })
         );
         await store.dispatch("orders/fetchOrders");
 

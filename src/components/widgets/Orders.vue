@@ -60,20 +60,15 @@
         <div
           :class="{
             editing: editing && ids.includes(item.id),
-            payed: item?.comment?.includes('payed') && item.status === false,
+            payed: item?.comment?.includes('payed'),
           }"
           class="widget-orders__list-item"
           v-for="(item, ndx) in ordersList.slice(0, countToShow)"
           :key="ndx"
-          @click="
-            !(item?.comment?.includes('payed') && item.status === false) &&
-              selectRow(item)
-          "
+          @click="!item?.comment?.includes('payed') && selectRow(item)"
         >
           <el-checkbox
-            v-show="
-              !(item?.comment?.includes('payed') && item.status === false)
-            "
+            v-show="!item?.comment?.includes('payed')"
             v-model="item.status"
             size="large"
             class="toggler"
