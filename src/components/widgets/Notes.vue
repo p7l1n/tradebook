@@ -68,7 +68,7 @@
             {{ isAgents ? "" : item.comment }}
           </div>
           <div
-            v-if="!isAgents && !item.isProfit"
+            v-if="isAdmin || (!isAgents && !item.isProfit)"
             class="widget-notes__list-item-field remove"
             @click.stop="remove(item)"
           ></div>
@@ -117,6 +117,7 @@ export default {
   },
   setup(props, { emit }) {
     const store = useStore();
+    const isAdmin = computed(() => store.getters["auth/isAdmin"]);
     const { filteredNotesList } = props.isAgents
       ? useAgentsNotes()
       : useNotes();
@@ -187,6 +188,7 @@ export default {
       NOTE_TYPES,
       countIncrement,
       countToShow,
+      isAdmin,
       getNumFormat,
       selectRow,
       remove,

@@ -141,7 +141,7 @@
             }}
           </div>
           <div
-            v-show="!item?.comment?.includes('payed')"
+            v-show="isAdmin || !item?.comment?.includes('payed')"
             class="widget-orders__list-item-field remove"
             @click.stop="remove(item)"
           ></div>
@@ -187,6 +187,8 @@ export default {
     const countToShow = ref(20);
     const countIncrement = ref(20);
     const loading = ref(false);
+
+    const isAdmin = computed(() => store.getters["auth/isAdmin"]);
 
     const showMore = () => {
       countToShow.value += countIncrement.value;
@@ -290,6 +292,7 @@ export default {
       showFields,
       countToShow,
       countIncrement,
+      isAdmin,
       parseLongName,
       showMore,
       getNumFormat,

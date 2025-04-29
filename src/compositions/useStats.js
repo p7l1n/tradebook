@@ -105,7 +105,7 @@ export default function useStats() {
       let amountWithout =
         note.type === NOTE_TYPES.debit ? -note.amount : +note.amount;
       if (note.isProfit) {
-        amountWithout = 0;
+        // amountWithout = 0;
       }
       statsOrders[note.inCurrency].totalInCurrencyDKwithoutProfit +=
         amountWithout;
