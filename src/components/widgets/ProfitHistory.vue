@@ -7,9 +7,7 @@
           <!-- <div class="widget-profits__list-item-field label">ID</div> -->
           <div class="widget-profits__list-item-field label">Дата</div>
           <div class="widget-profits__list-item-field label">Сумма</div>
-          <div class="widget-profits__list-item-field label">
-            Действие
-          </div>
+          <div class="widget-profits__list-item-field label">Действие</div>
         </div>
         <el-empty
           v-if="!filteredProfitHistory.length"
