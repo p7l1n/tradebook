@@ -7,7 +7,7 @@
           <!-- <div class="widget-profits__list-item-field label">ID</div> -->
           <div class="widget-profits__list-item-field label">Дата</div>
           <div class="widget-profits__list-item-field label">Сумма</div>
-          <div v-if="false" class="widget-profits__list-item-field label">
+          <div class="widget-profits__list-item-field label">
             Действие
           </div>
         </div>
@@ -117,6 +117,8 @@ export default {
         const list = filteredOrdersList.value.filter((order) =>
           order.comment.includes(profitItem.date)
         );
+
+        console.log("list", list, profitItem.date);
 
         await Promise.all(
           list.map(async (order) => {
