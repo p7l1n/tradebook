@@ -103,10 +103,13 @@ export default {
         : list.filter((item) =>
             item.client.toLowerCase().includes(props.searchStr.toLowerCase())
           );
-      return sortByKey(filteredList, "client");
+      return sortByKey(
+        filteredList.filter((item) =>
+          Object.values(item.amounts).some((value) => value != 0)
+        ),
+        "client"
+      );
     });
-
-    // console.log("allStats", allStats.value);
 
     return {
       statsList,
