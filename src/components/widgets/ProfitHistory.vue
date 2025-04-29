@@ -117,6 +117,7 @@ export default {
         );
 
         console.log("list", list, profitItem.date);
+        console.log("full", filteredOrdersList.value);
 
         await Promise.all(
           list.map(async (order) => {
