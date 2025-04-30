@@ -115,12 +115,6 @@ export default {
         const list = filteredOrdersList.value.filter((order) =>
           order.comment.includes(profitItem.date)
         );
-        console.log(
-          "info cancel",
-          profitItem.date,
-          filteredOrdersList.value,
-          list
-        );
 
         await Promise.all(
           list.map(async (order) => {

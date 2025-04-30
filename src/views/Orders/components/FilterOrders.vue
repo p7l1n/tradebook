@@ -145,6 +145,14 @@
           @change="onChangeStats"
         />
       </div>
+      <div v-if="false" class="filter-orders__item">
+        <el-checkbox
+          v-model="showPayed"
+          label="Показать зеленые"
+          border
+          @change="onChangePayed"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -176,6 +184,7 @@ export default {
     const selectedCurrIn = ref(null);
     const selectedCurrOut = ref(null);
     const showStats = ref(null);
+    const showPayed = ref(null);
     const searchStr = ref("");
     const currentDate = ref(null);
     const cashOutLoading = ref(false);
@@ -298,6 +307,13 @@ export default {
     const onChangeStats = (val) => {
       store.dispatch("orders/setFilterOption", {
         key: "showStats",
+        value: val,
+      });
+    };
+
+    const onChangePayed = (val) => {
+      store.dispatch("orders/setFilterOption", {
+        key: "showPayed",
         value: val,
       });
     };
@@ -426,30 +442,9 @@ export default {
 
     // возможность снятия прибыли
     const showCashOut = computed(() => {
-      return filteredOrdersList.value.filter((item) => item.status === true)
-        .length;
-      // const localFilter = { ...filterOptions.value };
-      // delete localFilter.date; // удаляем поля которые не нужны в фильтре для проверки пустого
-      // delete localFilter.showStats;
-
-      // // проверяем что фильтр скинут чтобы не попало ничего кроме сегодняшнего дня
-      // const isNotClearFilter = Object.keys(localFilter).some((filterKey) => {
-      //   return !!localFilter[filterKey];
-      // });
-
-      // if (!selectedDate.value) return; // если дата не выбрана не показываем
-
-      // // проверяем что выбрана в фильтре только сегодняшняя дата и равна сегодняшнему дню и фильтр пуст
-      // return (
-      //   !isNotClearFilter && // фильтр пуст
-      //   isTodayBetweenDates(currentDate.value, selectedDate.value) && // сегодняшний день
-      //   !notesList.value.find((note) => {
-      //     return (
-      //       note.comment === NOTE_COMMENT_TYPES.cashOut &&
-      //       isTodayBetweenDates(selectedDate.value, note.date)
-      //     );
-      //   })
-      // );
+      return filteredOrdersList.value.filter(
+        (item) => item.status === true && !item.comment.includes("payed")
+      ).length;
     });
 
     onMounted(() => {
@@ -460,6 +455,7 @@ export default {
       selectedCurrIn.value = filterOptions.value.inCurrency;
       selectedCurrOut.value = filterOptions.value.outCurrency;
       showStats.value = filterOptions.value.showStats;
+      showPayed.value = filterOptions.value.showPayed;
       selectedStatus.value = filterOptions.value.status;
 
       currentDate.value = new Date();
@@ -482,6 +478,7 @@ export default {
       currInItems,
       currOutItems,
       showStats,
+      showPayed,
       showCashOut,
       isCashOutedToday,
       cashOutLoading,
@@ -498,6 +495,7 @@ export default {
       onCurrInSelect,
       onCurrOutSelect,
       onChangeStats,
+      onChangePayed,
       cashOut,
       isTodayBetweenDates,
     };

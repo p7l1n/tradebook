@@ -27,7 +27,8 @@ export default function useStats() {
               r.operator.toLowerCase().includes(str) ||
               r.type.toLowerCase().includes(str) ||
               (r.inAmount + "").includes(str) ||
-              (r.outAmount + "").includes(str)
+              (r.outAmount + "").includes(str) ||
+              (r.comment + "").includes(str)
           : true;
       })
       .filter((r) =>
