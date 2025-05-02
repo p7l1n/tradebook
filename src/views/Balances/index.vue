@@ -5,15 +5,33 @@
     <div
       v-if="activeMenuIndex === 0"
       :class="{ isLoading }"
-      class="balance-page__widgets"
+      class="balance-page__widgets main"
     >
       <Loader v-if="isLoading" />
-      <TotalInfo
+      <div class="col">
+        <TotalInfoShort
+          v-if="!isLoading"
+          style="margin-top: 20px; width: 95%"
+        />
+        <RatesShort
+          v-if="!isLoading"
+          class="balance-page__widgets-item"
+          style="margin-top: 20px; width: 98%"
+        />
+      </div>
+      <div class="col">
+        <TotalInfoShort
+          :is-inactive="true"
+          v-if="!isLoading"
+          style="margin-top: 20px; width: 95%"
+        />
+        <RatesStats v-if="!isLoading" style="margin-top: 20px; width: 95%" />
+      </div>
+      <!-- <TotalInfo
         v-if="!isLoading"
         max-width
         class="balance-page__widgets-item"
-      />
-      <Rates v-if="!isLoading" class="balance-page__widgets-item" />
+      /> -->
     </div>
     <!-- <div
       v-if="activeMenuIndex === 0"
@@ -49,7 +67,8 @@
 <script>
 import SubMenu from "./components/SubMenu";
 import Rates from "@/components/widgets/Rates";
-import TotalInfo from "@/components/widgets/TotalInfo";
+import RatesShort from "@/components/widgets/RatesShort";
+import TotalInfoShort from "@/components/widgets/TotalInfoShort";
 import Balances from "@/components/widgets/Balances";
 // import NotesStats from "@/components/widgets/NotesStats";
 import Loader from "@/components/Loader";
@@ -57,14 +76,17 @@ import Loader from "@/components/Loader";
 import { useStore } from "vuex";
 
 import { onMounted, ref, computed } from "vue";
+import RatesStats from "@/components/widgets/RatesStats";
 
 export default {
   components: {
     SubMenu,
     Rates,
-    TotalInfo,
+    TotalInfoShort,
     Balances,
     Loader,
+    RatesShort,
+    RatesStats,
     // NotesStats,
   },
   setup() {
@@ -100,6 +122,10 @@ export default {
     box-sizing: border-box;
     display: flex;
     align-items: flex-start;
+
+    &.main {
+      justify-content: center;
+    }
 
     &.isLoading {
       display: flex;
