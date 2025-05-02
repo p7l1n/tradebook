@@ -63,7 +63,7 @@
             payed: item?.comment?.includes('payed'),
           }"
           class="widget-orders__list-item"
-          v-for="(item, ndx) in ordersList.slice(0, countToShow)"
+          v-for="(item, ndx) in ordersListWithType.slice(0, countToShow)"
           :key="ndx"
           @click="!item?.comment?.includes('payed') && selectRow(item)"
         >
@@ -171,6 +171,10 @@ import { ElNotification } from "element-plus";
 export default {
   components: {},
   props: {
+    hidePayed: {
+      type: Boolean,
+      default: false,
+    },
     editing: {
       type: Boolean,
       default: false,
@@ -187,6 +191,12 @@ export default {
     const countToShow = ref(20);
     const countIncrement = ref(20);
     const loading = ref(false);
+
+    const ordersListWithType = computed(() => {
+      return props.hidePayed
+        ? ordersList.value.filter((order) => !order.comment.includes("payed"))
+        : ordersList.value;
+    });
 
     const isAdmin = computed(() => store.getters["auth/isAdmin"]);
 
@@ -293,6 +303,7 @@ export default {
       countToShow,
       countIncrement,
       isAdmin,
+      ordersListWithType,
       parseLongName,
       showMore,
       getNumFormat,

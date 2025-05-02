@@ -50,6 +50,7 @@
           v-if="!isLoading && activeMenuIndex !== 2"
           :editing="editModeFlag"
           :ids="collectionsIds"
+          :hide-payed="activeMenuIndex === 0"
           class="orders-page__widgets-item"
           @collect="onCollect"
           @select="onSelectOrder"
