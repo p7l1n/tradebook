@@ -54,6 +54,10 @@ export default {
     const timer = ref(null);
 
     onMounted(async () => {
+      store.dispatch("orders/setFilterOption", {
+        key: "showPayed",
+        value: true,
+      });
       setTimeout(async () => {
         if (userInfo.value?.jwt) {
           initApp();
