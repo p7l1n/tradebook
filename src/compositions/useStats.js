@@ -147,6 +147,7 @@ export default function useStats() {
       statsOrders[key].totalInCurrencyFACT =
         +statsOrders[key].totalInCurrencyStart +
         +statsOrders[key].totalInCurrency +
+        +statsOrders[key].totalInCurrencyDailyNotes + // тетрадь
         +statsOrders[key].totalInCurrencyDKwithoutProfit;
     });
 
