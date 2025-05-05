@@ -66,10 +66,13 @@ export default {
     setOrganizationId({ commit }, id) {
       commit(types.SET_ORGANIZATION_ID, id);
     },
-    async fetchOrganizations({ commit }) {
+    async fetchOrganizations({ dispatch, commit }) {
       const res = await getQuery("Organizations");
       if (res && Array.isArray(res)) {
         commit(types.SET_ORGANIZATIONS_LIST, res);
+        if (res.length === 1) {
+          dispatch("setOrganizationId", res[0].id);
+        }
       }
       if (res.error) {
         return;
