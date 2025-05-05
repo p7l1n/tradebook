@@ -13,7 +13,6 @@ export default function useStats() {
   const initialStats = computed(
     () => store.getters["settings/organizationBalances"]
   );
-  console.log("initialStats", initialStats.value);
 
   const filterOptions = computed(() => store.getters["orders/filter"]);
   // console.log("ratesList", ratesList.value);
