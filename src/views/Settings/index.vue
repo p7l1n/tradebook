@@ -18,12 +18,14 @@
         :register-mode="true"
         @registered="onRegistered"
       />
+      <BalancesAdmin v-if="activeMenuIndex === 3" />
     </div>
   </div>
 </template>
 <script>
 import Organizations from "@/components/widgets/Organizations";
 import Claims from "@/components/widgets/Claims";
+import BalancesAdmin from "@/components/widgets/BalancesAdmin";
 import Login from "../Login";
 import SubMenu from "./components/SubMenu";
 import { ref } from "vue";
@@ -31,6 +33,7 @@ import { ref } from "vue";
 export default {
   components: {
     Organizations,
+    BalancesAdmin,
     Claims,
     Login,
     SubMenu,

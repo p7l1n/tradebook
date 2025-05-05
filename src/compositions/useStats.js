@@ -9,7 +9,11 @@ export default function useStats() {
   const ordersList = computed(() => store.getters["orders/orders"]);
   const notesList = computed(() => store.getters["note/notes"]);
   const dailyNotesList = computed(() => store.getters["dailyNote/notes"]);
-  const initialStats = computed(() => store.getters["stats/stats"]);
+  // const initialStats = computed(() => store.getters["stats/stats"]);
+  const initialStats = computed(
+    () => store.getters["settings/organizationBalances"]
+  );
+  console.log("initialStats", initialStats.value);
 
   const filterOptions = computed(() => store.getters["orders/filter"]);
   // console.log("ratesList", ratesList.value);

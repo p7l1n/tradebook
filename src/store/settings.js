@@ -10,9 +10,40 @@ export default {
   state: () => ({
     organizationId: 1,
     organizationsList: [],
+    organizationBalances: {
+      1: {
+        start: {
+          RUB: 70000000,
+          USD: 700000,
+          EUR: 500000,
+          USDT: 1105000,
+          WUSD: 0,
+        },
+      },
+      2: {
+        start: {
+          RUB: 9000000,
+          USD: 92000,
+          EUR: 94000,
+          USDT: 230000,
+          WUSD: 0,
+        },
+      },
+      5: {
+        start: {
+          RUB: 10000000,
+          USD: 10000,
+          EUR: 5000,
+          USDT: 10000,
+          WUSD: 0,
+        },
+      },
+    },
   }),
 
   getters: {
+    organizationBalances: (state) =>
+      state.organizationBalances[state.organizationId],
     organizationId: (state) => state.organizationId,
     organizationsList: (state) => state.organizationsList,
     organizationName: (state) =>
