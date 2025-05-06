@@ -54,7 +54,7 @@ export default {
 
     const resetNumeric = () => {
       store.dispatch("orders/resetNum", +num.value);
-      store.dispatch("orders/setLastOrderNum", orders.value[0].id);
+      store.dispatch("orders/setLastOrderNum", orders.value[0].id || 0);
       ElNotification({
         title: "Настройки",
         message: `Номерация установлена! следующая сделка ${+num.value + 1}`,

@@ -141,7 +141,11 @@ export default {
             // .filter((item) => item.comment !== "payed")
             .map((item) => {
               // вирутальная номерация
-              if (item.id > state.lastOrderNum) {
+              if (
+                state.lastOrderNum &&
+                state.lastOrderNum > 0 &&
+                item.id > state.lastOrderNum
+              ) {
                 if (!state.virtualNums[item.id]) {
                   state.currentNum++;
                   state.virtualNums[item.id] = {
