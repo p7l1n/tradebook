@@ -22,7 +22,7 @@ export default {
       },
       2: {
         start: {
-          RUB: 20000000,
+          RUB: 30000000,
           USD: 350000,
           EUR: 250000,
           USDT: 230000,
