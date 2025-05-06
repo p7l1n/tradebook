@@ -60,6 +60,14 @@
         >
           Удалить кассу
         </el-button>
+        <el-button
+          type="warning"
+          :loading="loadingDK"
+          class="base-btn"
+          @click="removeDK"
+        >
+          Удалить Тетрадь/ДК
+        </el-button>
       </div>
     </div>
   </div>
@@ -68,6 +76,7 @@
 import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { ElNotification } from "element-plus";
+import { deleteQuery } from "@/api";
 
 export default {
   setup() {
@@ -77,11 +86,14 @@ export default {
     const loading = ref(false);
     const loadingRemove = ref(false);
     const loadingEdit = ref(false);
+    const loadingDK = ref(false);
 
     const isRemove = ref(false);
     const organizationsList = computed(
       () => store.getters["settings/organizationsList"]
     );
+    const notesList = computed(() => store.getters["note/notes"]);
+    const dailyNotesList = computed(() => store.getters["dailyNote/notes"]);
     const organizationId = computed(
       () => store.getters["settings/organizationId"]
     );
@@ -278,6 +290,26 @@ export default {
       loadingRemove.value = false;
     };
 
+    const removeDK = async () => {
+      loadingDK.value = true;
+      await Promise.all(
+        notesList.value.map(async (note) => {
+          await deleteQuery(`Notes/${note.id}`);
+        })
+      );
+      await Promise.all(
+        dailyNotesList.value.map(async (note) => {
+          await deleteQuery(`Notes/${note.id}`);
+        })
+      );
+      loadingDK.value = false;
+      ElNotification({
+        title: "Касса",
+        message: "ДК и Тетрадь очищены",
+        type: "warning",
+      });
+    };
+
     onMounted(async () => {
       const organization = organizationsList.value.find(
         (item) => item.id == organizationId.value
@@ -291,6 +323,7 @@ export default {
       loading,
       loadingEdit,
       loadingRemove,
+      loadingDK,
       isRemove,
       organizationId,
       selectedOrganization,
@@ -299,6 +332,7 @@ export default {
       onSelectOrganization,
       updateEntity,
       removeEntity,
+      removeDK,
     };
   },
 };
