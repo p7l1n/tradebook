@@ -60,16 +60,6 @@
               @change="onSelectDateTo"
             />
           </div>
-          <div
-            v-if="activeMenuIndex === 2"
-            class="filter__stats"
-            style="height: 32px"
-          >
-            <div class="filter__profit ml10">
-              <span>Снятий на сумму: </span
-              >{{ toCurrency(profitUsdtHistory) }} USDT
-            </div>
-          </div>
         </div>
       </div>
       <!-- form -->
@@ -214,7 +204,7 @@ export default {
     ExportButton,
   },
   setup() {
-    const { profitUsdtHistory, filteredNotesList } = useNotes();
+    const { filteredNotesList } = useNotes();
     const store = useStore();
     const activeMenuIndex = ref(0);
     const editForm = ref(false);
@@ -405,7 +395,6 @@ export default {
       dateFrom,
       dateTo,
       shortcuts,
-      profitUsdtHistory,
       // form
       amount,
       comment,

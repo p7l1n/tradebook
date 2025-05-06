@@ -18,7 +18,7 @@
         :key="ndx"
       >
         <div class="widget-total__list-item-field long strong">
-          {{ item.client }}
+          {{ parseLongName(item.client) }}
         </div>
         <div
           :class="{
