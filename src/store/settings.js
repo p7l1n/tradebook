@@ -25,7 +25,7 @@ export default {
           RUB: 30000000,
           USD: 350000,
           EUR: 250000,
-          USDT: 230000,
+          USDT: 300000,
           WUSD: 0,
         },
       },
