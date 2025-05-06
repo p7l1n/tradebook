@@ -65,7 +65,7 @@ export default {
           initApp();
           timer.value = setInterval(() => {
             initApp();
-          }, 30000);
+          }, 60000);
         }
       }, 500);
     });
