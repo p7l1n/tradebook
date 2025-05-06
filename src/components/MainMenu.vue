@@ -43,7 +43,7 @@ export default {
     const menuItems = computed(() => {
       const items = [
         { title: "Балансы", route: "balances" },
-        { title: "Журнал СД", route: "orders" },
+        { title: "Сделки", route: "orders" },
         { title: "Журнал ДК", route: "notes" },
         { title: "Посредники", route: "agents" },
         { title: "Тетрадь", route: "dailynotes" },
@@ -72,6 +72,8 @@ export default {
   width: 100%;
   height: 80px;
   background-color: $panelColor;
+  position: fixed;
+  z-index: 100;
 
   display: flex;
   align-items: center;

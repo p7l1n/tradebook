@@ -1,7 +1,9 @@
 <template>
   <MainMenu v-if="userInfo" />
   <div class="app-version">{{ "p1.1.20" }}</div>
-  <router-view />
+  <div class="main-app">
+    <router-view />
+  </div>
 </template>
 <script>
 import MainMenu from "@/components/MainMenu";
@@ -85,6 +87,10 @@ html {
   margin: 0;
   min-width: 1385px;
   overflow-x: auto;
+}
+
+.main-app {
+  padding-top: 80px;
 }
 
 * {
