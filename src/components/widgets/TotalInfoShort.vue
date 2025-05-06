@@ -63,7 +63,7 @@
       </div>
       <!-- строка прибыль -->
       <div class="widget-total__list-item">
-        <div class="widget-total__list-item-field label">Прибыль</div>
+        <div class="widget-total__list-item-field label">Винни</div>
         <div class="widget-total__list-item-field"></div>
         <div class="widget-total__list-item-field"></div>
         <div class="widget-total__list-item-field"></div>

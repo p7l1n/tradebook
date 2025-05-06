@@ -12,7 +12,7 @@ createPersistedState({
   paths: [
     // "rates.rates",
     // "rates.updateFromServer",
-    // "orders.showFields",
+    "orders.showFields",
     "orders.filter",
     // "orders.orders",
     // "clients.clients",
@@ -26,6 +26,9 @@ createPersistedState({
     "auth.user",
     "settings.organizationsList",
     "settings.organizationId",
+    "orders.currentNum",
+    "orders.lastOrderNum",
+    "orders.virtualNums",
   ],
 })(store);
 

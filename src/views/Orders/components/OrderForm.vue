@@ -92,6 +92,26 @@
     </div>
     <!-- посредник -->
     <div class="order-form__agent">
+      <!-- номерация -->
+      <div class="order-form__field">
+        <div class="label">Комментарий</div>
+        <el-input
+          placeholder="Комментарий"
+          v-model="customComment"
+          class="base-input"
+          @input="onChangeCustomComment"
+        />
+      </div>
+      <div class="order-form__field">
+        <div class="label">Номер</div>
+        <el-input
+          placeholder="Номер"
+          v-model="customNum"
+          class="base-input"
+          @input="onChangeCustomNum"
+        />
+      </div>
+      <!-- ном конец -->
       <div v-if="editOrder.agentAmount" class="order-form__field mb0">
         <div class="label">Посредник</div>
         <el-select
@@ -222,8 +242,13 @@ export default {
     const rateAgent = ref("");
     const rateIn = ref("");
 
+    const customComment = ref("");
+    const customNum = ref("");
+
     const loadingRemove = ref(false);
     const loading = ref(false);
+
+    const virtualNums = computed(() => store.getters["orders/virtualNums"]);
 
     const operatorList = computed(() =>
       store.getters["clients/clients"].filter(
@@ -650,8 +675,31 @@ export default {
       selectedAgent.value = val;
     };
 
+    const onChangeCustomComment = (val) => {
+      store.dispatch("orders/setVirtualNums", {
+        key: "customComment",
+        value: val,
+        id: props.editOrder.id,
+      });
+    };
+
+    const onChangeCustomNum = (val) => {
+      store.dispatch("orders/setVirtualNums", {
+        key: "customNum",
+        value: val,
+        id: props.editOrder.id,
+      });
+    };
+
     onMounted(() => {
       if (props.editOrder) {
+        customComment.value =
+          virtualNums.value[props.editOrder.id]?.customComment || "";
+        customNum.value =
+          virtualNums.value[props.editOrder.id]?.customNum ||
+          virtualNums.value[props.editOrder.id]?.num ||
+          "";
+
         selectedAgent.value = props.editOrder.agent;
         amountAgent.value = props.editOrder.agentAmount;
         rateAgent.value = props.editOrder.agentRate;
@@ -697,6 +745,8 @@ export default {
       clientItems,
       loading,
       loadingRemove,
+      customComment,
+      customNum,
       onSelectOperationType,
       onSelectAgentCurrencies,
       onSelectInCurrencies,
@@ -714,6 +764,8 @@ export default {
       onRateAgentChange,
       numberFormatter,
       numberParser,
+      onChangeCustomComment,
+      onChangeCustomNum,
     };
   },
 };
@@ -729,6 +781,7 @@ export default {
     position: absolute;
     right: -360px;
     top: 0;
+    width: 95%;
 
     .label {
       font-size: 14px;

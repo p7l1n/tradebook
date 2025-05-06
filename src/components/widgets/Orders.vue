@@ -11,6 +11,12 @@
             ID
           </div>
           <div
+            v-if="showFields?.num?.show"
+            class="widget-orders__list-item-field label"
+          >
+            Номер
+          </div>
+          <div
             v-if="showFields?.date?.show"
             class="widget-orders__list-item-field label"
           >
@@ -39,6 +45,12 @@
           <div class="widget-orders__list-item-field label">Курс</div>
           <div class="widget-orders__list-item-field label">Расход</div>
           <div class="widget-orders__list-item-field label">Сумма</div>
+          <div
+            v-if="showFields?.customComment?.show"
+            class="widget-orders__list-item-field label"
+          >
+            Комм.
+          </div>
           <div
             v-if="showFields?.hint?.show"
             class="widget-orders__list-item-field label"
@@ -80,6 +92,12 @@
             class="widget-orders__list-item-field"
           >
             {{ `${item.id}`.slice(0, 9) }}
+          </div>
+          <div
+            v-if="showFields?.num?.show"
+            class="widget-orders__list-item-field"
+          >
+            {{ virtualNums[item.id]?.customNum || virtualNums[item.id]?.num }}
           </div>
           <div
             v-if="showFields?.date?.show"
@@ -125,6 +143,12 @@
           </div>
           <div class="widget-orders__list-item-field strong">
             {{ getAmountOut(item) }}
+          </div>
+          <div
+            v-if="showFields?.customComment?.show"
+            class="widget-orders__list-item-field mini"
+          >
+            {{ virtualNums[item.id]?.customComment || "" }}
           </div>
           <div
             v-if="showFields?.hint?.show"
@@ -192,6 +216,7 @@ export default {
     const countIncrement = ref(20);
     const loading = ref(false);
 
+    const virtualNums = computed(() => store.getters["orders/virtualNums"]);
     const ordersListWithType = computed(() => {
       return props.hidePayed
         ? ordersList.value.filter((order) => !order.comment.includes("payed"))
@@ -304,6 +329,7 @@ export default {
       countIncrement,
       isAdmin,
       ordersListWithType,
+      virtualNums,
       parseLongName,
       showMore,
       getNumFormat,
@@ -375,6 +401,10 @@ export default {
     align-items: center;
     position: relative;
     cursor: pointer;
+
+    &:nth-child(even) {
+      background-color: #edeaea;
+    }
 
     &.editing {
       background-color: #ccc;

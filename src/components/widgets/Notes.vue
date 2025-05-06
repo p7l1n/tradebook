@@ -250,6 +250,10 @@ export default {
     cursor: pointer;
     position: relative;
 
+    &:nth-child(even) {
+      background-color: #edeaea;
+    }
+
     &.editing {
       background-color: #ccc;
     }

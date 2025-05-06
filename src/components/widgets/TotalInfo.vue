@@ -7,7 +7,7 @@
         <div class="widget-total__list-item-field label">Начало</div>
         <div class="widget-total__list-item-field label">Журнал</div>
         <div class="widget-total__list-item-field label">Свед юсд</div>
-        <div class="widget-total__list-item-field label">Прибыль</div>
+        <div class="widget-total__list-item-field label">Винни</div>
         <div class="widget-total__list-item-field label">Журнал ДК</div>
         <div class="widget-total__list-item-field label">Тетрадь</div>
         <div class="widget-total__list-item-field label">ФАКТ</div>
