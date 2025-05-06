@@ -65,7 +65,13 @@
             >
               Перенести в ДК
             </el-button>
-            {{ isAgents ? "" : item.comment }}
+            {{
+              isAgents
+                ? ""
+                : item.comment === "Снятие прибыли"
+                ? "Винни"
+                : item.comment
+            }}
           </div>
           <div
             v-if="isAdmin || (!isAgents && !item.isProfit)"

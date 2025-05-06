@@ -267,10 +267,22 @@ export default {
 
     const onSelectInCurrencies = (ndx) => {
       activeIncurrenciesIndex.value = ndx;
+      // при переключении табов пересчитывать все
+      const rate = rateIn.value;
+      rateIn.value = "";
+      onRateChange();
+      rateIn.value = rate;
+      onRateChange();
     };
 
     const onSelectOutCurrencies = (ndx) => {
       activeOutcurrenciesIndex.value = ndx;
+      // при переключении табов пересчитывать все
+      const rate = rateIn.value;
+      rateIn.value = "";
+      onRateChange();
+      rateIn.value = rate;
+      onRateChange();
     };
 
     const onSelectAgentCurrencies = (ndx) => {

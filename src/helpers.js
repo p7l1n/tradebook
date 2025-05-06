@@ -30,6 +30,7 @@ export const isTodayBetweenDates = (date1, date2) => {
 };
 
 export const parseLongName = (name = "") => {
+  if (name === "Прибыль") return "Винни";
   const str = name.split("@")[0];
   return str.length >= 12 ? `${str.slice(0, 10)}...` : str;
 };
