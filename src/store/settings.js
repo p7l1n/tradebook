@@ -22,9 +22,9 @@ export default {
       },
       2: {
         start: {
-          RUB: 9000000,
-          USD: 92000,
-          EUR: 94000,
+          RUB: 20000000,
+          USD: 350000,
+          EUR: 250000,
           USDT: 230000,
           WUSD: 0,
         },
