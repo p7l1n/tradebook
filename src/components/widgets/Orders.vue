@@ -97,7 +97,7 @@
             v-if="showFields?.num?.show"
             class="widget-orders__list-item-field"
           >
-            {{ virtualNums[item.id]?.customNum || virtualNums[item.id]?.num }}
+            <!-- {{ virtualNums[item.id]?.customNum || virtualNums[item.id]?.num }} -->
           </div>
           <div
             v-if="showFields?.date?.show"
