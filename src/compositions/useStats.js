@@ -189,13 +189,16 @@ export default function useStats() {
 
     // calc total
     filteredOrdersList.value.forEach((order) => {
-      if (!order.status) {
-        statsOrders[order.inCurrency].totalInCurrency += +order.kassaAmountIn;
-        statsOrders[order.outCurrency].totalInCurrency -= +order.kassaAmountOut;
-      } else {
-        statsOrders[order.inCurrency].totalInCurrency += 0;
-        statsOrders[order.outCurrency].totalInCurrency -= 0;
-      }
+      // и с галочкой и без считаем
+      statsOrders[order.inCurrency].totalInCurrency += +order.kassaAmountIn;
+      statsOrders[order.outCurrency].totalInCurrency -= +order.kassaAmountOut;
+      // if (!order.status) {
+      //   statsOrders[order.inCurrency].totalInCurrency += +order.kassaAmountIn;
+      //   statsOrders[order.outCurrency].totalInCurrency -= +order.kassaAmountOut;
+      // } else {
+      //   statsOrders[order.inCurrency].totalInCurrency += 0;
+      //   statsOrders[order.outCurrency].totalInCurrency -= 0;
+      // }
     });
 
     // calc DK
@@ -234,11 +237,25 @@ export default function useStats() {
           +statsOrders[key].totalInCurrency /
             (+ratesList.value[key]?.sell + +ratesList.value[key]?.spreadSell) ||
           0;
+
+        if (key === "EUR") {
+          statsOrders[key].totalInUSDT =
+            +statsOrders[key].totalInCurrency *
+              (+ratesList.value[key]?.sell +
+                +ratesList.value[key]?.spreadSell) || 0;
+        }
       } else {
         statsOrders[key].totalInUSDT =
           +statsOrders[key].totalInCurrency /
             (+ratesList.value[key]?.buy - +ratesList.value[key]?.spreadBuy) ||
           0;
+
+        if (key === "EUR") {
+          statsOrders[key].totalInUSDT =
+            +statsOrders[key].totalInCurrency *
+              (+ratesList.value[key]?.buy - +ratesList.value[key]?.spreadBuy) ||
+            0;
+        }
       }
     });
 
