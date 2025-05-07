@@ -3,6 +3,10 @@ const replaceAll = (templateString, wordToReplace, replaceWith) => {
   return templateString.replace(regex, replaceWith);
 };
 
+export const replaceCommasWithDots = (value) => {
+  return String(value).replace(/,/g, ".");
+};
+
 export const toCurrency = (n, separator = " ") => {
   const num = +(n + "");
   return replaceAll(num.toLocaleString("en"), ",", separator);

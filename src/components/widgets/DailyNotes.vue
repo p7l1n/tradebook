@@ -87,8 +87,8 @@ export default {
     const { filteredNotesList } = useDailyNotes();
     // const store = useStore();
     const selectedItem = ref(null);
-    const countToShow = ref(20);
-    const countIncrement = ref(20);
+    const countToShow = ref(400);
+    const countIncrement = ref(400);
 
     const showMore = () => {
       countToShow.value += countIncrement.value;

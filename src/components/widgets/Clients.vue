@@ -143,8 +143,8 @@ export default {
     const loadingRemove = ref(false);
     const activeTypesIndex = ref(0);
 
-    const countToShow = ref(20);
-    const countIncrement = ref(20);
+    const countToShow = ref(400);
+    const countIncrement = ref(400);
 
     const showMore = () => {
       countToShow.value += countIncrement.value;

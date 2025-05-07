@@ -212,8 +212,8 @@ export default {
     const { getOrderAPIFormat } = useOrders();
     const { filteredOrdersList: ordersList } = useStats();
     const store = useStore();
-    const countToShow = ref(20);
-    const countIncrement = ref(20);
+    const countToShow = ref(400);
+    const countIncrement = ref(400);
     const loading = ref(false);
 
     const virtualNums = computed(() => store.getters["orders/virtualNums"]);
