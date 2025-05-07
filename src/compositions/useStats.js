@@ -8,7 +8,11 @@ export default function useStats() {
   const ratesList = computed(() => store.getters["rates/rates"]);
   const ordersList = computed(() => store.getters["orders/orders"]);
   const notesList = computed(() => store.getters["note/notes"]);
+  const agentList = computed(() => store.getters["agents/notes"]);
   const dailyNotesList = computed(() => store.getters["dailyNote/notes"]);
+  const notesWithAgentsList = computed(() =>
+    notesList.value.concat(agentList.value)
+  );
   // const initialStats = computed(() => store.getters["stats/stats"]);
   const initialStats = computed(
     () => store.getters["settings/organizationBalances"]
@@ -99,7 +103,7 @@ export default function useStats() {
     });
 
     // calc DK
-    notesList.value.forEach((note) => {
+    notesWithAgentsList.value.forEach((note) => {
       // with profit
       const amount =
         note.type === NOTE_TYPES.debit ? -note.amount : +note.amount;
@@ -202,7 +206,7 @@ export default function useStats() {
     });
 
     // calc DK
-    notesList.value.forEach((note) => {
+    notesWithAgentsList.value.forEach((note) => {
       // with profit
       const amount =
         note.type === NOTE_TYPES.debit ? -note.amount : +note.amount;
