@@ -21,7 +21,7 @@
         />
         <div class="numeric__current">Последний номер: {{ currentNum }}</div>
         <div class="numeric__current">
-          Последняя заявка ID: {{ lastOrderNum }}
+          Начало нумерации с ID: {{ lastOrderNum }}
         </div>
       </div>
     </div>
