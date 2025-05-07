@@ -112,7 +112,7 @@
         />
       </div>
       <!-- ном конец -->
-      <div v-if="editOrder.agentAmount" class="order-form__field mb0">
+      <div class="order-form__field mb0">
         <div class="label">Посредник</div>
         <el-select
           v-model="selectedAgent"
@@ -131,14 +131,14 @@
           />
         </el-select>
       </div>
-      <div v-if="editOrder.agentAmount" class="order-form__field mb0">
+      <div class="order-form__field mb0">
         <CheckGroupButton
           :items="agentCurrencies"
           :active-index="activeAgentcurrenciesIndex"
           @check="onSelectAgentCurrencies"
         />
       </div>
-      <div v-if="editOrder.agentAmount" class="order-form__field mb0 row">
+      <div class="order-form__field mb0 row">
         <el-input
           placeholder="Сумма"
           v-model="amountAgent"
