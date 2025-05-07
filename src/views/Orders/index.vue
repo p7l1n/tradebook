@@ -64,7 +64,11 @@
           :style="{
             width: '720px',
           }"
-          :title="selectedOrder ? 'Редактирование сделки' : 'Новая сделка'"
+          :title="
+            selectedOrder
+              ? `Редактирование сделки ${selectedOrder?.id}`
+              : 'Новая сделка'
+          "
           v-click-away="closeForm"
         >
           <OrderForm @close="closeForm" :edit-order="selectedOrder" />

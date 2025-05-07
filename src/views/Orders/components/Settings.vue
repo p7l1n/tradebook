@@ -26,6 +26,16 @@
       </div>
     </div>
     <div class="orders-edit-fields__field">
+      <div class="numeric">
+        <Button title="Пронумеровать с ID" @click="setQueue" class="control" />
+        <el-input
+          placeholder="ID заявки"
+          v-model="orderId"
+          class="control base-input ml-20"
+        />
+      </div>
+    </div>
+    <div class="orders-edit-fields__field">
       <Button
         title="Сбросить коллекции номераций"
         @click="resetVirtualNums"
@@ -37,7 +47,7 @@
 <script>
 import Button from "@/components/Button";
 import { useStore } from "vuex";
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { ElNotification } from "element-plus";
 
 export default {
@@ -47,6 +57,7 @@ export default {
   setup() {
     const store = useStore();
     const num = ref(0);
+    const orderId = ref(0);
 
     const currentNum = computed(() => store.getters["orders/currentNum"]);
     const lastOrderNum = computed(() => store.getters["orders/lastOrderNum"]);
@@ -54,7 +65,7 @@ export default {
 
     const resetNumeric = () => {
       store.dispatch("orders/resetNum", +num.value);
-      store.dispatch("orders/setLastOrderNum", orders.value[0].id || 0);
+      // store.dispatch("orders/setLastOrderNum", orders.value[0]?.id || 0);
       ElNotification({
         title: "Настройки",
         message: `Номерация установлена! следующая сделка ${+num.value + 1}`,
@@ -71,14 +82,25 @@ export default {
       });
     };
 
-    onMounted(() => {
-      // num.value = currentNum.value;
-    });
+    const setQueue = () => {
+      store.dispatch("orders/resetNum");
+      store.dispatch("orders/setLastOrderNum", orderId.value);
+
+      const list = [].concat(orders.value).reverse();
+      // setVirtualQueue
+      list.forEach((item) => {
+        if (item.id >= lastOrderNum.value) {
+          store.dispatch("orders/setVirtualQueue", item.id);
+        }
+      });
+    };
 
     return {
       currentNum,
 
       num,
+      orderId,
+      setQueue,
       resetNumeric,
       resetVirtualNums,
       lastOrderNum,

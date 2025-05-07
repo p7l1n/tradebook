@@ -10,6 +10,9 @@ const types = {
   // NUMS
   RESET_NUM: "RESET_NUM",
   SET_LAST_ORDER_NUM: "SET_LAST_ORDER_NUM",
+  RESET_VIRTUALS: "RESET_VIRTUALS",
+  SET_VIRTUALS_DATA: "SET_VIRTUALS_DATA",
+  SET_VIRTUAL_QUEUE_NUM: "SET_VIRTUAL_QUEUE_NUM",
 };
 
 export default {
@@ -82,6 +85,27 @@ export default {
 
   mutations: {
     // NUM
+    [types.SET_VIRTUAL_QUEUE_NUM](state, id) {
+      state.currentNum++;
+      state.virtualNums[id] = {
+        num: state.currentNum,
+        customNum: "",
+        customComment: "",
+      };
+    },
+    [types.SET_VIRTUALS_DATA](state, opts) {
+      if (!state.virtualNums[opts.id]) {
+        state.virtualNums[opts.id] = {
+          num: state.currentNum,
+          customNum: "",
+          customComment: "",
+        };
+      }
+      state.virtualNums[opts.id][opts.key] = opts.value;
+    },
+    [types.RESET_VIRTUALS](state) {
+      state.virtualNums = {};
+    },
     [types.RESET_NUM](state, num) {
       state.currentNum = num;
     },
@@ -103,18 +127,13 @@ export default {
   },
 
   actions: {
-    setVirtualNums({ state }, opts) {
-      if (!state.virtualNums[opts.id]) {
-        state.virtualNums[opts.id] = {
-          num: state.currentNum,
-          customNum: "",
-          customComment: "",
-        };
-      }
-      state.virtualNums[opts.id][opts.key] = opts.value;
+    setVirtualNums({ commit }, opts) {
+      commit(types.SET_VIRTUALS_DATA, opts);
     },
-    resetVirtualNums({ state }) {
-      state.virtualNums = {};
+    resetVirtualNums({ commit }) {
+      commit(types.RESET_VIRTUALS);
+      commit(types.RESET_NUM, 0);
+      commit(types.SET_LAST_ORDER_NUM, 0);
     },
     resetNum({ commit }, value) {
       commit(types.RESET_NUM, value || 0);
@@ -128,6 +147,9 @@ export default {
     },
     updateShowFields({ commit }, value) {
       commit(types.UPDATE_SHOW_FIELDS, value);
+    },
+    setVirtualQueue({ commit }, id) {
+      commit(types.SET_VIRTUAL_QUEUE_NUM, id);
     },
     async fetchOrders({ state, commit, rootGetters }) {
       const clients = rootGetters["clients/clients"];
@@ -147,12 +169,7 @@ export default {
                 item.id > state.lastOrderNum
               ) {
                 if (!state.virtualNums[item.id]) {
-                  state.currentNum++;
-                  state.virtualNums[item.id] = {
-                    num: state.currentNum,
-                    customNum: "",
-                    customComment: "",
-                  };
+                  commit(types.SET_VIRTUAL_QUEUE_NUM, item.id);
                 }
               }
               //
