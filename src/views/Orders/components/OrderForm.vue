@@ -244,11 +244,10 @@ export default {
 
     const customComment = ref("");
     const customNum = ref("");
+    const metaInfo = ref("");
 
     const loadingRemove = ref(false);
     const loading = ref(false);
-
-    const virtualNums = computed(() => store.getters["orders/virtualNums"]);
 
     const operatorList = computed(() =>
       store.getters["clients/clients"].filter(
@@ -332,6 +331,9 @@ export default {
       amountAgent.value = "";
       rateAgent.value = "";
       rateIn.value = "";
+      metaInfo.value = "";
+      customComment.value = "";
+      customNum.value = "";
     };
 
     const addNewOrder = async () => {
@@ -404,9 +406,9 @@ export default {
           outCurrencyId: activeOutcurrenciesIndex.value, // outCurrencies.value[activeOutcurrenciesIndex.value],
           outAmount: +amountOut.value,
           status: props.editOrder.status,
-          customComment: "",
-          customNum: "",
-          metaInfo: "",
+          customComment: customComment.value,
+          customNum: customNum.value,
+          metaInfo: metaInfo.value,
         };
         loading.value = true;
         await store.dispatch("orders/updateOrderEntity", newOrderEntity);
@@ -678,30 +680,15 @@ export default {
       selectedAgent.value = val;
     };
 
-    const onChangeCustomComment = (val) => {
-      store.dispatch("orders/setVirtualNums", {
-        key: "customComment",
-        value: val,
-        id: props.editOrder.id,
-      });
-    };
+    const onChangeCustomComment = () => {};
 
-    const onChangeCustomNum = (val) => {
-      store.dispatch("orders/setVirtualNums", {
-        key: "customNum",
-        value: val,
-        id: props.editOrder.id,
-      });
-    };
+    const onChangeCustomNum = () => {};
 
     onMounted(() => {
       if (props.editOrder) {
-        customComment.value =
-          virtualNums.value[props.editOrder.id]?.customComment || "";
-        customNum.value =
-          virtualNums.value[props.editOrder.id]?.customNum ||
-          virtualNums.value[props.editOrder.id]?.num ||
-          "";
+        customComment.value = props.editOrder.customComment;
+        customNum.value = props.editOrder.customNum;
+        metaInfo.value = props.editOrder.metaInfo;
 
         selectedAgent.value = props.editOrder.agent;
         amountAgent.value = props.editOrder.agentAmount;

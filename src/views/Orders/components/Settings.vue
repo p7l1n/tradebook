@@ -1,111 +1,21 @@
 <template>
   <div class="orders-edit-fields">
     <div class="orders-edit-fields__field">
-      <Button
-        title="Настройки полей"
+      <el-button
+        style="width: 150px"
+        type="success"
+        class="base-btn"
         @click="$emit('editOrdersFields')"
-        class="control"
-      />
-    </div>
-    <div class="orders-edit-fields__field">
-      <div class="numeric">
-        <Button
-          title="Установить номерацию с"
-          @click="resetNumeric"
-          class="control"
-        />
-        <el-input
-          placeholder="Номерация 0"
-          v-model="num"
-          class="control base-input ml-20"
-        />
-        <div class="numeric__current">Последний номер: {{ currentNum }}</div>
-        <div class="numeric__current">
-          Начало нумерации с ID: {{ lastOrderNum }}
-        </div>
-      </div>
-    </div>
-    <div class="orders-edit-fields__field">
-      <div class="numeric">
-        <Button title="Пронумеровать с ID" @click="setQueue" class="control" />
-        <el-input
-          placeholder="ID заявки"
-          v-model="orderId"
-          class="control base-input ml-20"
-        />
-      </div>
-    </div>
-    <div class="orders-edit-fields__field">
-      <Button
-        title="Сбросить коллекции номераций"
-        @click="resetVirtualNums"
-        class="control"
-      />
+      >
+        Настройки полей
+      </el-button>
     </div>
   </div>
 </template>
 <script>
-import Button from "@/components/Button";
-import { useStore } from "vuex";
-import { computed, ref } from "vue";
-import { ElNotification } from "element-plus";
-
 export default {
-  components: {
-    Button,
-  },
-  setup() {
-    const store = useStore();
-    const num = ref(0);
-    const orderId = ref(0);
-
-    const currentNum = computed(() => store.getters["orders/currentNum"]);
-    const lastOrderNum = computed(() => store.getters["orders/lastOrderNum"]);
-    const orders = computed(() => store.getters["orders/orders"]);
-
-    const resetNumeric = () => {
-      store.dispatch("orders/resetNum", +num.value);
-      // store.dispatch("orders/setLastOrderNum", orders.value[0]?.id || 0);
-      ElNotification({
-        title: "Настройки",
-        message: `Номерация установлена! следующая сделка ${+num.value + 1}`,
-        type: "success",
-      });
-    };
-
-    const resetVirtualNums = () => {
-      store.dispatch("orders/resetVirtualNums");
-      ElNotification({
-        title: "Настройки",
-        message: `Очередь сброшена`,
-        type: "success",
-      });
-    };
-
-    const setQueue = () => {
-      store.dispatch("orders/resetNum");
-      store.dispatch("orders/setLastOrderNum", orderId.value);
-
-      const list = [].concat(orders.value).reverse();
-      // setVirtualQueue
-      list.forEach((item) => {
-        if (item.id >= lastOrderNum.value) {
-          store.dispatch("orders/setVirtualQueue", item.id);
-        }
-      });
-    };
-
-    return {
-      currentNum,
-
-      num,
-      orderId,
-      setQueue,
-      resetNumeric,
-      resetVirtualNums,
-      lastOrderNum,
-    };
-  },
+  components: {},
+  setup() {},
 };
 </script>
 <style lang="scss" scoped>
@@ -125,15 +35,6 @@ export default {
   &__field {
     width: 100%;
     margin-bottom: 20px;
-  }
-
-  .numeric {
-    display: flex;
-    align-items: center;
-
-    &__current {
-      margin-left: 20px;
-    }
   }
 }
 </style>

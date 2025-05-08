@@ -18,6 +18,9 @@ export default function useOrders() {
   const amountAgent = ref("");
   const rateIn = ref("");
   const rateAgent = ref("");
+  const customComment = ref("");
+  const customNum = ref("");
+  const metaInfo = ref("");
 
   const inCurrencies = ref(DEFAULT_CURRENCIES);
   const outCurrencies = ref(DEFAULT_CURRENCIES);
@@ -60,6 +63,9 @@ export default function useOrders() {
     amountAgent.value = apiData.agentAmount;
     rateIn.value = apiData.rate;
     rateAgent.value = apiData.agentRate;
+    customComment.value = apiData.customComment;
+    customNum.value = apiData.customNum;
+    metaInfo.value = apiData.metaInfo;
 
     activeOutcurrenciesIndex.value = outCurrencies.value.findIndex(
       (item) => item === apiData.outCurrency
@@ -107,9 +113,9 @@ export default function useOrders() {
       outCurrencyId: activeOutcurrenciesIndex.value,
       outAmount: +amountOut.value,
       status: apiData.status,
-      customComment: "",
-      customNum: "",
-      metaInfo: "",
+      customComment: apiData.customComment,
+      customNum: apiData.customNum,
+      metaInfo: apiData.metaInfo,
     };
 
     return newOrderEntity;

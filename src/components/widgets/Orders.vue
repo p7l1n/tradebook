@@ -97,7 +97,7 @@
             v-if="showFields?.num?.show"
             class="widget-orders__list-item-field"
           >
-            {{ virtualNums[item.id]?.customNum || virtualNums[item.id]?.num }}
+            {{ item.customNum }}
           </div>
           <div
             v-if="showFields?.date?.show"
@@ -148,7 +148,7 @@
             v-if="showFields?.customComment?.show"
             class="widget-orders__list-item-field mini"
           >
-            {{ virtualNums[item.id]?.customComment || "" }}
+            {{ item.customComment }}
           </div>
           <div
             v-if="showFields?.hint?.show"
@@ -216,7 +216,6 @@ export default {
     const countIncrement = ref(400);
     const loading = ref(false);
 
-    const virtualNums = computed(() => store.getters["orders/virtualNums"]);
     const ordersListWithType = computed(() => {
       return props.hidePayed
         ? ordersList.value.filter((order) => !order.comment.includes("payed"))
@@ -329,7 +328,6 @@ export default {
       countIncrement,
       isAdmin,
       ordersListWithType,
-      virtualNums,
       parseLongName,
       showMore,
       getNumFormat,
