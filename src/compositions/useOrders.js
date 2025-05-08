@@ -107,6 +107,9 @@ export default function useOrders() {
       outCurrencyId: activeOutcurrenciesIndex.value,
       outAmount: +amountOut.value,
       status: apiData.status,
+      customComment: "",
+      customNum: "",
+      metaInfo: "",
     };
 
     return newOrderEntity;

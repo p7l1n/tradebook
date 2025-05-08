@@ -402,6 +402,9 @@ export default {
         outCurrencyId: activeOutcurrenciesIndex.value, // outCurrencies.value[activeOutcurrenciesIndex.value],
         outAmount: +amountOut.value,
         status: 0,
+        customComment: "",
+        customNum: "",
+        metaInfo: "",
       };
       loading.value = true;
       await store.dispatch("orders/addNewOrderEntity", newOrderEntity);

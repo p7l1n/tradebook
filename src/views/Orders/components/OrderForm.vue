@@ -404,6 +404,9 @@ export default {
           outCurrencyId: activeOutcurrenciesIndex.value, // outCurrencies.value[activeOutcurrenciesIndex.value],
           outAmount: +amountOut.value,
           status: props.editOrder.status,
+          customComment: "",
+          customNum: "",
+          metaInfo: "",
         };
         loading.value = true;
         await store.dispatch("orders/updateOrderEntity", newOrderEntity);
