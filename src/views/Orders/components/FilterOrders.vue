@@ -397,6 +397,9 @@ export default {
         agentCurrencyId: 0,
         agentAmount: 0,
         agentRate: 0,
+        customComment: "",
+        customNum: "",
+        metaInfo: "",
       };
 
       // отсеять уже зеленые + не трогать те что выручка тип + отмеченные галочкой
