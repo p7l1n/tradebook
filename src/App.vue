@@ -1,7 +1,19 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.1.32" }}</div>
+  <div class="app-version">{{ "p1.1.33" }}</div>
   <div class="main-app">
+    <div :class="{ focused }" class="main-calculator">
+      <el-input
+        placeholder="Калькулятор"
+        v-model="mathStr"
+        clearable
+        class="base-input"
+        @focus="onFocus(true)"
+        @blur="onFocus(false)"
+        @input="onCalcInput"
+      />
+      <div class="sum-total">{{ sumCalc }}</div>
+    </div>
     <router-view />
   </div>
 </template>
@@ -9,6 +21,8 @@
 import MainMenu from "@/components/MainMenu";
 import { computed, onMounted, watch, ref, onBeforeUnmount } from "vue";
 import { useStore } from "vuex";
+import { toCurrency, replaceCommasWithDots } from "@/helpers";
+const { evaluate } = require("mathjs");
 
 export default {
   components: {
@@ -21,6 +35,9 @@ export default {
     const organizationId = computed(
       () => store.getters["settings/organizationId"]
     );
+    const mathStr = ref("");
+    const sumCalc = ref("");
+    const focused = ref(false);
 
     const initApp = async () => {
       await store.dispatch("stats/fetchCurrencies");
@@ -70,12 +87,32 @@ export default {
       }, 500);
     });
 
+    const onCalcInput = (val) => {
+      try {
+        sumCalc.value = ` = ${toCurrency(
+          +evaluate(replaceCommasWithDots(val)).toFixed(3),
+          ","
+        )}`;
+      } catch (err) {
+        sumCalc.value = "";
+      }
+    };
+
+    const onFocus = (val) => {
+      focused.value = val;
+    };
+
     onBeforeUnmount(() => {
       clearInterval(timer.value);
     });
 
     return {
       userInfo,
+      sumCalc,
+      mathStr,
+      focused,
+      onFocus,
+      onCalcInput,
     };
   },
 };
@@ -95,6 +132,31 @@ html {
 
 * {
   transition: all 0.3s ease;
+}
+
+.main-calculator {
+  opacity: 0.1;
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  height: 70px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  position: fixed;
+  right: 200px;
+  top: 5px;
+  bottom: 10px;
+  z-index: 1000;
+  overflow: hidden;
+
+  &.focused {
+    opacity: 1;
+  }
+
+  .sum-total {
+    margin-top: 5px;
+  }
 }
 
 #app {

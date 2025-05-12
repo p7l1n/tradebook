@@ -21,18 +21,6 @@
           </el-button>
         </div>
       </div>
-      <!-- калькулятор -->
-      <div class="orders-page__calc">
-        <el-input
-          style="width: 200px"
-          placeholder="Калькулятор"
-          v-model="mathStr"
-          clearable
-          class="base-input"
-          @input="onCalcInput"
-        />
-        <div class="sum-total">{{ sumCalc }}</div>
-      </div>
       <OrderFormLine v-if="activeMenuIndex === 0" />
       <!-- панель фильтров -->
       <FilterOrders v-if="activeMenuIndex === 1" />
@@ -120,9 +108,6 @@ import { useStore } from "vuex";
 import { onMounted, ref, computed } from "vue";
 
 import { ElNotification } from "element-plus";
-import { toCurrency, replaceCommasWithDots } from "@/helpers";
-
-const { evaluate } = require("mathjs");
 
 export default {
   components: {
@@ -148,8 +133,6 @@ export default {
     const selectedOrder = ref(null);
     const editModeFlag = ref(false);
     const collectionsIds = ref([]);
-    const mathStr = ref("");
-    const sumCalc = ref("");
 
     const isLoading = computed(() => store.getters["rates/isLoading"]);
     const filterOptions = computed(() => store.getters["orders/filter"]);
@@ -208,17 +191,6 @@ export default {
       });
     };
 
-    const onCalcInput = (val) => {
-      try {
-        sumCalc.value = ` = ${toCurrency(
-          +evaluate(replaceCommasWithDots(val)).toFixed(3),
-          ","
-        )}`;
-      } catch (err) {
-        sumCalc.value = "";
-      }
-    };
-
     onMounted(async () => {
       // await store.dispatch("rates/fetchRates");
     });
@@ -233,8 +205,6 @@ export default {
       editModeFlag,
       collectionsIds,
       loadingRemove,
-      mathStr,
-      sumCalc,
       onSelectMenu,
       closeForm,
       onSelectOrder,
@@ -243,7 +213,6 @@ export default {
       onCheckEdit,
       onCollect,
       removeOrders,
-      onCalcInput,
     };
   },
 };
@@ -295,29 +264,6 @@ export default {
     align-items: center;
     position: absolute;
     top: 5px;
-  }
-
-  &__calc {
-    display: flex;
-    align-items: center;
-    position: absolute;
-    right: -5px;
-    top: 5px;
-    min-width: 300px;
-    font-size: 16px;
-
-    .sum-total {
-      width: 200px;
-      font-size: 16px;
-      font-weight: bold;
-      margin: 0 10px;
-      text-align: left;
-    }
-
-    input.el-input__inner {
-      font-size: 16px;
-      background-color: #fff;
-    }
   }
 }
 </style>
