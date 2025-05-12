@@ -109,12 +109,19 @@ export default {
               let kassaAmountOut = 0;
 
               if (item.agentAmount !== 0) {
-                if (item.agentCurrencyId === item.inCurrencyId) {
-                  kassaAmountIn = item.inAmount - item.agentAmount;
-                }
-
-                if (item.agentCurrencyId === item.outCurrencyId) {
+                // если валюта прихода и расхода совпадают то плюсуем в расход
+                if (item.inCurrencyId === item.outCurrencyId) {
                   kassaAmountOut = item.outAmount + item.agentAmount;
+                } else {
+                  if (item.agentCurrencyId === item.inCurrencyId) {
+                    // если приход минусуем
+                    kassaAmountIn = item.inAmount - item.agentAmount;
+                  }
+
+                  if (item.agentCurrencyId === item.outCurrencyId) {
+                    // в расход плюсуем
+                    kassaAmountOut = item.outAmount + item.agentAmount;
+                  }
                 }
               }
               if (kassaAmountOut === 0) {
