@@ -74,7 +74,6 @@
             }}
           </div>
           <div
-            v-if="isAdmin || (!isAgents && !item.isProfit)"
             class="widget-notes__list-item-field remove"
             @click.stop="remove(item)"
           ></div>
