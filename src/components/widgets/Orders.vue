@@ -77,7 +77,7 @@
           class="widget-orders__list-item"
           v-for="(item, ndx) in ordersListWithType.slice(0, countToShow)"
           :key="ndx"
-          @click="!item?.comment?.includes('payed') && selectRow(item)"
+          @click="selectRow(item)"
         >
           <el-checkbox
             v-show="!item?.comment?.includes('payed')"
@@ -260,6 +260,7 @@ export default {
       const order = getOrderAPIFormat(item);
       const status = item.status;
       loading.value = true;
+      // order.status = !order.status;
 
       await store.dispatch("orders/updateOrderEntity", order);
       if (order.agentId === 0) {
@@ -399,6 +400,7 @@ export default {
     align-items: center;
     position: relative;
     cursor: pointer;
+    font-size: 14px;
 
     &:nth-child(even) {
       background-color: #edeaea;
@@ -435,7 +437,7 @@ export default {
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 30px;
+    min-height: 30px;
     position: relative;
 
     &.remove {
@@ -444,11 +446,11 @@ export default {
       height: 16px;
       background-image: url("~@/assets/icons/remove.png");
       background-repeat: no-repeat;
-      background-size: cover;
+      background-size: contain;
       background-position: 50%;
       position: absolute;
       right: -5px;
-      top: 6px;
+      top: 0;
     }
 
     &.strong {

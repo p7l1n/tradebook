@@ -54,6 +54,7 @@
         <el-select
           v-model="selectedClient"
           clearable
+          multiple
           placeholder="Выберите клиента"
           filterable
           style="width: 170px"
@@ -73,6 +74,7 @@
         <el-select
           v-model="selectedOperator"
           clearable
+          multiple
           placeholder="Выберите оператора"
           style="width: 170px"
           filterable
@@ -92,6 +94,7 @@
         <el-select
           v-model="selectedCurrIn"
           clearable
+          multiple
           placeholder="Выберите приход"
           style="width: 170px"
           filterable
@@ -111,6 +114,7 @@
         <el-select
           v-model="selectedCurrOut"
           clearable
+          multiple
           placeholder="Выберите расход"
           filterable
           style="width: 170px"
@@ -279,6 +283,10 @@ export default {
     };
 
     const onStatusSelect = (val) => {
+      console.log(val);
+      if (val === "Не исполнено") {
+        console.log(filteredOrdersList.value);
+      }
       store.dispatch("orders/setFilterOption", { key: "status", value: val });
     };
 

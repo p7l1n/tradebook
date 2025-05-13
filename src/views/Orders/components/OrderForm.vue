@@ -609,7 +609,8 @@ export default {
           !amountIn.value ||
           (amountIn.value && amountOut.value && rateIn.value)
         ) {
-          rateIn.value = "";
+          amountOut.value = "";
+          // rateIn.value = "";
         }
         calcValues();
       }, 100);

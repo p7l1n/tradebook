@@ -49,23 +49,24 @@ export default function useStats() {
           : r.status == false
       )
       .filter((r) =>
-        filterOptions.value.client
-          ? r.client === filterOptions.value.client
+        filterOptions.value.client && filterOptions.value.client.length
+          ? filterOptions.value.client.includes(r.client)
           : true
       )
       .filter((r) =>
-        filterOptions.value.operator
-          ? r.operator === filterOptions.value.operator
+        filterOptions.value.operator && filterOptions.value.operator.length
+          ? filterOptions.value.operator.includes(r.operator)
           : true
       )
       .filter((r) =>
-        filterOptions.value.inCurrency
-          ? r.inCurrency === filterOptions.value.inCurrency
+        filterOptions.value.inCurrency && filterOptions.value.inCurrency.length
+          ? filterOptions.value.inCurrency.includes(r.inCurrency)
           : true
       )
       .filter((r) =>
-        filterOptions.value.outCurrency
-          ? r.outCurrency === filterOptions.value.outCurrency
+        filterOptions.value.outCurrency &&
+        filterOptions.value.outCurrency.length
+          ? filterOptions.value.outCurrency.includes(r.outCurrency)
           : true
       )
       .filter((r) =>
