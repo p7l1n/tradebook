@@ -88,6 +88,7 @@ export default function useStats() {
         totalInCurrencyDKwithoutProfit: 0,
         totalInCurrencyDailyNotes: 0,
         totalInCurrencyFACT: 0,
+        totalInCurrencyFACTwu: 0,
         totalInCurrencyStart: +initialStats.value.start[key],
       };
     });
@@ -169,6 +170,12 @@ export default function useStats() {
         +statsOrders[key].totalInCurrency +
         +statsOrders[key].totalInCurrencyDailyNotes + // тетрадь
         +statsOrders[key].totalInCurrencyDKwithoutProfit;
+
+      // факт юсд + вусд
+      if (["USD", "WUSD"].includes(key)) {
+        statsOrders[key].totalInCurrencyFACTwu +=
+          statsOrders[key].totalInCurrencyFACT;
+      }
     });
 
     return {

@@ -11,6 +11,7 @@
         <div class="widget-total__list-item-field label">Журнал ДК</div>
         <div class="widget-total__list-item-field label">Тетрадь</div>
         <div class="widget-total__list-item-field label">ФАКТ</div>
+        <div class="widget-total__list-item-field label">ФАКТ U+W</div>
       </div>
       <div
         class="widget-total__list-item"
@@ -75,6 +76,21 @@
             !item.totalInCurrencyFACT ? 0 : toCurrency(item.totalInCurrencyFACT)
           }}
         </div>
+        <div
+          :class="{
+            red: totalInCurrencyFACTwu < 0,
+            green: totalInCurrencyFACTwu >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{
+            ndx === 2
+              ? !totalInCurrencyFACTwu
+                ? 0
+                : toCurrency(totalInCurrencyFACTwu)
+              : ""
+          }}
+        </div>
       </div>
     </div>
   </div>
@@ -97,6 +113,12 @@ export default {
     const { allStats, profitUsdt } = useStats();
 
     const ratesList = computed(() => store.getters["rates/rates"]);
+    const totalInCurrencyFACTwu = computed(() => {
+      return (
+        allStats.value.statsOrders?.USD?.totalInCurrencyFACTwu +
+        allStats.value.statsOrders?.WUSD?.totalInCurrencyFACTwu
+      );
+    });
     // console.log("allStats", allStats.value);
 
     // const profitUsdt = computed(() => {
@@ -114,6 +136,7 @@ export default {
       ratesList,
       allStats,
       profitUsdt,
+      totalInCurrencyFACTwu,
       toCurrency,
     };
   },
@@ -171,6 +194,7 @@ export default {
     align-items: center;
     width: 120px;
     height: 40px;
+    font-size: 14px;
 
     &.strong {
       color: $textColorBlack;
