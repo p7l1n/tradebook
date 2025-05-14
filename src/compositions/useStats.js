@@ -148,8 +148,8 @@ export default function useStats() {
         if (key === "EUR") {
           statsOrders[key].totalInUSDT =
             +statsOrders[key].totalInCurrency *
-              (+ratesList.value[key]?.buy + +ratesList.value[key]?.spreadBuy) ||
-            0;
+              (+ratesList.value[key]?.sell +
+                +ratesList.value[key]?.spreadSell) || 0;
         }
       } else {
         statsOrders[key].totalInUSDT =
@@ -160,8 +160,8 @@ export default function useStats() {
         if (key === "EUR") {
           statsOrders[key].totalInUSDT =
             +statsOrders[key].totalInCurrency *
-              (+ratesList.value[key]?.sell -
-                +ratesList.value[key]?.spreadSell) || 0;
+              (+ratesList.value[key]?.buy - +ratesList.value[key]?.spreadBuy) ||
+            0;
         }
       }
     });
@@ -256,8 +256,8 @@ export default function useStats() {
         if (key === "EUR") {
           statsOrders[key].totalInUSDT =
             +statsOrders[key].totalInCurrency *
-              (+ratesList.value[key]?.buy + +ratesList.value[key]?.spreadBuy) ||
-            0;
+              (+ratesList.value[key]?.sell +
+                +ratesList.value[key]?.spreadSell) || 0;
         }
       } else {
         statsOrders[key].totalInUSDT =
@@ -268,8 +268,8 @@ export default function useStats() {
         if (key === "EUR") {
           statsOrders[key].totalInUSDT =
             +statsOrders[key].totalInCurrency *
-              (+ratesList.value[key]?.sell -
-                +ratesList.value[key]?.spreadSell) || 0;
+              (+ratesList.value[key]?.buy - +ratesList.value[key]?.spreadBuy) ||
+            0;
         }
       }
     });
