@@ -35,7 +35,7 @@ export default {
       }
       if (res.token) {
         const userInfo = parseJwt(res.token);
-        // console.log("userInfo", userInfo);
+
         if (userInfo.isAdmin == "false") {
           delete userInfo.isAdmin;
         }

@@ -48,6 +48,25 @@
           />
         </el-select>
       </div>
+      <div class="filter-orders__item">
+        <div class="filter-orders__item-title">Номер</div>
+        <el-select
+          v-model="selectedCustomNum"
+          clearable
+          filterable
+          multiple
+          placeholder="Выберите номер"
+          style="width: 170px"
+          @change="onCustomNumSelect"
+        >
+          <el-option
+            v-for="item in customNumItems"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </div>
       <!-- client -->
       <div class="filter-orders__item">
         <div class="filter-orders__item-title">Клиент</div>
@@ -192,6 +211,7 @@ export default {
     const searchStr = ref("");
     const currentDate = ref(null);
     const cashOutLoading = ref(false);
+    const selectedCustomNum = ref(null);
 
     const ordersList = computed(() => store.getters["orders/orders"]);
     const filterOptions = computed(() => store.getters["orders/filter"]);
@@ -256,6 +276,17 @@ export default {
       );
     });
 
+    const customNumItems = computed(() => {
+      return [...new Set(ordersList.value.map((item) => item.customNum))].map(
+        (item) => {
+          return {
+            title: item,
+            value: item,
+          };
+        }
+      );
+    });
+
     const currInItems = computed(() => {
       return [...new Set(ordersList.value.map((item) => item.inCurrency))].map(
         (item) => {
@@ -298,6 +329,13 @@ export default {
           value: ids,
         });
       }
+    };
+
+    const onCustomNumSelect = (val) => {
+      store.dispatch("orders/setFilterOption", {
+        key: "customNum",
+        value: val,
+      });
     };
 
     const onClientSelect = (val) => {
@@ -478,6 +516,7 @@ export default {
       showStats.value = filterOptions.value.showStats;
       showPayed.value = filterOptions.value.showPayed;
       selectedStatus.value = filterOptions.value.status;
+      selectedCustomNum.value = filterOptions.value.customNum;
 
       currentDate.value = new Date();
     });
@@ -493,9 +532,11 @@ export default {
       selectedOperator,
       selectedCurrIn,
       selectedCurrOut,
+      selectedCustomNum,
 
       clientItems,
       operatorItems,
+      customNumItems,
       currInItems,
       currOutItems,
       showStats,
@@ -517,6 +558,7 @@ export default {
       onCurrOutSelect,
       onChangeStats,
       onChangePayed,
+      onCustomNumSelect,
       cashOut,
       isTodayBetweenDates,
     };
@@ -538,7 +580,7 @@ export default {
   &__export {
     position: absolute;
     right: 0;
-    top: 0;
+    top: 65px;
   }
 
   &__section {

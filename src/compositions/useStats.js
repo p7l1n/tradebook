@@ -13,15 +13,12 @@ export default function useStats() {
   const notesWithAgentsList = computed(() =>
     notesList.value.concat(agentList.value)
   );
-  // const initialStats = computed(() => store.getters["stats/stats"]);
+
   const initialStats = computed(
     () => store.getters["settings/organizationBalances"]
   );
 
   const filterOptions = computed(() => store.getters["orders/filter"]);
-  // console.log("ratesList", ratesList.value);
-  // console.log("ordersList", ordersList.value);
-  // console.log("filter", filterOptions.value);
 
   const filteredOrdersList = computed(() => {
     return ordersList.value
@@ -53,6 +50,11 @@ export default function useStats() {
       .filter((r) =>
         filterOptions.value.client && filterOptions.value.client.length
           ? filterOptions.value.client.includes(r.client)
+          : true
+      )
+      .filter((r) =>
+        filterOptions.value.customNum && filterOptions.value.customNum.length
+          ? filterOptions.value.customNum.includes(r.customNum)
           : true
       )
       .filter((r) =>
@@ -138,7 +140,6 @@ export default function useStats() {
       }
 
       if (+statsOrders[key].totalInCurrency > 0) {
-        // console.log(+statsOrders[key].totalInCurrency, (+ratesList.value[key]?.sell + +ratesList.value[key]?.spreadSell));
         statsOrders[key].totalInUSDT =
           +statsOrders[key].totalInCurrency /
             (+ratesList.value[key]?.sell + +ratesList.value[key]?.spreadSell) ||

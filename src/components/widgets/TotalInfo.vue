@@ -119,18 +119,6 @@ export default {
         allStats.value.statsOrders?.WUSD?.totalInCurrencyFACTwu
       );
     });
-    // console.log("allStats", allStats.value);
-
-    // const profitUsdt = computed(() => {
-    //   let sum = 0;
-
-    //   Object.keys(allStats.value.statsOrders).forEach((key) => {
-    //     sum += allStats.value.statsOrders[key]?.totalInUSDT || 0;
-    //   });
-
-    //   console.log("sum", sum);
-    //   return sum;
-    // });
 
     return {
       ratesList,

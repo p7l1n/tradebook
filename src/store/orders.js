@@ -14,6 +14,7 @@ export default {
     filter: {
       searchStr: "",
       status: null,
+      customNum: null,
       client: null,
       operator: null,
       inCurrency: null,

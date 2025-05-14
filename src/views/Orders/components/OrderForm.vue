@@ -678,6 +678,11 @@ export default {
     };
 
     const onAgentSelect = (val) => {
+      if (!val) {
+        amountAgent.value = "";
+        rateAgent.value = "";
+        activeAgentcurrenciesIndex.value = 0;
+      }
       selectedAgent.value = val;
     };
 
