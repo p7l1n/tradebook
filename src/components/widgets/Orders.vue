@@ -75,8 +75,8 @@
             payed: item?.comment?.includes('payed'),
           }"
           class="widget-orders__list-item"
-          v-for="(item, ndx) in ordersListWithType.slice(0, countToShow)"
-          :key="ndx"
+          v-for="item in ordersListWithType.slice(0, countToShow)"
+          :key="item.id"
           @click="selectRow(item)"
         >
           <el-checkbox

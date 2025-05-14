@@ -41,12 +41,14 @@ export default function useStats() {
       .filter((r) =>
         filterOptions.value.showPayed ? true : !r.comment.includes("payed")
       )
-      .filter((r) =>
-        filterOptions.value.status == null
-          ? true
-          : filterOptions.value.status === "Исполнено"
-          ? r.status == true
-          : r.status == false
+      .filter(
+        (r) =>
+          filterOptions.value.status == null
+            ? true
+            : filterOptions.value.status === "Исполнено"
+            ? r.status == true
+            : r.status == false ||
+              filterOptions.value.cacheIdsForLayer2Filter.includes(r.id) // поверх не ИСП можно выделять исп и видеть их
       )
       .filter((r) =>
         filterOptions.value.client && filterOptions.value.client.length

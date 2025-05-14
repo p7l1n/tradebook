@@ -23,8 +23,8 @@
             old: !isTodayBetweenDates(+new Date(), item.date),
           }"
           class="widget-notes__list-item"
-          v-for="(item, ndx) in filteredNotesList.slice(0, countToShow)"
-          :key="ndx"
+          v-for="item in filteredNotesList.slice(0, countToShow)"
+          :key="item.id"
           @click="selectRow(item)"
         >
           <!-- <div class="widget-notes__list-item-field">

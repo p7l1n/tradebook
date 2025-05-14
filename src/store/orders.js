@@ -21,6 +21,7 @@ export default {
       date: null,
       showStats: null,
       showPayed: true,
+      cacheIdsForLayer2Filter: [],
     },
     showFields: {
       id: {

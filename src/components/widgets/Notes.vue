@@ -28,7 +28,7 @@
           }"
           class="widget-notes__list-item"
           v-for="(item, ndx) in notesList.slice(0, countToShow)"
-          :key="ndx"
+          :key="item.id"
           @click="!item.isProfit && selectRow(item)"
         >
           <!-- <div class="widget-notes__list-item-field">

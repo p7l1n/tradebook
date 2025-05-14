@@ -283,11 +283,21 @@ export default {
     };
 
     const onStatusSelect = (val) => {
-      console.log(val);
-      if (val === "Не исполнено") {
-        console.log(filteredOrdersList.value);
-      }
+      // сбросить айди при смене фильтра
+      store.dispatch("orders/setFilterOption", {
+        key: "cacheIdsForLayer2Filter",
+        value: [],
+      });
+      // установить сам фильтр
       store.dispatch("orders/setFilterOption", { key: "status", value: val });
+      // после выбора не исп запомнить оставшихся айди
+      if (val === "Не исполнено") {
+        const ids = filteredOrdersList.value.map((item) => item.id);
+        store.dispatch("orders/setFilterOption", {
+          key: "cacheIdsForLayer2Filter",
+          value: ids,
+        });
+      }
     };
 
     const onClientSelect = (val) => {
