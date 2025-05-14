@@ -1,5 +1,6 @@
 import axios from "axios";
 import store from "@/store";
+let currentNotification;
 // axios.defaults.withCredentials = true;
 
 const routes = {
@@ -43,10 +44,17 @@ export const postQuery = async (url, params = {}) => {
 
     if (res.data) {
       if (routes[url]) {
-        ElNotification({
+        if (currentNotification) {
+          currentNotification.close();
+        }
+        currentNotification = ElNotification({
           title: routes[url],
           message: `Запись добавлена`,
           type: "success",
+          duration: 500,
+          onClose: () => {
+            currentNotification = null;
+          },
         });
       }
       return res.data;
@@ -56,10 +64,17 @@ export const postQuery = async (url, params = {}) => {
       error: "Empty response from API",
     };
   } catch (err) {
-    ElNotification({
+    if (currentNotification) {
+      currentNotification.close();
+    }
+    currentNotification = ElNotification({
       title: "Error POST",
       message: getError(err),
       type: "error",
+      duration: 500,
+      onClose: () => {
+        currentNotification = null;
+      },
     });
     return {
       error: getError(err),
@@ -89,10 +104,17 @@ export const putQuery = async (url, params = {}) => {
     if (routes[url.split("/")[0]]) {
       if (url.split("/")[0] !== "Orders") {
         // не показывать сообщение для заявок
-        ElNotification({
+        if (currentNotification) {
+          currentNotification.close();
+        }
+        currentNotification = ElNotification({
           title: routes[url.split("/")[0]],
           message: `Запись изменена`,
           type: "warning",
+          duration: 500,
+          onClose: () => {
+            currentNotification = null;
+          },
         });
       }
     }
@@ -104,10 +126,17 @@ export const putQuery = async (url, params = {}) => {
       error: "Empty response from API",
     };
   } catch (err) {
-    ElNotification({
+    if (currentNotification) {
+      currentNotification.close();
+    }
+    currentNotification = ElNotification({
       title: "Error PUT",
       message: getError(err),
       type: "error",
+      duration: 500,
+      onClose: () => {
+        currentNotification = null;
+      },
     });
     return {
       error: getError(err),
@@ -127,10 +156,17 @@ export const deleteQuery = async (url) => {
     });
 
     if (routes[url.split("/")[0]]) {
-      ElNotification({
+      if (currentNotification) {
+        currentNotification.close();
+      }
+      currentNotification = ElNotification({
         title: routes[url.split("/")[0]],
         message: `Запись удалена`,
         type: "error",
+        duration: 500,
+        onClose: () => {
+          currentNotification = null;
+        },
       });
     }
 
@@ -141,10 +177,17 @@ export const deleteQuery = async (url) => {
       error: "Empty response from API",
     };
   } catch (err) {
-    ElNotification({
+    if (currentNotification) {
+      currentNotification.close();
+    }
+    currentNotification = ElNotification({
       title: "Error DELETE",
       message: getError(err),
+      duration: 500,
       type: "error",
+      onClose: () => {
+        currentNotification = null;
+      },
     });
     return {
       error: getError(err),
@@ -182,10 +225,17 @@ export const getQuery = async (url, params = {}) => {
       error: "Empty response from API",
     };
   } catch (err) {
-    ElNotification({
+    if (currentNotification) {
+      currentNotification.close();
+    }
+    currentNotification = ElNotification({
       title: "Error GET",
       message: getError(err),
       type: "error",
+      duration: 500,
+      onClose: () => {
+        currentNotification = null;
+      },
     });
     return {
       error: getError(err),
