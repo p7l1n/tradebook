@@ -9,7 +9,9 @@
           <!-- <div class="widget-notes__list-item-field label">ID</div> -->
           <div class="widget-notes__list-item-field label">Дата</div>
           <div class="widget-notes__list-item-field label">Тип</div>
-          <div class="widget-notes__list-item-field label">Контрагент</div>
+          <div class="widget-notes__list-item-field label wider">
+            Контрагент
+          </div>
           <div class="widget-notes__list-item-field label">Валюта</div>
           <div class="widget-notes__list-item-field label">Сумма</div>
           <div class="widget-notes__list-item-field label">
@@ -40,8 +42,8 @@
           <div class="widget-notes__list-item-field strong">
             {{ item.type }}
           </div>
-          <div class="widget-notes__list-item-field">
-            {{ parseLongName(item.client) }}
+          <div class="widget-notes__list-item-field wider">
+            {{ item.client }}
           </div>
           <div class="widget-notes__list-item-field">
             {{ item.inCurrency }}
@@ -98,7 +100,6 @@ import { useStore } from "vuex";
 import moment from "moment";
 import useNotes from "@/compositions/useNotes";
 import useAgentsNotes from "@/compositions/useAgentsNotes";
-import { parseLongName } from "@/helpers";
 
 export default {
   components: {},
@@ -198,7 +199,6 @@ export default {
       selectRow,
       remove,
       showMore,
-      parseLongName,
       toCurrency,
       updateEntity,
     };
@@ -338,6 +338,10 @@ export default {
       text-transform: uppercase;
       color: $textColorGrayDark;
       font-weight: bold;
+    }
+
+    &.wider {
+      width: 150%;
     }
 
     &.mini {
