@@ -246,6 +246,14 @@ export default {
     justify-content: space-between;
     align-items: center;
 
+    .orders-page__widgets-item {
+      width: 70%;
+    }
+
+    .balance-page__widgets-item {
+      width: 30%;
+    }
+
     @media (max-width: $breakpoint-tablet) {
       flex-direction: column;
 

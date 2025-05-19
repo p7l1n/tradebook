@@ -20,7 +20,7 @@ export default {
       inCurrency: null,
       outCurrency: null,
       date: null,
-      showStats: null,
+      showStats: true,
       showPayed: true,
       cacheIdsForLayer2Filter: [],
     },

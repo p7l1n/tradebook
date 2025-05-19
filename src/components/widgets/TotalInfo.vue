@@ -133,9 +133,11 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/styles/colors.scss";
 @import "@/assets/styles/base.scss";
+@import "@/assets/styles/breakpoints.scss";
 
 .widget-total {
   width: 600px;
+  min-width: 600px;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -146,10 +148,17 @@ export default {
 
   &.maxWidth {
     width: 100%;
+    min-width: 100%;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+    min-width: 600px;
+    overflow-x: auto;
   }
 
   &__title {
-    position: absolute;
+    position: sticky;
     left: 0;
     top: 0;
     width: 100%;
@@ -159,7 +168,7 @@ export default {
     justify-content: center;
     align-items: center;
     height: 20px;
-
+    z-index: 1;
     background-color: $panelColorSecondary;
     color: $textColorWhite;
   }
@@ -169,6 +178,9 @@ export default {
     flex-direction: column;
     margin-top: 20px;
     height: auto;
+    max-height: 400px;
+    overflow-y: auto;
+    min-width: 600px;
   }
 
   &__list-item {

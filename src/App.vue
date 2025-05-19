@@ -1,6 +1,6 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.1.44" }}</div>
+  <div class="app-version">{{ "p1.1.45" }}</div>
   <div :class="{ isAuth: userInfo }" class="main-app">
     <div :class="{ focused }" class="main-calculator">
       <el-input
