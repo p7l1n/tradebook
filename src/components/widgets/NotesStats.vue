@@ -122,6 +122,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/styles/colors.scss";
 @import "@/assets/styles/base.scss";
+@import "@/assets/styles/breakpoints.scss";
 
 .widget-total {
   width: 100%;
@@ -129,16 +130,16 @@ export default {
   display: flex;
   flex-direction: column;
   background-color: $panelColorLight;
-  border-radius: $borderRadius;
   position: relative;
-  overflow: hidden;
+  overflow-x: auto;
+  min-width: 0;
 
   &.maxWidth {
     width: 100%;
   }
 
   &__title {
-    position: absolute;
+    position: sticky;
     left: 0;
     top: 0;
     width: 100%;
@@ -148,9 +149,9 @@ export default {
     justify-content: center;
     align-items: center;
     height: 20px;
-
     background-color: $panelColorSecondary;
     color: $textColorWhite;
+    z-index: 1;
   }
 
   &__list {
@@ -158,11 +159,13 @@ export default {
     flex-direction: column;
     margin-top: 20px;
     height: auto;
+    min-width: min-content;
   }
 
   &__list-item {
     display: flex;
     align-items: center;
+    min-width: min-content;
   }
 
   &__list-item-field {
@@ -171,6 +174,7 @@ export default {
     align-items: center;
     width: 120px;
     height: 40px;
+    flex-shrink: 0;
 
     &.long {
       width: 250px;
@@ -200,6 +204,12 @@ export default {
     &:nth-child(even) {
       background-color: $panelColorActive;
     }
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    border-radius: 0;
+    width: 100%;
+    overflow-x: auto;
   }
 }
 </style>

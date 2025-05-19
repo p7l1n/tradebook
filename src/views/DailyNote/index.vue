@@ -1103,6 +1103,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/styles/colors.scss";
 @import "@/assets/styles/base.scss";
+@import "@/assets/styles/_breakpoints.scss";
 
 .note-page {
   .ml10 {
@@ -1118,6 +1119,22 @@ export default {
     &__stats {
       display: flex;
       align-items: center;
+      width: 100%;
+
+      @media (max-width: $breakpoint-tablet) {
+        flex-direction: column;
+        align-items: stretch;
+
+        .ml10 {
+          margin-left: 0;
+          margin-top: 10px;
+        }
+
+        .el-input,
+        .el-date-picker {
+          width: 100% !important;
+        }
+      }
     }
   }
 
@@ -1137,9 +1154,13 @@ export default {
   }
 
   &__widgets {
-    width: calc(100% - 20px);
+    width: 100%;
     padding: $paddingLarge;
     box-sizing: border-box;
+
+    @media (max-width: $breakpoint-tablet) {
+      padding: $paddingMedium;
+    }
 
     &.isLoading {
       display: flex;
@@ -1163,14 +1184,26 @@ export default {
   &__tables {
     width: 100%;
     display: flex;
-    align-items: center;
-    box-sizing: border-box;
     flex-wrap: wrap;
+    align-items: flex-start;
+    box-sizing: border-box;
     margin-top: 20px;
+
+    @media (max-width: $breakpoint-tablet) {
+      flex-direction: column;
+
+      .note-page__tables-table {
+        width: 100%;
+        margin-right: 0;
+      }
+    }
 
     .row-tables {
       display: flex;
       align-items: center;
+      overflow-x: auto;
+      width: 100%;
+      -webkit-overflow-scrolling: touch;
 
       .remove-item {
         cursor: pointer;
@@ -1190,15 +1223,16 @@ export default {
   &__tables-table {
     margin-right: 15px;
     margin-bottom: 15px;
-    min-width: 48%;
-    max-width: 48%;
-    width: 100%;
+    width: calc(50% - 15px);
     min-height: 290px;
     border: 1px solid #ccc;
-    // margin: 10px;
     position: relative;
     border-radius: $controlRadius;
     overflow: hidden;
+
+    &:nth-child(2n) {
+      margin-right: 0;
+    }
 
     .ml10 {
       margin-left: 10px;
@@ -1215,7 +1249,6 @@ export default {
       justify-content: center;
       align-items: center;
       height: 30px;
-
       background-color: $panelColorSecondary;
       color: $textColorWhite;
     }
@@ -1225,6 +1258,33 @@ export default {
       margin-top: 40px;
       display: flex;
       align-items: center;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+
+      @media (max-width: $breakpoint-tablet) {
+        flex-wrap: wrap;
+        padding: 0 4px;
+        margin-top: 35px;
+
+        .form-field {
+          margin-left: 0;
+          margin-bottom: 10px;
+          width: 100%;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          .el-input,
+          .base-input {
+            width: 100%;
+          }
+
+          .el-button {
+            width: 100%;
+          }
+        }
+      }
     }
   }
 }

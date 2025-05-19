@@ -1,7 +1,7 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.1.42" }}</div>
-  <div class="main-app">
+  <div class="app-version">{{ "p1.1.43" }}</div>
+  <div :class="{ isAuth: userInfo }" class="main-app">
     <div :class="{ focused }" class="main-calculator">
       <el-input
         placeholder="Калькулятор"
@@ -82,7 +82,7 @@ export default {
           initApp();
           timer.value = setInterval(() => {
             initApp();
-          }, 60000);
+          }, 15000);
         }
       }, 500);
     });
@@ -118,16 +118,20 @@ export default {
 };
 </script>
 <style lang="scss">
+@import "@/assets/styles/_breakpoints.scss";
+
 body,
 html {
   padding: 0;
   margin: 0;
-  min-width: 1385px;
-  overflow-x: auto;
+  // min-width: 1385px;
+  // overflow-x: auto;
 }
 
 .main-app {
-  padding-top: 80px;
+  &.isAuth {
+    padding-top: 80px;
+  }
 }
 
 * {
@@ -156,6 +160,13 @@ html {
 
   .sum-total {
     margin-top: 5px;
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    right: 50%;
+    transform: translateX(50%);
+    top: auto;
+    bottom: 10px;
   }
 }
 
@@ -213,6 +224,11 @@ html {
 .el-input__wrapper,
 .el-input__wrapper.is-focus {
   box-shadow: none !important;
+}
+
+.el-input {
+  width: 100% !important;
+  min-width: 170px;
 }
 
 .app-version {

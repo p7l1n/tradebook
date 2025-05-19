@@ -208,23 +208,32 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/styles/colors.scss";
 @import "@/assets/styles/base.scss";
+@import "@/assets/styles/_breakpoints.scss";
 
 .widget-notes-wrap {
   width: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+
+  @media (max-width: $breakpoint-tablet) {
+    overflow-x: auto;
+  }
 }
 
 .widget-notes {
   width: 100%;
   padding: 0 $paddingSmall;
-  border-radius: $borderRadius;
   background-color: $panelColorLight;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
   padding-bottom: 10px;
+
+  @media (max-width: $breakpoint-tablet) {
+    min-width: 800px;
+  }
 
   &__title {
     position: absolute;
@@ -237,7 +246,6 @@ export default {
     justify-content: center;
     align-items: center;
     height: 20px;
-
     background-color: $panelColorSecondary;
     color: $textColorWhite;
   }
@@ -247,6 +255,12 @@ export default {
     flex-direction: column;
     margin-top: 20px;
     height: auto;
+    width: 100%;
+    overflow: hidden;
+
+    @media (max-width: $breakpoint-tablet) {
+      overflow-x: auto;
+    }
   }
 
   &__list-item {
@@ -254,6 +268,13 @@ export default {
     align-items: center;
     cursor: pointer;
     position: relative;
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow: hidden;
+
+    @media (max-width: $breakpoint-tablet) {
+      min-width: 800px;
+    }
 
     &:nth-child(even) {
       background-color: #edeaea;
@@ -265,7 +286,6 @@ export default {
 
     &.active {
       background-color: $colorRowGrayActive;
-      border-radius: $controlRadius;
 
       .widget-notes__list-item-field {
         &:nth-child(even) {
@@ -301,20 +321,26 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    flex: 1;
+    min-width: 80px;
     height: 30px;
     position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 5px;
 
     &.remove {
       cursor: pointer;
-      width: 16px;
+      min-width: 16px;
       height: 16px;
+      padding: 0;
       background-image: url("~@/assets/icons/remove.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: 50%;
       position: absolute;
-      right: 5px;
+      right: 10px;
       top: 6px;
     }
 
@@ -341,7 +367,7 @@ export default {
     }
 
     &.wider {
-      width: 150%;
+      flex: 2;
     }
 
     &.mini {
@@ -354,6 +380,10 @@ export default {
 
     &.clicked {
       cursor: pointer;
+    }
+
+    @media (max-width: $breakpoint-tablet) {
+      min-width: 100px;
     }
   }
 }

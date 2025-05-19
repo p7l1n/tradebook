@@ -1,15 +1,25 @@
 <template>
   <div class="main-menu">
-    <div class="main-menu__items">
+    <div class="main-menu__items" :class="{ 'mobile-menu': isMobileMenuOpen }">
       <router-link
         v-for="(item, ndx) in menuItems"
         :to="item.route"
         :key="ndx"
         active-class="active"
         class="main-menu__items-item"
+        @click="closeMobileMenu"
       >
         {{ item.title }}
       </router-link>
+    </div>
+    <div
+      class="burger-menu"
+      @click="toggleMobileMenu"
+      :class="{ active: isMobileMenuOpen }"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
     <div
       class="main-menu__office"
@@ -27,12 +37,39 @@
   </div>
 </template>
 <script>
-import { computed } from "vue";
+import { computed, ref, onMounted, onUnmounted } from "vue";
 import { useStore } from "vuex";
 
 export default {
   setup() {
     const store = useStore();
+    const isMobileMenuOpen = ref(false);
+    const isMobile = ref(window.innerWidth <= 1433);
+
+    const handleResize = () => {
+      isMobile.value = window.innerWidth <= 1433;
+      if (!isMobile.value) {
+        isMobileMenuOpen.value = false;
+      }
+    };
+
+    const toggleMobileMenu = () => {
+      isMobileMenuOpen.value = !isMobileMenuOpen.value;
+    };
+
+    const closeMobileMenu = () => {
+      if (isMobile.value) {
+        isMobileMenuOpen.value = false;
+      }
+    };
+
+    onMounted(() => {
+      window.addEventListener("resize", handleResize);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener("resize", handleResize);
+    });
 
     const userInfo = computed(() => store.getters["auth/user"]);
     const isAdmin = computed(() => store.getters["auth/isAdmin"]);
@@ -60,6 +97,9 @@ export default {
       menuItems,
       userInfo,
       organizationName,
+      isMobileMenuOpen,
+      toggleMobileMenu,
+      closeMobileMenu,
     };
   },
 };
@@ -74,14 +114,30 @@ export default {
   background-color: $panelColor;
   position: fixed;
   z-index: 100;
-
   display: flex;
   align-items: center;
+  justify-content: space-between;
 
   &__items {
     display: flex;
     width: calc(100% - $menuWidth);
     height: 100%;
+
+    @media (max-width: 1433px) {
+      position: fixed;
+      top: 80px;
+      left: -100%;
+      width: 250px;
+      height: calc(100vh - 80px);
+      background-color: $panelColor;
+      flex-direction: column;
+      transition: left 0.3s ease;
+      padding: 20px 0;
+
+      &.mobile-menu {
+        left: 0;
+      }
+    }
   }
 
   &__items-item {
@@ -91,6 +147,12 @@ export default {
     justify-content: center;
     align-items: center;
     text-decoration: none;
+
+    @media (max-width: 1433px) {
+      min-width: auto;
+      padding: 15px 20px;
+      justify-content: flex-start;
+    }
 
     &:hover {
       color: $textColorGreen;
@@ -102,8 +164,58 @@ export default {
     }
   }
 
+  .burger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 20px;
+    cursor: pointer;
+    margin: 0 30px;
+    position: relative;
+
+    @media (max-width: 1433px) {
+      display: flex;
+    }
+
+    span {
+      width: 100%;
+      height: 2px;
+      background-color: $textColorWhite;
+      transition: all 0.3s ease;
+      position: absolute;
+      left: 0;
+
+      &:first-child {
+        top: 0;
+      }
+      &:nth-child(2) {
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      &:last-child {
+        bottom: 0;
+      }
+    }
+
+    &.active {
+      span {
+        &:first-child {
+          top: 50%;
+          transform: translateY(-50%) rotate(45deg);
+        }
+        &:nth-child(2) {
+          opacity: 0;
+        }
+        &:last-child {
+          top: 50%;
+          transform: translateY(-50%) rotate(-45deg);
+        }
+      }
+    }
+  }
+
   &__office {
-    // width: $menuWidth;
     height: 100%;
     display: flex;
     justify-content: center;
@@ -111,6 +223,7 @@ export default {
     color: $textColorWhite;
     font-weight: bold;
     cursor: pointer;
+    margin-left: auto;
 
     .row {
       display: flex;

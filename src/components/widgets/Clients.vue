@@ -3,7 +3,6 @@
     <!-- edit -->
     <el-input
       v-model="searchStr"
-      style="width: 240px"
       placeholder="Поиск по контрагентам"
       clearable
       @input="onSearch"
@@ -20,18 +19,19 @@
     <div v-if="editModeFlag" class="widget-clients__edit-form">
       <div class="row">
         <div class="input-field row">
-          <Input placeholder="Контрагент" gray v-model="name" />
+          <el-input placeholder="Контрагент" gray v-model="name" />
         </div>
         <div class="input-field row">
-          <Input placeholder="Телеграм" gray v-model="telegram" />
+          <el-input placeholder="Телеграм" gray v-model="telegram" />
         </div>
         <div class="input-field row">
-          <Input placeholder="Дополнительно" gray v-model="info" />
+          <el-input placeholder="Инфо" gray v-model="info" />
         </div>
         <CheckGroupButton
           :items="typesItems"
           :active-index="activeTypesIndex"
           @check="onSelectType"
+          style="margin-right: 10px"
         />
       </div>
       <div class="row">
@@ -40,7 +40,6 @@
           type="success"
           :loading="loading"
           class="base-btn"
-          style="margin-left: 10px"
           @click="updateEntity"
         >
           {{ isEditing ? "Сохранить" : "Добавить" }}
@@ -110,7 +109,6 @@
 <script>
 import { computed, ref } from "vue";
 import { useStore } from "vuex";
-import Input from "@/components/Input";
 import Button from "@/components/Button";
 import CheckButton from "@/components/CheckButton";
 import { getNumFormat } from "@/helpers";
@@ -120,7 +118,6 @@ import { ElNotification } from "element-plus";
 
 export default {
   components: {
-    Input,
     Button,
     CheckButton,
     CheckGroupButton,
@@ -308,10 +305,15 @@ export default {
   align-items: flex-start;
   flex-direction: column;
   position: relative;
+  overflow: hidden;
 
   &__search {
-    position: absolute;
-    top: -60px;
+    width: 240px;
+    margin-bottom: 10px;
+
+    @media (max-width: 1024px) {
+      width: 100%;
+    }
   }
 }
 
@@ -321,28 +323,35 @@ export default {
 
 .widget-clients {
   width: 100%;
-  padding: $paddingSmall;
-  border-radius: $borderRadius;
+  padding: 0 $paddingSmall $paddingSmall 0;
+  border-radius: 0;
   background-color: $panelColorLight;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
 
+  @media (max-width: 1024px) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -$paddingSmall;
+    width: calc(100% + #{$paddingSmall * 2});
+  }
+
   &__title {
-    position: absolute;
+    position: sticky;
     left: 0;
     top: 0;
-    width: 100%;
+    min-width: 800px;
     font-size: 11px;
     text-transform: uppercase;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 20px;
-
     background-color: $panelColorSecondary;
     color: $textColorWhite;
+    z-index: 1;
   }
 
   &__list {
@@ -350,11 +359,24 @@ export default {
     flex-direction: column;
     margin-top: 20px;
     height: auto;
+    min-width: 800px;
+
+    @media (max-width: 1024px) {
+      width: 100%;
+      padding: 0 $paddingSmall;
+      border-radius: 0;
+    }
   }
 
   &__list-item {
     display: flex;
     align-items: center;
+    min-width: 800px;
+
+    @media (max-width: 1024px) {
+      width: 100%;
+    }
+
     &:nth-child(even) {
       background-color: $panelColorActive;
     }
@@ -383,6 +405,11 @@ export default {
     align-items: center;
     width: 100%;
     height: 40px;
+    min-width: 200px;
+
+    @media (max-width: 1024px) {
+      flex: 1;
+    }
 
     &.name {
       text-align: left;
@@ -407,10 +434,6 @@ export default {
       font-size: 10px;
       text-transform: uppercase;
       color: $textColorGrayDark;
-    }
-
-    &:nth-child(even) {
-      // background-color: $panelColorActive;
     }
   }
 
@@ -437,19 +460,61 @@ export default {
     align-items: center;
     margin-bottom: 10px;
 
+    @media (max-width: 1024px) {
+      width: 100%;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
     .row {
       display: flex;
       align-items: center;
 
+      @media (max-width: 1024px) {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      &:last-child {
+        @media (max-width: 1024px) {
+          flex-direction: row;
+          gap: 10px;
+
+          .el-button,
+          .ui-button {
+            flex: 1;
+            margin: 0;
+          }
+        }
+      }
+
       .ui-button {
         width: 33%;
         margin-left: 10px;
+
+        @media (max-width: 1024px) {
+          width: 100%;
+          margin: 0;
+        }
+      }
+
+      .el-button {
+        @media (max-width: 1024px) {
+          margin: 0 !important;
+        }
       }
     }
 
     .input-field {
       width: 25%;
       margin-right: 10px;
+
+      @media (max-width: 1024px) {
+        width: 100%;
+        margin: 0;
+      }
 
       &.row {
         display: flex;

@@ -114,6 +114,11 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/styles/colors.scss";
 @import "@/assets/styles/base.scss";
+@import "@/assets/styles/_breakpoints.scss";
+
+$paddingLarge: 24px;
+$paddingMedium: 16px;
+$paddingSmall: 8px;
 
 .balance-page {
   &__widgets {
@@ -125,6 +130,7 @@ export default {
 
     &.main {
       justify-content: center;
+      flex-wrap: wrap;
     }
 
     &.isLoading {
@@ -133,14 +139,39 @@ export default {
       align-items: center;
       height: calc(100vh - 120px);
     }
+
+    @media (max-width: $breakpoint-tablet) {
+      padding: 0 $paddingMedium;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+      padding: 0 $paddingSmall;
+    }
   }
 
   &__widgets-item {
     margin: 20px 0;
+    width: 100%;
 
     &:first-child {
       margin-right: 20px;
     }
+
+    @media (max-width: $breakpoint-tablet) {
+      margin: 10px 0;
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+  }
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
   }
 }
 </style>

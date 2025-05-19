@@ -315,7 +315,7 @@ export default {
 }
 
 .widget-rates {
-  width: 400px;
+  // width: 400px;
   padding: $paddingSmall;
   border-radius: $borderRadius;
   background-color: $panelColorLight;
@@ -404,7 +404,7 @@ export default {
 
   // edit
   &__edit-form {
-    width: 400px;
+    // width: 400px;
     margin-top: 20px;
     display: flex;
     flex-direction: column;

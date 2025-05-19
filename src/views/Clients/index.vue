@@ -1,6 +1,6 @@
 <template>
   <div class="clients-page">
-    <SubMenu :active-index="activeMenuIndex" @selectMenu="onSelectMenu" />
+    <!-- <SubMenu :active-index="activeMenuIndex" @selectMenu="onSelectMenu" /> -->
     <div
       v-if="activeMenuIndex === 0"
       :class="{ isLoading }"
@@ -8,24 +8,11 @@
     >
       <Loader v-if="isLoading" />
       <Clients v-if="!isLoading" class="clients-page__clients-item" />
-      <!-- clients edit -->
-      <div
-        v-if="!isLoading && activeMenuIndex === 1"
-        :class="{ isLoading }"
-        class="clients-page__clients"
-      >
-        <Loader v-if="isLoading" />
-        <Clients
-          v-if="!isLoading"
-          :edit-mode="true"
-          class="clients-page__clients-item"
-        />
-      </div>
     </div>
   </div>
 </template>
 <script>
-import SubMenu from "./components/SubMenu";
+// import SubMenu from "./components/SubMenu";
 import Clients from "@/components/widgets/Clients";
 import Loader from "@/components/Loader";
 
@@ -35,7 +22,6 @@ import { onMounted, ref, computed } from "vue";
 
 export default {
   components: {
-    SubMenu,
     Clients,
     Loader,
   },
@@ -83,10 +69,6 @@ export default {
 
   &__clients-item {
     margin: 20px 0;
-
-    &:first-child {
-      margin-right: 20px;
-    }
   }
 }
 </style>

@@ -7,7 +7,6 @@
         <div class="filter__stats">
           <el-input
             v-model="searchStr"
-            style="width: 170px"
             placeholder="Поиск по посредникам"
             clearable
           />
@@ -18,7 +17,6 @@
               placeholder="Показать с"
               :disabled-date="disabledDate"
               :shortcuts="shortcuts"
-              style="width: 170px"
               @change="onSelectDateFrom"
             />
           </div>
@@ -29,7 +27,6 @@
               placeholder="Показать по"
               :disabled-date="disabledDate"
               :shortcuts="shortcuts"
-              style="width: 170px"
               @change="onSelectDateTo"
             />
           </div>
@@ -149,6 +146,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/styles/colors.scss";
 @import "@/assets/styles/base.scss";
+@import "@/assets/styles/_breakpoints.scss";
 
 .note-page {
   position: relative;
@@ -173,6 +171,15 @@ export default {
     &__stats {
       display: flex;
       align-items: center;
+      gap: 10px;
+
+      .el-input {
+        width: 170px;
+      }
+
+      .el-date-picker {
+        width: 200px;
+      }
     }
 
     &__profit {
@@ -184,6 +191,28 @@ export default {
 
       span {
         color: $textColorBlack;
+      }
+    }
+  }
+
+  @media screen and (max-width: $breakpoint-tablet) {
+    .filter {
+      flex-direction: column;
+      gap: 10px;
+
+      &__stats {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+
+        .el-input,
+        .el-date-picker {
+          width: 100% !important;
+        }
+
+        .ml10 {
+          margin-left: 0;
+        }
       }
     }
   }
@@ -201,18 +230,25 @@ export default {
 
   &__widgets-item {
     margin-top: 15px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   &__widgets {
-    width: calc(100% - 20px);
+    width: 100%;
     padding: $paddingLarge;
     box-sizing: border-box;
+    overflow-x: hidden;
 
     &.isLoading {
       display: flex;
       justify-content: center;
       align-items: center;
       height: calc(100vh - 120px);
+    }
+
+    @media screen and (max-width: $breakpoint-tablet) {
+      padding: $paddingMedium;
     }
   }
 
