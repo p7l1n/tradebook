@@ -134,6 +134,9 @@ export default {
   display: flex;
   flex-direction: column;
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .widget-rates-controls {
@@ -143,16 +146,17 @@ export default {
 }
 
 .widget-rates {
-  padding: $paddingSmall;
   border-radius: $borderRadius;
   background-color: $panelColorLight;
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
+  width: 100%;
+  min-width: 500px;
+  margin: 0 auto;
 
   &__title {
-    position: absolute;
+    position: sticky;
     left: 0;
     top: 0;
     width: 100%;
@@ -162,7 +166,7 @@ export default {
     justify-content: center;
     align-items: center;
     height: 20px;
-
+    z-index: 1;
     background-color: $panelColorSecondary;
     color: $textColorWhite;
   }
@@ -172,6 +176,8 @@ export default {
     flex-direction: column;
     margin-top: 20px;
     height: auto;
+    min-width: 500px;
+    overflow-x: auto;
   }
 
   &__list-item {
@@ -200,8 +206,10 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 120px;
+    width: 20%;
     height: 40px;
+    padding: 0 5px;
+    box-sizing: border-box;
 
     &.strong {
       color: $textColorBlack;

@@ -82,8 +82,9 @@ export default {
 @import "@/assets/styles/base.scss";
 
 .widget-total {
-  width: 600px;
-  padding: $paddingSmall;
+  width: 100%;
+  max-width: 600px;
+  padding: 0;
   display: flex;
   flex-direction: column;
   background-color: $panelColorLight;
@@ -92,7 +93,7 @@ export default {
   overflow: hidden;
 
   &.maxWidth {
-    width: 100%;
+    max-width: 100%;
   }
 
   &__title {
@@ -108,6 +109,7 @@ export default {
     height: 20px;
     background-color: $panelColorSecondary;
     color: $textColorWhite;
+    z-index: 1;
   }
 
   &__list {
@@ -115,18 +117,24 @@ export default {
     flex-direction: column;
     margin-top: 20px;
     height: auto;
+    overflow-x: auto;
+    min-width: 0;
+    width: 100%;
   }
 
   &__list-item {
     display: flex;
     align-items: center;
+    min-width: max-content;
+    width: 100%;
   }
 
   &__list-item-field {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 120px;
+    flex: 1;
+    width: 80px;
     height: 40px;
 
     &.strong {

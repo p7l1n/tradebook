@@ -113,10 +113,18 @@ export default {
 </script>
 <style lang="scss" scoped>
 .edit-fields-form {
+  @import "@/assets/styles/_breakpoints.scss";
   display: flex;
   width: 500px;
   align-items: flex-start;
   justify-content: space-between;
+
+  @media (max-width: $breakpoint-tablet) {
+    flex-direction: column;
+    width: 100%;
+    max-height: 550px;
+    overflow-y: auto;
+  }
 
   &__item {
     margin-bottom: 15px;

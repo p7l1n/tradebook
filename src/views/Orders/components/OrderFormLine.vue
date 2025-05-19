@@ -1,107 +1,112 @@
 <template>
   <div class="order-form" tabindex="0" @keydown.enter="addNewOrder">
-    <div class="order-form__row">
-      <div class="order-form__field ml10">
-        <CheckGroupButton
-          :items="inCurrencies"
-          :active-index="activeIncurrenciesIndex"
-          @check="onSelectInCurrencies"
-        />
-      </div>
-      <div class="order-form__field ml10">
-        <el-input
-          placeholder="Сумма приход"
-          v-model="amountIn"
-          :formatter="numberFormatter"
-          :parser="numberParser"
-          class="base-input green"
-          @input="onAmountInChange"
-        />
-      </div>
-      <div class="order-form__field ml10">
-        <el-input
-          placeholder="Курс"
-          v-model="rateIn"
-          :formatter="numberFormatter"
-          :parser="numberParser"
-          class="base-input"
-          @input="onRateChange"
-        />
-      </div>
-      <div class="order-form__field ml43">
-        <CheckGroupButton
-          :items="operationTypes"
-          :active-index="activeOperationTypesIndex"
-          @check="onSelectOperationType"
-        />
-      </div>
-    </div>
-    <div class="order-form__row">
-      <div class="order-form__field ml10">
-        <CheckGroupButton
-          :items="outCurrencies"
-          :active-index="activeOutcurrenciesIndex"
-          @check="onSelectOutCurrencies"
-        />
-      </div>
-      <div class="order-form__field ml10">
-        <el-input
-          placeholder="Сумма расход"
-          v-model="amountOut"
-          :formatter="numberFormatter"
-          :parser="numberParser"
-          class="base-input red"
-          @input="onAmountOutChange"
-        />
-      </div>
-      <div v-if="activeOperationTypesIndex != 2" class="order-form__field ml10">
-        <el-select
-          v-model="selectedClient"
-          clearable
-          filterable
-          placeholder="Выберите клиента"
-          style="width: 100%"
-          size="large"
-          @change="onClientSelect"
-        >
-          <el-option
-            v-for="item in clientItems"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+    <div class="order-form__main">
+      <div class="order-form__row">
+        <div class="order-form__field ml10">
+          <CheckGroupButton
+            :items="inCurrencies"
+            :active-index="activeIncurrenciesIndex"
+            @check="onSelectInCurrencies"
           />
-        </el-select>
-      </div>
-      <div v-if="false" class="order-form__field ml10">
-        <el-select
-          v-model="selectedOperator"
-          clearable
-          filterable
-          placeholder="Выберите оператора"
-          style="width: 100%"
-          size="large"
-          @change="onOperatorSelect"
-        >
-          <el-option
-            v-for="item in operatorItems"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+        </div>
+        <div class="order-form__field ml10">
+          <el-input
+            placeholder="Сумма приход"
+            v-model="amountIn"
+            :formatter="numberFormatter"
+            :parser="numberParser"
+            class="base-input green"
+            @input="onAmountInChange"
           />
-        </el-select>
+        </div>
+        <div class="order-form__field ml10">
+          <el-input
+            placeholder="Курс"
+            v-model="rateIn"
+            :formatter="numberFormatter"
+            :parser="numberParser"
+            class="base-input"
+            @input="onRateChange"
+          />
+        </div>
+        <div class="order-form__field ml43">
+          <CheckGroupButton
+            :items="operationTypes"
+            :active-index="activeOperationTypesIndex"
+            @check="onSelectOperationType"
+          />
+        </div>
       </div>
-      <div class="order-form__field ml10">
-        <el-button
-          type="success"
-          :loading="loading"
-          class="base-btn"
-          @click="addNewOrder"
+      <div class="order-form__row">
+        <div class="order-form__field ml10">
+          <CheckGroupButton
+            :items="outCurrencies"
+            :active-index="activeOutcurrenciesIndex"
+            @check="onSelectOutCurrencies"
+          />
+        </div>
+        <div class="order-form__field ml10">
+          <el-input
+            placeholder="Сумма расход"
+            v-model="amountOut"
+            :formatter="numberFormatter"
+            :parser="numberParser"
+            class="base-input red"
+            @input="onAmountOutChange"
+          />
+        </div>
+        <div
+          v-if="activeOperationTypesIndex != 2"
+          class="order-form__field ml10"
         >
-          {{ editOrder ? "Сохранить" : "Добавить" }}
-        </el-button>
-      </div>
-      <div class="order-form__field ml10">
-        <Button title="Очистить" @click="clearForm" />
+          <el-select
+            v-model="selectedClient"
+            clearable
+            filterable
+            placeholder="Выберите клиента"
+            style="width: 100%"
+            size="large"
+            @change="onClientSelect"
+          >
+            <el-option
+              v-for="item in clientItems"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </div>
+        <div v-if="false" class="order-form__field ml10">
+          <el-select
+            v-model="selectedOperator"
+            clearable
+            filterable
+            placeholder="Выберите оператора"
+            style="width: 100%"
+            size="large"
+            @change="onOperatorSelect"
+          >
+            <el-option
+              v-for="item in operatorItems"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </div>
+        <div class="order-form__field ml10">
+          <el-button
+            type="success"
+            :loading="loading"
+            class="base-btn"
+            @click="addNewOrder"
+          >
+            {{ editOrder ? "Сохранить" : "Добавить" }}
+          </el-button>
+        </div>
+        <div class="order-form__field ml10">
+          <Button title="Очистить" @click="clearForm" />
+        </div>
       </div>
     </div>
     <div class="order-form__agent">
@@ -126,7 +131,7 @@
           title="Очистить"
           @click="clearFormAgent"
           class="ml10"
-          style="height: 36px; width: 120px"
+          style="height: 36px"
         />
       </div>
       <div class="order-form__field mb0" style="width: 100%">
@@ -705,6 +710,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+@import "@/assets/styles/breakpoints";
+
 .order-form {
   position: relative;
   background-color: $panelColorActive;
@@ -713,32 +720,92 @@ export default {
   display: flex;
   flex-direction: column;
 
+  &__main {
+    display: flex;
+    flex-direction: column;
+  }
+
   &__agent {
     position: absolute;
-    right: 20px;
-    top: 5px;
+    right: 45px;
+    top: -7px;
+    width: 300px;
+    padding: 10px;
+    border-radius: $controlRadius;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    @media (max-width: 1335px) {
+      position: static;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      border: none;
+    }
   }
 
   .ml10 {
     margin-left: 10px;
+
+    @media (max-width: $breakpoint-tablet) {
+      margin-left: 0;
+    }
   }
 
   .ml43 {
     margin-left: 43px;
+
+    @media (max-width: $breakpoint-tablet) {
+      margin-left: 0;
+    }
   }
 
   &__row {
     display: flex;
     align-items: center;
+
+    @media (max-width: $breakpoint-tablet) {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
   }
 
   .row {
     display: flex;
     align-items: center;
+
+    .ml10 {
+      width: 120px;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+
+      .ml10 {
+        margin: 5px 0;
+        width: 100%;
+      }
+    }
   }
 
   &__field {
     margin-bottom: 15px;
+
+    @media (max-width: $breakpoint-tablet) {
+      margin-right: 0;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+      margin-right: 0;
+      width: 100%;
+    }
 
     &.mb0 {
       margin-bottom: 1px;

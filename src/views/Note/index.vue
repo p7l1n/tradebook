@@ -34,7 +34,6 @@
           <el-input
             v-if="activeMenuIndex < 2"
             v-model="searchStr"
-            style="width: 170px"
             placeholder="Поиск по ДК"
             clearable
           />
@@ -45,7 +44,6 @@
               placeholder="Показать с"
               :disabled-date="disabledDate"
               :shortcuts="shortcuts"
-              style="width: 170px"
               @change="onSelectDateFrom"
             />
           </div>
@@ -56,7 +54,6 @@
               placeholder="Показать по"
               :disabled-date="disabledDate"
               :shortcuts="shortcuts"
-              style="width: 170px"
               @change="onSelectDateTo"
             />
           </div>
@@ -437,6 +434,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/styles/colors.scss";
 @import "@/assets/styles/base.scss";
+@import "@/assets/styles/breakpoints.scss";
 
 .note-page {
   position: relative;
@@ -446,6 +444,11 @@ export default {
     align-items: center;
     position: absolute;
     top: 5px;
+
+    @media (max-width: $breakpoint-tablet) {
+      position: static;
+      margin-bottom: 10px;
+    }
   }
 
   .ml10 {
@@ -463,6 +466,11 @@ export default {
       position: absolute;
       right: 0;
       top: 0;
+
+      @media (max-width: $breakpoint-tablet) {
+        position: static;
+        width: 100%;
+      }
     }
 
     &__stats {
@@ -479,6 +487,36 @@ export default {
 
       span {
         color: $textColorBlack;
+      }
+    }
+
+    @media (max-width: $breakpoint-tablet) {
+      flex-direction: column;
+      gap: 10px;
+      padding: 0;
+
+      &__export {
+        position: static;
+      }
+
+      &__stats {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+
+        .el-input,
+        .el-date-picker {
+          width: 100% !important;
+        }
+
+        :deep(.el-date-editor.el-input) {
+          width: 100% !important;
+        }
+
+        .ml10 {
+          margin-left: 0;
+          width: 100%;
+        }
       }
     }
   }
@@ -499,9 +537,13 @@ export default {
   }
 
   &__widgets {
-    width: calc(100% - 20px);
+    width: 100%;
     padding: $paddingLarge;
     box-sizing: border-box;
+
+    @media (max-width: $breakpoint-tablet) {
+      padding: $paddingMedium;
+    }
 
     &.isLoading {
       display: flex;
@@ -516,10 +558,31 @@ export default {
     display: flex;
     width: 100%;
     align-items: center;
+
+    @media (max-width: $breakpoint-tablet) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+
+      &-field {
+        margin-left: 0;
+        width: 100%;
+
+        .el-select,
+        .el-input,
+        .base-input {
+          width: 100% !important;
+        }
+      }
+    }
   }
 
   &__form-field {
     margin-left: 10px;
+
+    @media (max-width: $breakpoint-tablet) {
+      margin-left: 0;
+    }
   }
 }
 </style>

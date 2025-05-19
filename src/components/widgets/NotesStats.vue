@@ -126,7 +126,7 @@ export default {
 
 .widget-total {
   width: 100%;
-  padding: $paddingSmall;
+  padding: 0;
   display: flex;
   flex-direction: column;
   background-color: $panelColorLight;

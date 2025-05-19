@@ -220,6 +220,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/styles/colors.scss";
 @import "@/assets/styles/base.scss";
+@import "@/assets/styles/breakpoints";
 
 .orders-page {
   position: relative;
@@ -244,12 +245,27 @@ export default {
     width: 100%;
     justify-content: space-between;
     align-items: center;
+
+    @media (max-width: $breakpoint-tablet) {
+      flex-direction: column;
+
+      .orders-page__widgets-item,
+      .balance-page__widgets-item {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
   }
 
   &__widgets {
-    width: calc(100% - 20px);
+    width: 100%;
     padding: $paddingLarge;
     box-sizing: border-box;
+
+    @media (max-width: $breakpoint-tablet) {
+      padding: 16px;
+    }
 
     &.isLoading {
       display: flex;
@@ -264,6 +280,11 @@ export default {
     align-items: center;
     position: absolute;
     top: 5px;
+
+    @media (max-width: $breakpoint-tablet) {
+      position: static;
+      margin-bottom: 20px;
+    }
   }
 }
 </style>

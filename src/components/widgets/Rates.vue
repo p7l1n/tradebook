@@ -306,6 +306,9 @@ export default {
   display: flex;
   flex-direction: column;
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .widget-rates-controls {
@@ -315,8 +318,8 @@ export default {
 }
 
 .widget-rates {
-  // width: 400px;
-  padding: $paddingSmall;
+  width: 100%;
+  min-width: 600px;
   border-radius: $borderRadius;
   background-color: $panelColorLight;
   display: flex;
@@ -325,7 +328,7 @@ export default {
   overflow: hidden;
 
   &__title {
-    position: absolute;
+    position: sticky;
     left: 0;
     top: 0;
     width: 100%;
@@ -335,7 +338,7 @@ export default {
     justify-content: center;
     align-items: center;
     height: 20px;
-
+    z-index: 1;
     background-color: $panelColorSecondary;
     color: $textColorWhite;
   }
@@ -373,8 +376,10 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 120px;
+    flex: 1;
+    width: 80px;
     height: 40px;
+    padding: 0 5px;
 
     &.strong {
       color: $textColorBlack;
@@ -404,7 +409,7 @@ export default {
 
   // edit
   &__edit-form {
-    // width: 400px;
+    width: 100%;
     margin-top: 20px;
     display: flex;
     flex-direction: column;

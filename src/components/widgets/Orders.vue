@@ -352,10 +352,12 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: column;
+  overflow-x: auto;
 }
 
 .widget-orders {
   width: 100%;
+  min-width: 1200px;
   padding: 0 $paddingSmall;
   box-sizing: border-box;
   border-radius: $borderRadius;
@@ -363,7 +365,7 @@ export default {
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 
   .toggler {
     position: absolute;

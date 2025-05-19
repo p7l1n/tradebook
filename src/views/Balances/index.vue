@@ -9,23 +9,20 @@
     >
       <Loader v-if="isLoading" />
       <div class="col">
-        <TotalInfoShort
-          v-if="!isLoading"
-          style="margin-top: 20px; width: 95%"
-        />
+        <TotalInfoShort v-if="!isLoading" style="margin-top: 20px" />
         <RatesShort
           v-if="!isLoading"
           class="balance-page__widgets-item"
-          style="margin-top: 20px; width: 98%"
+          style="margin-top: 20px"
         />
       </div>
       <div class="col">
         <TotalInfoShort
           :is-inactive="true"
           v-if="!isLoading"
-          style="margin-top: 20px; width: 95%"
+          style="margin-top: 20px"
         />
-        <RatesStats v-if="!isLoading" style="margin-top: 20px; width: 95%" />
+        <RatesStats v-if="!isLoading" style="margin-top: 20px" />
       </div>
       <!-- <TotalInfo
         v-if="!isLoading"
@@ -131,6 +128,11 @@ $paddingSmall: 8px;
     &.main {
       justify-content: center;
       flex-wrap: wrap;
+      gap: 20px;
+
+      @media (max-width: $breakpoint-tablet) {
+        gap: 0;
+      }
     }
 
     &.isLoading {
@@ -153,10 +155,6 @@ $paddingSmall: 8px;
     margin: 20px 0;
     width: 100%;
 
-    &:first-child {
-      margin-right: 20px;
-    }
-
     @media (max-width: $breakpoint-tablet) {
       margin: 10px 0;
       max-width: 100% !important;
@@ -169,9 +167,11 @@ $paddingSmall: 8px;
   display: flex;
   flex-direction: column;
   width: 50%;
+  max-width: 600px;
 
   @media (max-width: $breakpoint-tablet) {
     width: 100%;
+    max-width: 100%;
   }
 }
 </style>

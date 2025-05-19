@@ -571,6 +571,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .filter-orders {
+  @import "@/assets/styles/_breakpoints.scss";
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -581,11 +582,41 @@ export default {
     position: absolute;
     right: 0;
     top: 65px;
+
+    @media (max-width: $breakpoint-tablet) {
+      position: static;
+      margin-bottom: 15px;
+      width: 100%;
+    }
   }
 
   &__section {
     display: flex;
     align-items: center;
+
+    @media (max-width: $breakpoint-tablet) {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 10px;
+
+      &::-webkit-scrollbar {
+        height: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+    }
 
     &:last-child {
       margin-top: 15px;
@@ -604,6 +635,29 @@ export default {
     &.row {
       display: flex;
       align-items: center;
+
+      @media (max-width: $breakpoint-tablet) {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+
+        .cashout {
+          width: 100%;
+          margin-right: 0;
+          margin-bottom: 10px;
+        }
+
+        .filter-orders__item {
+          width: 100%;
+          margin-right: 0;
+          margin-bottom: 10px;
+
+          :deep(.el-checkbox) {
+            width: 100%;
+            margin-right: 0;
+          }
+        }
+      }
     }
   }
 
