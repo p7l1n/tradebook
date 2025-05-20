@@ -257,6 +257,7 @@ export default {
     };
 
     const onChangeStatus = async (item) => {
+      if (loading.value) return;
       const order = getOrderAPIFormat(item);
       const status = item.status;
       loading.value = true;
