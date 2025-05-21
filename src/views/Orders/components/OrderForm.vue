@@ -773,11 +773,39 @@ export default {
   flex-direction: column;
   position: relative;
 
+  @media (max-width: 1024px) {
+    width: 100%;
+    height: 550px;
+    overflow-y: auto;
+  }
+
+  &__field {
+    margin-bottom: 15px;
+
+    @media (max-width: 1024px) {
+      width: 100%;
+
+      .el-input,
+      .el-select,
+      .base-input {
+        width: 100%;
+      }
+    }
+  }
+
   &__agent {
     position: absolute;
-    right: -360px;
+    right: -380px;
     top: 0;
-    width: 95%;
+    width: 360px;
+    // background: #fff;
+    z-index: 1;
+
+    @media (max-width: 1024px) {
+      position: static;
+      width: 100%;
+      margin-top: 20px;
+    }
 
     .label {
       font-size: 14px;
@@ -794,10 +822,6 @@ export default {
 
   .ml10 {
     margin-left: 10px;
-  }
-
-  &__field {
-    margin-bottom: 15px;
   }
 
   &__btns {

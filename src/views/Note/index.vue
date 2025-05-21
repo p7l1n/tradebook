@@ -582,6 +582,10 @@ export default {
 
     @media (max-width: $breakpoint-tablet) {
       margin-left: 0;
+
+      .el-button {
+        width: 100% !important;
+      }
     }
   }
 }

@@ -62,7 +62,7 @@
       <Modal>
         <ModalContent
           :style="{
-            width: '720px',
+            width: '740px',
           }"
           :title="
             selectedOrder

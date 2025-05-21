@@ -57,7 +57,7 @@
           >
             {{ toCurrency(item.amount) }}
           </div>
-          <div class="widget-notes__list-item-field strong">
+          <div class="widget-notes__list-item-field strong comment">
             <el-button
               v-if="isAgents"
               type="warning"
@@ -347,6 +347,11 @@ export default {
     &.strong {
       color: $textColorBlack;
       font-weight: bold;
+    }
+
+    &.comment {
+      font-size: 12px;
+      font-weight: normal;
     }
 
     &.green {
