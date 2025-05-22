@@ -307,7 +307,6 @@ export default {
   &__list {
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
     height: auto;
   }
 
@@ -318,7 +317,7 @@ export default {
     position: relative;
 
     &.editing {
-      background-color: #ccc;
+      background-color: $colorSelected;
     }
 
     &.active {

@@ -37,6 +37,7 @@ export default {
     font-size: 18px;
     font-family: "Roboto-Medium";
     margin-bottom: 20px;
+    color: $textColorBlack;
   }
 }
 </style>

@@ -1,16 +1,49 @@
-$panelColor: rgb(50, 60, 70);
-$panelColorSecondary: #4b4e6a;
-$panelColorLight: rgb(242, 242, 242);
-$panelColorActive: #eaeaea;
+$panelColor: #232222; // new
+$panelColorSecondary: #4f4f4f;
+$panelColorLight: rgb(51, 52, 53); // new
+$panelColorActive: #4b4b4b; // new
+$colorRowNth: #464646; // new
+$defaultTextColor: #ccc; // new
+$bgMainColor: #232222d1; // new
 
-$textColorWhite: #fff;
-$textColorBlack: #000;
-$textColorGreen: rgb(120, 240, 170);
+$textColorWhite: #e1dede;
+$textColorBlack: #e1dede; // new
+$textColorGreen: rgb(26 155 80);
 $colorGreenDark: rgb(26 155 80);
-$colorRedDark: rgb(223 20 65);
-$textColorGrayDark: #444;
+$colorRedDark: rgb(230 111 94);
+$textColorGrayDark: #fff; // new
 $textColorGrayLight: #888;
-$colorRowGrayActive: #d4d4d4;
+$colorRowGrayActive: #232222d1;
 
-$lightGreen: #a1d0b1;
-$lightRed: #ffb6b6;
+$lightGreen: #426b50;
+$lightRed: #a45555;
+
+$colorInputWrap: #02010121;
+$colorSelected: #282828;
+$payedColor: #526653;
+
+
+
+// white theme
+// $panelColor: rgb(50, 60, 70);
+// $panelColorSecondary: #4b4e6a;
+// $panelColorLight: rgb(242, 242, 242);
+// $panelColorActive: #eaeaea;
+// $colorRowNth: #edeaea;
+// $defaultTextColor: #2c3e50;
+// $textColorWhite: #fff;
+// $textColorBlack: #000;
+// $textColorGreen: rgb(120, 240, 170);
+// $colorGreenDark: rgb(26 155 80);
+// $colorRedDark: rgb(223 20 65);
+// $textColorGrayDark: #444;
+// $textColorGrayLight: #888;
+// $colorRowGrayActive: #d4d4d4;
+
+// $lightGreen: #a1d0b1;
+// $lightRed: #ffb6b6;
+
+// $colorInputWrap: #746f6f21;
+// $colorSelected: #ccc;
+// $payedColor: #d4e3d5;
+// $bgMainColor: #fff;

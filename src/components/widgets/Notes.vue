@@ -277,11 +277,11 @@ export default {
     }
 
     &:nth-child(even) {
-      background-color: #edeaea;
+      background-color: $colorRowNth;
     }
 
     &.editing {
-      background-color: #ccc;
+      background-color: $colorSelected;
     }
 
     &.active {

@@ -809,7 +809,7 @@ export default {
 
     .label {
       font-size: 14px;
-      color: #444;
+      color: $textColorGrayDark;
       text-align: left;
       margin-bottom: 5px;
     }

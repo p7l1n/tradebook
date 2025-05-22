@@ -2,7 +2,7 @@
   <MainMenu v-if="userInfo" />
   <div class="app-version">{{ "p1.1.50" }}</div>
   <div :class="{ isAuth: userInfo }" class="main-app">
-    <div :class="{ focused }" class="main-calculator">
+    <div v-if="isAuth" :class="{ focused }" class="main-calculator">
       <el-input
         placeholder="Калькулятор"
         v-model="mathStr"
@@ -32,6 +32,7 @@ export default {
     const store = useStore();
     const userInfo = computed(() => store.getters["auth/user"]);
     const isAdmin = computed(() => store.getters["auth/isAdmin"]);
+    const isAuth = computed(() => userInfo.value?.jwt);
     const organizationId = computed(
       () => store.getters["settings/organizationId"]
     );
@@ -111,6 +112,7 @@ export default {
       sumCalc,
       mathStr,
       focused,
+      isAuth,
       onFocus,
       onCalcInput,
     };
@@ -124,6 +126,7 @@ body,
 html {
   padding: 0;
   margin: 0;
+  background-color: $bgMainColor;
   // min-width: 1385px;
   // overflow-x: auto;
 }
@@ -175,7 +178,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: $defaultTextColor;
 }
 
 .el-notification,
@@ -207,8 +210,18 @@ html {
     color: $colorGreenDark !important;
   }
 }
-.el-input__wrapper {
-  background-color: #746f6f21 !important;
+.el-input__wrapper,
+.el-select__wrapper {
+  background-color: $colorInputWrap !important;
+  box-shadow: initial !important;
+}
+
+.el-input__inner {
+  color: red;
+}
+
+.el-select__input-wrapper {
+  // box-shadow: 0 0 0 1px #ccc inset !important;
 }
 .green {
   .el-input__wrapper {
@@ -239,5 +252,69 @@ html {
   font-weight: bold;
   font-size: 10px;
   z-index: 10;
+}
+
+body.dark {
+  .el-select-dropdown__list {
+    background-color: #444 !important;
+  }
+  .el-select__input {
+    color: #ccc;
+  }
+  .el-select-dropdown__item {
+    color: #ccc !important;
+  }
+  .el-select-dropdown__item.is-hovering {
+    background-color: #888 !important;
+    color: #ccc !important;
+  }
+  .el-input__wrapper {
+    .el-input__inner {
+      color: #ccc;
+    }
+  }
+
+  .el-popper.is-light,
+  .el-popper.is-light > .el-popper__arrow:before {
+    border: none !important; // рамка
+  }
+
+  .el-popper.is-light,
+  .el-popper.is-light > .el-popper__arrow:before {
+    background: #444 !important; // крестик
+  }
+
+  .el-table__body-wrapper {
+    // тетрадь фон
+    background-color: #3c3c3c;
+  }
+
+  .el-table th.el-table__cell {
+    background-color: #3c3c3c !important;
+  }
+
+  .el-table {
+    --el-table-border-color: transparent !important;
+  }
+
+  .el-table__row {
+    td {
+      color: #ccc !important;
+    }
+  }
+
+  // login
+  .el-tabs__content {
+    background-color: #444;
+  }
+
+  .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
+    background-color: #444;
+    color: #ccc !important;
+  }
+
+  .el-tabs__nav-scroll {
+    background-color: #888;
+  }
 }
 </style>

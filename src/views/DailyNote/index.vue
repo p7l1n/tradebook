@@ -1225,7 +1225,7 @@ export default {
     margin-bottom: 15px;
     width: calc(50% - 15px);
     min-height: 290px;
-    border: 1px solid #ccc;
+    border: 1px solid $colorSelected;
     position: relative;
     border-radius: $controlRadius;
     overflow: hidden;
@@ -1256,6 +1256,7 @@ export default {
     .form {
       padding: 0 10px;
       margin-top: 40px;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
       overflow-x: auto;

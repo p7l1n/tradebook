@@ -393,8 +393,8 @@ export default {
   &__list {
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
     height: auto;
+    margin-top: 20px;
     padding-bottom: 10px;
   }
 
@@ -406,15 +406,15 @@ export default {
     font-size: 14px;
 
     &:nth-child(even) {
-      background-color: #edeaea;
+      background-color: $colorRowNth;
     }
 
     &.editing {
-      background-color: #ccc;
+      background-color: $colorSelected;
     }
 
     &.payed {
-      background-color: #d4e3d5;
+      background-color: $payedColor;
     }
 
     &.active {

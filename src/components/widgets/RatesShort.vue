@@ -174,7 +174,6 @@ export default {
   &__list {
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
     height: auto;
     min-width: 500px;
     overflow-x: auto;

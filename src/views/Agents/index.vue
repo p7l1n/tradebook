@@ -150,6 +150,7 @@ export default {
 
 .note-page {
   position: relative;
+  height: 100vh;
 
   &__edit {
     display: flex;

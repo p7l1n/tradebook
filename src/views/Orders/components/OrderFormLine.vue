@@ -732,7 +732,7 @@ export default {
     width: 300px;
     padding: 10px;
     border-radius: $controlRadius;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    // border: 1px solid rgba(255, 255, 255, 0.1);
 
     @media (max-width: 1335px) {
       position: static;

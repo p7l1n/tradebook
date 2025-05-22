@@ -115,8 +115,8 @@ export default {
   &__list {
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
     height: auto;
+    margin-top: 20px;
     overflow-x: auto;
     min-width: 0;
     width: 100%;

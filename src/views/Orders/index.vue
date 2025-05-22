@@ -224,6 +224,7 @@ export default {
 
 .orders-page {
   position: relative;
+  height: 100vh;
 
   .mt-15 {
     margin-top: 15px;
