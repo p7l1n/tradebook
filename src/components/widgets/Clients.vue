@@ -417,17 +417,17 @@ export default {
 
     &.strong {
       color: $textColorBlack;
-      font-weight: bold;
+      font-family: "Roboto-Medium";
     }
 
     &.green {
       color: $colorGreenDark;
-      font-weight: bold;
+      font-family: "Roboto-Medium";
     }
 
     &.red {
       color: $colorRedDark;
-      font-weight: bold;
+      font-family: "Roboto-Medium";
     }
 
     &.label {

@@ -632,7 +632,7 @@ export default {
     .cashouted {
       margin-right: 30px;
       color: $colorRedDark;
-      font-weight: bold;
+      font-family: "Roboto-Medium";
     }
 
     &.row {

@@ -221,7 +221,7 @@ export default {
     justify-content: center;
     align-items: center;
     color: $textColorWhite;
-    font-weight: bold;
+    font-family: "Roboto-Medium";
     cursor: pointer;
     margin-left: auto;
 

@@ -229,24 +229,24 @@ export default {
 
     &.strong {
       color: $textColorBlack;
-      font-weight: bold;
+      font-family: "Roboto-Medium";
     }
 
     &.green {
       color: $colorGreenDark;
-      font-weight: bold;
+      font-family: "Roboto-Medium";
     }
 
     &.red {
       color: $colorRedDark;
-      font-weight: bold;
+      font-family: "Roboto-Medium";
     }
 
     &.label {
       font-size: 10px;
       text-transform: uppercase;
       color: $textColorGrayDark;
-      font-weight: bold;
+      font-family: "Roboto-Medium";
     }
 
     &.mini {

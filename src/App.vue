@@ -1,6 +1,6 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.1.48" }}</div>
+  <div class="app-version">{{ "p1.1.49" }}</div>
   <div :class="{ isAuth: userInfo }" class="main-app">
     <div :class="{ focused }" class="main-calculator">
       <el-input
@@ -171,7 +171,7 @@ html {
 }
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Roboto-Regular, Manrope-Medium, Avenir, Helvetica;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -180,7 +180,8 @@ html {
 
 .el-notification,
 .el-select-dropdown__item {
-  font-family: Avenir, Helvetica, Arial, sans-serif !important;
+  font-family: Manrope-Regular, Manrope-Medium, Avenir, Helvetica, Arial,
+    sans-serif !important;
 }
 
 .debet {

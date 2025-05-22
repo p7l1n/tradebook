@@ -10,6 +10,7 @@ module.exports = defineConfig({
         additionalData: `
           @import "@/assets/styles/colors.scss";
           @import "@/assets/styles/base.scss";
+          @import "@/assets/styles/_fonts.scss";
         `,
       },
     },

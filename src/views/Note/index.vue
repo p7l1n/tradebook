@@ -482,7 +482,7 @@ export default {
       position: absolute;
       right: 20px;
       font-size: 16px;
-      font-weight: bold;
+      font-family: "Roboto-Medium";
       color: $colorGreenDark;
 
       span {

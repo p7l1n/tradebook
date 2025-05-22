@@ -139,7 +139,7 @@ export default {
 
     &.strong {
       color: $textColorBlack;
-      font-weight: bold;
+      font-family: "Roboto-Medium";
     }
 
     &.label {

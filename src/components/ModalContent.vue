@@ -22,7 +22,8 @@ export default {
 @import "@/assets/styles/base.scss";
 
 .modal-content {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Roboto-Regular, Manrope-Regular, Avenir, Helvetica, Arial,
+    sans-serif;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -34,7 +35,7 @@ export default {
   &__title {
     text-align: left;
     font-size: 18px;
-    font-weight: bold;
+    font-family: "Roboto-Medium";
     margin-bottom: 20px;
   }
 }
