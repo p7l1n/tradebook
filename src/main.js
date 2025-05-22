@@ -29,6 +29,7 @@ createPersistedState({
     "orders.currentNum",
     "orders.lastOrderNum",
     "orders.virtualNums",
+    "settings.isDarkTheme",
   ],
 })(store);
 

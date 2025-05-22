@@ -3,11 +3,13 @@ import { getQuery, postQuery, putQuery, deleteQuery } from "@/api";
 const types = {
   SET_ORGANIZATION_ID: "SET_ORGANIZATION_ID",
   SET_ORGANIZATIONS_LIST: "SET_ORGANIZATIONS_LIST",
+  SET_IS_DARK_THEME: "SET_IS_DARK_THEME",
 };
 
 export default {
   namespaced: true,
   state: () => ({
+    isDarkTheme: false,
     organizationId: 1,
     organizationsList: [],
     organizationBalances: {
@@ -42,6 +44,7 @@ export default {
   }),
 
   getters: {
+    isDarkTheme: (state) => state.isDarkTheme,
     organizationBalances: (state) =>
       state.organizationBalances[state.organizationId],
     organizationId: (state) => state.organizationId,
@@ -60,9 +63,15 @@ export default {
     [types.SET_ORGANIZATIONS_LIST](state, list) {
       state.organizationsList = list;
     },
+    [types.SET_IS_DARK_THEME](state, isDarkTheme) {
+      state.isDarkTheme = isDarkTheme;
+    },
   },
 
   actions: {
+    setIsDarkTheme({ commit }, isDarkTheme) {
+      commit(types.SET_IS_DARK_THEME, isDarkTheme);
+    },
     setOrganizationId({ commit }, id) {
       commit(types.SET_ORGANIZATION_ID, id);
     },

@@ -48,7 +48,7 @@
       />
     </div>
     <div class="note-form__field">
-      <Input placeholder="Примечание" v-model="comment" />
+      <el-input placeholder="Примечание" v-model="comment" />
     </div>
 
     <div class="note-form__btns">
@@ -77,7 +77,6 @@
   </div>
 </template>
 <script>
-import Input from "@/components/Input";
 import Button from "@/components/Button";
 import CheckGroupButton from "@/components/CheckGroupButton";
 import { NOTE_TYPES } from "@/config/noteTypes";
@@ -92,7 +91,6 @@ import { filterWithOutSystem } from "@/filters";
 
 export default {
   components: {
-    Input,
     Button,
     CheckGroupButton,
     ElSelect,

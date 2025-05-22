@@ -1,7 +1,17 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.1.50" }}</div>
+  <div class="app-version">{{ "p1.1.51" }}</div>
   <div :class="{ isAuth: userInfo }" class="main-app">
+    <div v-if="isAuth" class="app-switch-theme">
+      <el-switch size="large" v-model="switchTheme" @change="onSwitchTheme">
+        <template #active-action>
+          <span class="custom-active-action">Н</span>
+        </template>
+        <template #inactive-action>
+          <span class="custom-inactive-action">Д</span>
+        </template>
+      </el-switch>
+    </div>
     <div v-if="isAuth" :class="{ focused }" class="main-calculator">
       <el-input
         placeholder="Калькулятор"
@@ -30,6 +40,7 @@ export default {
   },
   setup() {
     const store = useStore();
+    const switchTheme = ref(false);
     const userInfo = computed(() => store.getters["auth/user"]);
     const isAdmin = computed(() => store.getters["auth/isAdmin"]);
     const isAuth = computed(() => userInfo.value?.jwt);
@@ -74,6 +85,12 @@ export default {
     const timer = ref(null);
 
     onMounted(async () => {
+      switchTheme.value = store.getters["settings/isDarkTheme"];
+      if (switchTheme.value) {
+        document.body.classList.add("dark");
+      } else {
+        document.body.classList.remove("dark");
+      }
       store.dispatch("orders/setFilterOption", {
         key: "showPayed",
         value: true,
@@ -103,6 +120,15 @@ export default {
       focused.value = val;
     };
 
+    const onSwitchTheme = (val) => {
+      store.dispatch("settings/setIsDarkTheme", val);
+      if (val) {
+        document.body.classList.add("dark");
+      } else {
+        document.body.classList.remove("dark");
+      }
+    };
+
     onBeforeUnmount(() => {
       clearInterval(timer.value);
     });
@@ -113,8 +139,10 @@ export default {
       mathStr,
       focused,
       isAuth,
+      switchTheme,
       onFocus,
       onCalcInput,
+      onSwitchTheme,
     };
   },
 };
@@ -141,6 +169,18 @@ html {
   transition: all 0.3s ease;
 }
 
+.app-switch-theme {
+  position: absolute;
+  right: 430px;
+  top: 22px;
+  z-index: 1000;
+
+  @media (max-width: $breakpoint-mobile) {
+    right: auto;
+    left: 90px;
+    top: 20px;
+  }
+}
 .main-calculator {
   opacity: 0.1;
   display: flex;
@@ -315,6 +355,73 @@ body.dark {
 
   .el-tabs__nav-scroll {
     background-color: #888;
+  }
+
+  .el-checkbox__label {
+    color: #ccc;
+  }
+
+  .el-switch.is-checked .el-switch__core {
+    background-color: #4b5157;
+    border-color: #4b4e6a;
+  }
+
+  .main-calculator {
+    border: 1px solid transparent;
+
+    .sum-total {
+      color: #444;
+    }
+
+    .el-input {
+      background-color: #2a2929bd;
+    }
+  }
+
+  // calendar
+  .el-picker-panel [slot="sidebar"],
+  .el-picker-panel__sidebar {
+    background-color: #444;
+    font-family: Roboto-Regular, Manrope-Medium, Avenir, Helvetica;
+  }
+
+  .el-picker-panel__shortcut {
+    color: #ccc !important;
+  }
+
+  .el-picker-panel [slot="sidebar"] + .el-picker-panel__body,
+  .el-picker-panel__sidebar + .el-picker-panel__body {
+    background-color: #383737 !important;
+  }
+
+  .el-date-table td.disabled .el-date-table-cell {
+    background-color: #555759 !important;
+  }
+
+  .el-date-table td.current:not(.disabled) .el-date-table-cell__text {
+    background-color: #575757 !important;
+  }
+
+  .el-date-table td.today .el-date-table-cell__text {
+    color: var(--el-color-primary);
+  }
+
+  .el-date-table td.is-selected .el-date-table-cell__text {
+    background-color: #444 !important;
+    color: #fff !important;
+  }
+
+  .el-year-table td.disabled .el-date-table-cell__text {
+    background-color: #545454;
+  }
+
+  .el-year-table td.current:not(.disabled) .el-date-table-cell__text {
+    background-color: #575757;
+    color: #fff;
+  }
+
+  .el-month-table td.disabled .el-date-table-cell__text {
+    background-color: #575757 !important;
   }
 }
 </style>

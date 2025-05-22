@@ -1,49 +1,69 @@
-$panelColor: #232222; // new
-$panelColorSecondary: #4f4f4f;
-$panelColorLight: rgb(51, 52, 53); // new
-$panelColorActive: #4b4b4b; // new
-$colorRowNth: #464646; // new
-$defaultTextColor: #ccc; // new
-$bgMainColor: #232222d1; // new
-
-$textColorWhite: #e1dede;
-$textColorBlack: #e1dede; // new
-$textColorGreen: rgb(26 155 80);
-$colorGreenDark: rgb(26 155 80);
-$colorRedDark: rgb(230 111 94);
-$textColorGrayDark: #fff; // new
-$textColorGrayLight: #888;
-$colorRowGrayActive: #232222d1;
-
-$lightGreen: #426b50;
-$lightRed: #a45555;
-
-$colorInputWrap: #02010121;
-$colorSelected: #282828;
-$payedColor: #526653;
-
-
-
 // white theme
-// $panelColor: rgb(50, 60, 70);
-// $panelColorSecondary: #4b4e6a;
-// $panelColorLight: rgb(242, 242, 242);
-// $panelColorActive: #eaeaea;
-// $colorRowNth: #edeaea;
-// $defaultTextColor: #2c3e50;
-// $textColorWhite: #fff;
-// $textColorBlack: #000;
-// $textColorGreen: rgb(120, 240, 170);
-// $colorGreenDark: rgb(26 155 80);
-// $colorRedDark: rgb(223 20 65);
-// $textColorGrayDark: #444;
-// $textColorGrayLight: #888;
-// $colorRowGrayActive: #d4d4d4;
+:root {
+  // Light theme (default)
+  --panel-color: rgb(50, 60, 70);
+  --panel-color-secondary: #4b4e6a;
+  --panel-color-light: rgb(242, 242, 242);
+  --panel-color-active: #eaeaea;
+  --color-row-nth: #edeaea;
+  --default-text-color: #2c3e50;
+  --text-color-white: #fff;
+  --text-color-black: #000;
+  --text-color-green: rgb(120, 240, 170);
+  --color-green-dark: rgb(26 155 80);
+  --color-red-dark: rgb(223 20 65);
+  --text-color-gray-dark: #444;
+  --text-color-gray-light: #888;
+  --color-row-gray-active: #d4d4d4;
+  --light-green: #a1d0b1;
+  --light-red: #ffb6b6;
+  --color-input-wrap: #746f6f21;
+  --color-selected: #ccc;
+  --payed-color: #d4e3d5;
+  --bg-main-color: #e5e5e5;
+}
 
-// $lightGreen: #a1d0b1;
-// $lightRed: #ffb6b6;
+body.dark {
+  --panel-color: #2a2929;
+  --panel-color-secondary: #23222294;
+  --panel-color-light: rgb(51, 52, 53);
+  --panel-color-active: #4b4b4b;
+  --color-row-nth: #464646;
+  --default-text-color: #ccc;
+  --text-color-white: #e1dede;
+  --text-color-black: #e1dede;
+  --text-color-green: rgb(26 155 80);
+  --color-green-dark: rgb(26 155 80);
+  --color-red-dark: rgb(230 111 94);
+  --text-color-gray-dark: #fff;
+  --text-color-gray-light: #888;
+  --color-row-gray-active: #232222d1;
+  --light-green: #426b50;
+  --light-red: #a45555;
+  --color-input-wrap: #02010121;
+  --color-selected: #282828;
+  --payed-color: #526653;
+  --bg-main-color: #373434d1;
+}
 
-// $colorInputWrap: #746f6f21;
-// $colorSelected: #ccc;
-// $payedColor: #d4e3d5;
-// $bgMainColor: #fff;
+// SCSS variables that use CSS custom properties
+$panelColor: var(--panel-color);
+$panelColorSecondary: var(--panel-color-secondary);
+$panelColorLight: var(--panel-color-light);
+$panelColorActive: var(--panel-color-active);
+$colorRowNth: var(--color-row-nth);
+$defaultTextColor: var(--default-text-color);
+$textColorWhite: var(--text-color-white);
+$textColorBlack: var(--text-color-black);
+$textColorGreen: var(--text-color-green);
+$colorGreenDark: var(--color-green-dark);
+$colorRedDark: var(--color-red-dark);
+$textColorGrayDark: var(--text-color-gray-dark);
+$textColorGrayLight: var(--text-color-gray-light);
+$colorRowGrayActive: var(--color-row-gray-active);
+$lightGreen: var(--light-green);
+$lightRed: var(--light-red);
+$colorInputWrap: var(--color-input-wrap);
+$colorSelected: var(--color-selected);
+$payedColor: var(--payed-color);
+$bgMainColor: var(--bg-main-color);

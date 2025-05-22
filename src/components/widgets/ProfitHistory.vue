@@ -195,6 +195,7 @@ export default {
     display: flex;
     flex-direction: column;
     height: auto;
+    margin-top: 20px;
     padding-bottom: 10px;
   }
 
