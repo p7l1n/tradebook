@@ -158,15 +158,18 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/styles/colors.scss";
 @import "@/assets/styles/base.scss";
+@import "@/assets/styles/breakpoints.scss";
 
 .widget-profits-wrap {
   width: 100%;
   display: flex;
   flex-direction: column;
+  overflow-x: auto;
 }
 
 .widget-profits {
   width: 100%;
+  min-width: 600px; // минимальная ширина таблицы
   padding: 0 $paddingSmall;
   border-radius: $borderRadius;
   background-color: $panelColorLight;
@@ -174,6 +177,14 @@ export default {
   flex-direction: column;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    min-width: 100%;
+  }
 
   &__title {
     position: absolute;

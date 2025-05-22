@@ -170,7 +170,7 @@ html {
 }
 
 .app-switch-theme {
-  position: absolute;
+  position: fixed;
   right: 430px;
   top: 22px;
   z-index: 1000;

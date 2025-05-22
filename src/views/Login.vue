@@ -187,7 +187,7 @@ export default {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   background-color: #cccccc17;
   //background-image: url("https://avatars.mds.yandex.net/i?id=ef87dc26201fba0ace05f0ce30f59027_l-5253062-images-thumbs&n=13");
   background-size: cover;

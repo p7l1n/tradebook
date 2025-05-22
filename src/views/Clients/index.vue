@@ -54,7 +54,7 @@ export default {
 .clients-page {
   &__clients {
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     padding: 0 $paddingLarge;
     box-sizing: border-box;
     display: flex;
