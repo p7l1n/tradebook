@@ -61,6 +61,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .settings {
+  min-height: 100vh;
   &__widgets {
     width: calc(100% - 20px);
     padding: 20px;

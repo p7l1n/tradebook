@@ -308,6 +308,7 @@ export default {
     display: flex;
     flex-direction: column;
     height: auto;
+    margin-top: 20px;
   }
 
   &__list-item {
