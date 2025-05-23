@@ -84,7 +84,7 @@
             v-model="item.status"
             size="large"
             class="toggler"
-            :disabled="loading"
+            :disabled="loading && processingId === item.id"
             @click.stop="() => {}"
             @change="loading ? () => {} : onChangeStatus(item)"
           />
@@ -216,6 +216,7 @@ export default {
     const countToShow = ref(400);
     const countIncrement = ref(400);
     const loading = ref(false);
+    const processingId = ref(null);
 
     const ordersListWithType = computed(() => {
       return props.hidePayed
@@ -259,6 +260,8 @@ export default {
 
     const onChangeStatus = async (item) => {
       if (loading.value) return;
+      processingId.value = item.id;
+
       const order = getOrderAPIFormat(item);
       const status = item.status;
       loading.value = true;
@@ -331,6 +334,7 @@ export default {
       countIncrement,
       isAdmin,
       ordersListWithType,
+      processingId,
       parseLongName,
       showMore,
       getNumFormat,
