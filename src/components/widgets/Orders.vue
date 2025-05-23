@@ -73,6 +73,7 @@
           :class="{
             editing: editing && ids.includes(item.id),
             payed: item?.comment?.includes('payed'),
+            disabled: loading && processingId === item.id,
           }"
           class="widget-orders__list-item"
           v-for="item in ordersListWithType.slice(0, countToShow)"
@@ -420,6 +421,10 @@ export default {
 
     &.payed {
       background-color: $payedColor;
+    }
+
+    &.disabled {
+      opacity: 0.2;
     }
 
     &.active {
