@@ -84,6 +84,7 @@
             v-model="item.status"
             size="large"
             class="toggler"
+            :disabled="loading"
             @click.stop="() => {}"
             @change="loading ? () => {} : onChangeStatus(item)"
           />
