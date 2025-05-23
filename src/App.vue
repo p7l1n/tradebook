@@ -1,6 +1,6 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.1.54" }}</div>
+  <div class="app-version">{{ "p1.1.55" }}</div>
   <div :class="{ isAuth: userInfo }" class="main-app">
     <div v-if="isAuth" class="app-switch-theme">
       <el-switch size="large" v-model="switchTheme" @change="onSwitchTheme">
@@ -254,10 +254,6 @@ html {
 .el-select__wrapper {
   background-color: $colorInputWrap !important;
   box-shadow: initial !important;
-}
-
-.el-input__inner {
-  color: red;
 }
 
 .el-select__input-wrapper {
