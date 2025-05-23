@@ -1,6 +1,6 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.1.56" }}</div>
+  <div class="app-version">{{ "p1.1.57" }}</div>
   <div :class="{ isAuth: userInfo }" class="main-app">
     <div v-if="isAuth" class="app-switch-theme">
       <el-switch size="large" v-model="switchTheme" @change="onSwitchTheme">
@@ -418,6 +418,10 @@ body.dark {
 
   .el-month-table td.disabled .el-date-table-cell__text {
     background-color: #575757 !important;
+  }
+
+  .el-select__placeholder {
+    color: #ccc !important;
   }
 }
 </style>
