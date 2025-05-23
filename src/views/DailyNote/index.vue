@@ -62,7 +62,7 @@
               />
             </div>
             <div class="form-field ml10">
-              <Input
+              <el-input
                 v-model="commentUsd"
                 gray
                 placeholder="Инфо"
@@ -153,7 +153,7 @@
               />
             </div>
             <div class="form-field ml10">
-              <Input
+              <el-input
                 v-model="commentRub"
                 gray
                 placeholder="Инфо"
@@ -244,7 +244,7 @@
               />
             </div>
             <div class="form-field ml10">
-              <Input
+              <el-input
                 v-model="commentDol"
                 gray
                 placeholder="Инфо"
@@ -335,7 +335,7 @@
               />
             </div>
             <div class="form-field ml10">
-              <Input
+              <el-input
                 v-model="commentEur"
                 gray
                 placeholder="Инфо"
