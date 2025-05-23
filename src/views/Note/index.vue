@@ -111,7 +111,12 @@
           />
         </div>
         <div class="note-page__form-field">
-          <Input placeholder="Примечание" gray v-model="comment" />
+          <el-input
+            placeholder="Примечание"
+            gray
+            v-model="comment"
+            class="base-input"
+          />
         </div>
         <div class="note-page__form-field">
           <el-button
@@ -167,8 +172,6 @@ import Form from "./components/Form";
 import Notes from "@/components/widgets/Notes";
 import ProfitHistory from "@/components/widgets/ProfitHistory";
 import NotesStats from "@/components/widgets/NotesStats";
-// import Button from "@/components/Button";
-import Input from "@/components/Input";
 import CheckGroupButton from "@/components/CheckGroupButton";
 
 import { useStore } from "vuex";
@@ -194,8 +197,6 @@ export default {
     Notes,
     ProfitHistory,
     NotesStats,
-    // Button,
-    Input,
     CheckGroupButton,
     CheckButton,
     ExportButton,
