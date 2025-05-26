@@ -1,6 +1,6 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.1.61" }}</div>
+  <div class="app-version">{{ "p1.1.62" }}</div>
   <div :class="{ isAuth: userInfo }" class="main-app">
     <div v-if="isAuth" class="app-switch-theme">
       <el-switch size="large" v-model="switchTheme" @change="onSwitchTheme">
