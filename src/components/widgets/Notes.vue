@@ -76,6 +76,7 @@
             }}
           </div>
           <div
+            v-if="!item.isProfit"
             class="widget-notes__list-item-field remove"
             @click.stop="remove(item)"
           ></div>
