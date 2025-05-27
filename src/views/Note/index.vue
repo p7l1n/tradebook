@@ -215,7 +215,7 @@ export default {
     const editModeFlag = ref(false);
     const loadingRemove = ref(false);
 
-    const activeIncurrenciesIndex = ref(0);
+    const activeIncurrenciesIndex = ref(-1);
     const inCurrencies = ref(DEFAULT_CURRENCIES);
 
     // form
@@ -316,7 +316,11 @@ export default {
     };
 
     const addNew = async () => {
-      if (!selectedClient.value || !amount.value) {
+      if (
+        !selectedClient.value ||
+        !amount.value ||
+        activeIncurrenciesIndex.value === -1
+      ) {
         ElNotification({
           title: "Журнал ДК",
           message: `Укажите контрагента и сумму`,

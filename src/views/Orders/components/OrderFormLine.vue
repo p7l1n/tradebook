@@ -76,6 +76,13 @@
             />
           </el-select>
         </div>
+        <div class="order-form__field ml10">
+          <el-input
+            placeholder="Комментарий"
+            v-model="customComment"
+            class="base-input"
+          />
+        </div>
         <div v-if="false" class="order-form__field ml10">
           <el-select
             v-model="selectedOperator"
@@ -226,6 +233,7 @@ export default {
     const amountAgent = ref("");
     const rateAgent = ref("");
     const rateIn = ref("");
+    const customComment = ref("");
 
     const loading = ref(false);
 
@@ -330,6 +338,7 @@ export default {
       amountAgent.value = "";
       rateAgent.value = "";
       rateIn.value = "";
+      customComment.value = "";
     };
 
     const clearFormAgent = () => {
@@ -407,7 +416,7 @@ export default {
         outCurrencyId: activeOutcurrenciesIndex.value, // outCurrencies.value[activeOutcurrenciesIndex.value],
         outAmount: +amountOut.value,
         status: 0,
-        customComment: "",
+        customComment: customComment.value || "",
         customNum: "",
         metaInfo: "",
       };
@@ -681,6 +690,7 @@ export default {
       amountOut,
       amountAgent,
       rateAgent,
+      customComment,
       rateIn,
       selectedOperator,
       selectedClient,
