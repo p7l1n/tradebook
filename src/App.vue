@@ -1,6 +1,8 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.1.64" }}</div>
+  <div class="app-version">
+    {{ lastExecutionTime ? `${lastExecutionTime}ms | ` : "" }}p1.1.65
+  </div>
   <div :class="{ isAuth: userInfo }" class="main-app">
     <div v-if="isAuth" class="app-switch-theme">
       <el-switch size="large" v-model="switchTheme" @change="onSwitchTheme">
@@ -50,8 +52,10 @@ export default {
     const mathStr = ref("");
     const sumCalc = ref("");
     const focused = ref(false);
+    const lastExecutionTime = ref(null);
 
     const initApp = async () => {
+      const startTime = performance.now();
       await store.dispatch("stats/fetchCurrencies");
       await store.dispatch("rates/fetchRates");
       await store.dispatch("clients/fetchContragents");
@@ -62,6 +66,8 @@ export default {
       if (isAdmin.value) {
         await store.dispatch("claims/fetchClaimList");
       }
+      const endTime = performance.now();
+      lastExecutionTime.value = Math.round(endTime - startTime);
     };
 
     watch(
@@ -140,6 +146,7 @@ export default {
       focused,
       isAuth,
       switchTheme,
+      lastExecutionTime,
       onFocus,
       onCalcInput,
       onSwitchTheme,
