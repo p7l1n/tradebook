@@ -1,6 +1,6 @@
 <template>
   <MainMenu v-if="userInfo" />
-  <div class="app-version">{{ "p1.1.63" }}</div>
+  <div class="app-version">{{ "p1.1.64" }}</div>
   <div :class="{ isAuth: userInfo }" class="main-app">
     <div v-if="isAuth" class="app-switch-theme">
       <el-switch size="large" v-model="switchTheme" @change="onSwitchTheme">
@@ -100,7 +100,7 @@ export default {
           initApp();
           timer.value = setInterval(() => {
             initApp();
-          }, 15000);
+          }, 30000);
         }
       }, 500);
     });
