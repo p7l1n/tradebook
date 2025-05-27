@@ -1,7 +1,7 @@
 <template>
   <MainMenu v-if="userInfo" />
   <div class="app-version">
-    {{ lastExecutionTime ? `${lastExecutionTime}ms | ` : "" }}p1.1.65
+    {{ lastExecutionTime ? `${lastExecutionTime}ms | ` : "" }}p1.1.66
   </div>
   <div :class="{ isAuth: userInfo }" class="main-app">
     <div v-if="isAuth" class="app-switch-theme">

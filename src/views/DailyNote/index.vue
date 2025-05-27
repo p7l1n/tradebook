@@ -426,7 +426,7 @@
               />
             </div>
             <div class="form-field ml10">
-              <Input
+              <el-input
                 v-model="commentWusd"
                 gray
                 placeholder="Инфо"
