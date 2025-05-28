@@ -216,7 +216,7 @@ export default function useStats() {
       //   statsOrders[order.inCurrency].totalInCurrency += 0;
       //   statsOrders[order.outCurrency].totalInCurrency -= 0;
       // }
-      if (!order.status) {
+      if (order.status) {
         notesList.value.forEach((note) => {
           if (
             order.comment.includes("withB") &&
