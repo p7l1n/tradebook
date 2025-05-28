@@ -141,6 +141,75 @@
           }}
         </div>
       </div>
+      <!-- строка факт2 -->
+      <div v-if="isInactive" class="widget-total__list-item">
+        <div class="widget-total__list-item-field label">Ф + Балансовые ДК</div>
+        <div
+          :class="{
+            red: allStats?.statsOrders?.RUB?.totalInCurrencyFACT2 < 0,
+            green: allStats?.statsOrders?.RUB?.totalInCurrencyFACT2 >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{
+            !allStats?.statsOrders?.RUB?.totalInCurrencyFACT2
+              ? 0
+              : toCurrency(allStats?.statsOrders?.RUB?.totalInCurrencyFACT2)
+          }}
+        </div>
+        <div
+          :class="{
+            red: allStats?.statsOrders?.USD?.totalInCurrencyFACT2 < 0,
+            green: allStats?.statsOrders?.USD?.totalInCurrencyFACT2 >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{
+            !allStats?.statsOrders?.USD?.totalInCurrencyFACT2
+              ? 0
+              : toCurrency(allStats?.statsOrders?.USD?.totalInCurrencyFACT2)
+          }}
+        </div>
+        <div
+          :class="{
+            red: allStats?.statsOrders?.EUR?.totalInCurrencyFACT2 < 0,
+            green: allStats?.statsOrders?.EUR?.totalInCurrencyFACT2 >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{
+            !allStats?.statsOrders?.EUR?.totalInCurrencyFACT2
+              ? 0
+              : toCurrency(allStats?.statsOrders?.EUR?.totalInCurrencyFACT2)
+          }}
+        </div>
+        <div
+          :class="{
+            red: allStats?.statsOrders?.WUSD?.totalInCurrencyFACT2 < 0,
+            green: allStats?.statsOrders?.WUSD?.totalInCurrencyFACT2 >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{
+            !allStats?.statsOrders?.WUSD?.totalInCurrencyFACT2
+              ? 0
+              : toCurrency(allStats?.statsOrders?.WUSD?.totalInCurrencyFACT2)
+          }}
+        </div>
+        <div
+          :class="{
+            red: allStats?.statsOrders?.USDT?.totalInCurrencyFACT2 < 0,
+            green: allStats?.statsOrders?.USDT?.totalInCurrencyFACT2 >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{
+            !allStats?.statsOrders?.USDT?.totalInCurrencyFACT2
+              ? 0
+              : toCurrency(allStats?.statsOrders?.USDT?.totalInCurrencyFACT2)
+          }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -170,6 +239,7 @@ export default {
     const stats = computed(() => {
       return props.isInactive ? allStatsInactive.value : allStats.value;
     });
+
     const profit = computed(() => {
       return props.isInactive ? profitUsdtInactive.value : profitUsdt.value;
     });

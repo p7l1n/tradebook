@@ -197,7 +197,9 @@ export default function useStats() {
         totalInCurrencyDK: 0,
         totalInCurrencyDKwithoutProfit: 0,
         totalInCurrencyDailyNotes: 0,
+        totalInCurrencyDKwithProvodka: 0, // сумма ДК только по проводкам неактивных сделок
         totalInCurrencyFACT: 0,
+        totalInCurrencyFACT2: 0, // прибавить к факту ДК проводок по неактивным заявкам
         totalInCurrencyStart: +initialStats.value.start[key],
       };
     });
@@ -214,6 +216,19 @@ export default function useStats() {
       //   statsOrders[order.inCurrency].totalInCurrency += 0;
       //   statsOrders[order.outCurrency].totalInCurrency -= 0;
       // }
+      if (!order.status) {
+        notesList.value.forEach((note) => {
+          if (
+            order.comment.includes("withB") &&
+            order.comment === note.comment
+          ) {
+            const amount =
+              note.type === NOTE_TYPES.debit ? note.amount : -note.amount;
+            statsOrders[note.inCurrency].totalInCurrencyDKwithProvodka +=
+              amount;
+          }
+        });
+      }
     });
 
     // calc DK
@@ -281,6 +296,10 @@ export default function useStats() {
         +statsOrders[key].totalInCurrency +
         +statsOrders[key].totalInCurrencyDailyNotes + // тетрадь
         +statsOrders[key].totalInCurrencyDKwithoutProfit;
+
+      statsOrders[key].totalInCurrencyFACT2 =
+        +statsOrders[key].totalInCurrencyFACT +
+        +statsOrders[key].totalInCurrencyDKwithProvodka;
     });
 
     return {

@@ -31,7 +31,9 @@
           class="widget-notes__list-item"
           v-for="(item, ndx) in notesList.slice(0, countToShow)"
           :key="item.id"
-          @click="!item.isProfit && selectRow(item)"
+          @click="
+            !item.isProfit && !item.comment.includes('withB') && selectRow(item)
+          "
         >
           <!-- <div class="widget-notes__list-item-field">
             {{ `${item.id}`.slice(0, 9) }}
@@ -76,7 +78,7 @@
             }}
           </div>
           <div
-            v-if="!item.isProfit"
+            v-if="!item.isProfit && !item.comment.includes('withB')"
             class="widget-notes__list-item-field remove"
             @click.stop="remove(item)"
           ></div>

@@ -283,6 +283,8 @@ export default {
       });
     });
 
+    const notesList = computed(() => store.getters["note/notes"]);
+
     const onSelectOperationType = (ndx) => {
       activeOperationTypesIndex.value = ndx;
     };
@@ -420,7 +422,18 @@ export default {
 
     const removeOrder = async () => {
       loadingRemove.value = true;
+
+      const notesToRemove = [].concat(
+        notesList.value.filter((note) => {
+          return note.comment === props.editOrder?.comment;
+        })
+      );
+
+      for (const note of notesToRemove) {
+        await store.dispatch("dailyNote/removeEntity", note);
+      }
       await store.dispatch("orders/removeOrderEntity", props.editOrder);
+
       loadingRemove.value = false;
       emit("close");
     };

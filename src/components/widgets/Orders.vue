@@ -235,6 +235,7 @@ export default {
     // const ordersList = computed(() => store.getters["orders/orders"]);
     const showFields = computed(() => store.getters["orders/showFields"]);
     const agentNotesList = computed(() => store.getters["agents/notes"]);
+    const notesList = computed(() => store.getters["note/notes"]);
 
     const selectRow = (item) => {
       if (props.editing) {
@@ -304,6 +305,16 @@ export default {
     };
 
     const remove = async (item) => {
+      const notesToRemove = [].concat(
+        notesList.value.filter((note) => {
+          return note.comment === item.comment;
+        })
+      );
+
+      for (const note of notesToRemove) {
+        await store.dispatch("dailyNote/removeEntity", note);
+      }
+
       await store.dispatch("orders/removeOrderEntity", item);
     };
 

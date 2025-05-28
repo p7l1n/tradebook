@@ -21,6 +21,7 @@ export default function useOrders() {
   const customComment = ref("");
   const customNum = ref("");
   const metaInfo = ref("");
+  const comment = ref("");
 
   const inCurrencies = ref(DEFAULT_CURRENCIES);
   const outCurrencies = ref(DEFAULT_CURRENCIES);
@@ -64,6 +65,7 @@ export default function useOrders() {
     rateIn.value = apiData.rate;
     rateAgent.value = apiData.agentRate;
     customComment.value = apiData.customComment;
+    comment.value = apiData.comment;
     customNum.value = apiData.customNum;
     metaInfo.value = apiData.metaInfo;
 
@@ -100,7 +102,7 @@ export default function useOrders() {
       type: activeOperationTypesIndex.value,
       operatorId,
       clientId,
-      comment: "active",
+      comment: comment.value || "active",
 
       agentId: agentId || 0,
       agentCurrencyId: activeAgentcurrenciesIndex.value || 0,
