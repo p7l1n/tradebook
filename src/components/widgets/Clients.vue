@@ -83,7 +83,7 @@
           @click="selectRow(item)"
         >
           <div class="widget-clients__list-item-field strong name">
-            {{ item.name }}
+            {{ checkVinny(item.name) }}
           </div>
           <div class="widget-clients__list-item-field">
             {{ item.telegram }}
@@ -92,7 +92,7 @@
             {{ item.info }}
           </div>
           <div class="widget-clients__list-item-field">
-            {{ item.type }}
+            {{ checkVinny(item.type) }}
           </div>
         </div>
       </div>
@@ -115,6 +115,7 @@ import { getNumFormat } from "@/helpers";
 import CheckGroupButton from "@/components/CheckGroupButton";
 import { CONTRAGENTS } from "@/config/noteTypes";
 import { ElNotification } from "element-plus";
+import { checkVinny } from "@/helpers";
 
 export default {
   components: {
@@ -282,6 +283,7 @@ export default {
       filteredClientsList,
       countIncrement,
       countToShow,
+      checkVinny,
       showMore,
       getNumFormat,
       clearAll,

@@ -18,7 +18,7 @@
         :key="ndx"
       >
         <div class="widget-total__list-item-field long strong">
-          {{ item.client }}
+          {{ checkVinny(item.client) }}
         </div>
         <div
           :class="{
@@ -76,6 +76,7 @@ import useStatsNotes from "@/compositions/useStatsNotes";
 import { toCurrency } from "@/helpers";
 import { sortByKey } from "@/helpers";
 import { computed } from "vue";
+import { checkVinny } from "@/helpers";
 
 export default {
   props: {
@@ -113,6 +114,7 @@ export default {
     return {
       statsList,
       toCurrency,
+      checkVinny,
     };
   },
 };

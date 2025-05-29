@@ -33,6 +33,11 @@ export const isTodayBetweenDates = (date1, date2) => {
   return isSameDay(new Date(date1)) && isSameDay(new Date(date2));
 };
 
+export const checkVinny = (name = "") => {
+  if (name === "Прибыль") return "Винни";
+  return name;
+};
+
 export const parseLongName = (name = "") => {
   if (name === "Прибыль") return "Винни";
   const str = name.split("@")[0];
