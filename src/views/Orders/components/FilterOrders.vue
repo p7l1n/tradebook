@@ -458,6 +458,7 @@ export default {
         metaInfo: "",
       };
 
+      store.dispatch("orders/setStopFetchAll", true); // чтобы после каждого изменения не обновлялось
       // отсеять уже зеленые + не трогать те что выручка тип + отмеченные галочкой
       await Promise.all(
         filteredOrdersList.value
@@ -474,6 +475,7 @@ export default {
             return await store.dispatch("orders/updateOrderEntity", newOrder);
           })
       );
+      store.dispatch("orders/setStopFetchAll", false);
       await store.dispatch("orders/addNewOrderEntity", orderCashout);
       await store.dispatch("orders/fetchOrders");
       cashOutLoading.value = false;
@@ -668,7 +670,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-right: 15px;
+    margin-right: 12px;
   }
 
   &__item-title {

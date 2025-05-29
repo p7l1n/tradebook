@@ -116,6 +116,7 @@ export default {
           order.comment.includes(profitItem.date)
         );
 
+        store.dispatch("orders/setStopFetchAll", true); // чтобы после каждого изменения не обновлялось
         await Promise.all(
           list.map(async (order) => {
             const newOrder = getOrderAPIFormat(order);
@@ -124,6 +125,7 @@ export default {
             return await store.dispatch("orders/updateOrderEntity", newOrder);
           })
         );
+        store.dispatch("orders/setStopFetchAll", false);
         await store.dispatch("orders/fetchOrders");
 
         ElNotification({

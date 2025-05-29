@@ -6,11 +6,13 @@ const types = {
   UPDATE_SHOW_FIELDS: "UPDATE_SHOW_FIELDS",
   SET_FILTER_OPTION: "SET_FILTER_OPTION",
   SET_ORDERS: "SET_ORDERS",
+  SET_STOP_FETCH_ALL: "SET_STOP_FETCH_ALL",
 };
 
 export default {
   namespaced: true,
   state: () => ({
+    stopFetchAll: false,
     filter: {
       searchStr: "",
       status: null,
@@ -69,9 +71,13 @@ export default {
     orders: (state) => state.orders,
     showFields: (state) => state.showFields,
     filter: (state) => state.filter,
+    stopFetchAll: (state) => state.stopFetchAll,
   },
 
   mutations: {
+    [types.SET_STOP_FETCH_ALL](state, value) {
+      state.stopFetchAll = value;
+    },
     [types.SET_FILTER_OPTION](state, { key, value }) {
       state.filter[key] = value;
     },
@@ -86,6 +92,9 @@ export default {
   },
 
   actions: {
+    setStopFetchAll({ commit }, value) {
+      commit(types.SET_STOP_FETCH_ALL, value);
+    },
     setFilterOption({ commit }, { key, value }) {
       commit(types.SET_FILTER_OPTION, { key, value });
     },
@@ -156,12 +165,14 @@ export default {
         return;
       }
     },
-    async updateOrderEntity({ dispatch }, value) {
+    async updateOrderEntity({ getters, dispatch }, value) {
       const data = { ...value };
       if (data.status === false) data.status = 0;
       if (data.status === true) data.status = 1;
       const res = await putQuery(`Orders/${value.id}`, data);
-      await dispatch("fetchOrders");
+      if (!getters.stopFetchAll) {
+        await dispatch("fetchOrders");
+      }
       if (res.error) {
         return;
       }
