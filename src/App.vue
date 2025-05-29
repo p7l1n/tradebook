@@ -1,7 +1,7 @@
 <template>
   <MainMenu v-if="userInfo" />
   <div class="app-version">
-    {{ lastExecutionTime ? `${lastExecutionTime}ms | ` : "" }}p1.1.71
+    {{ lastExecutionTime ? `${lastExecutionTime}ms | ` : "" }}p1.1.72
   </div>
   <div :class="{ isAuth: userInfo }" class="main-app">
     <div v-if="isAuth" class="app-switch-theme">
@@ -49,6 +49,7 @@ export default {
     const organizationId = computed(
       () => store.getters["settings/organizationId"]
     );
+    const stopFetchAll = computed(() => store.getters["orders/stopFetchAll"]);
     const mathStr = ref("");
     const sumCalc = ref("");
     const focused = ref(false);
@@ -105,7 +106,10 @@ export default {
         if (userInfo.value?.jwt) {
           initApp();
           timer.value = setInterval(() => {
-            initApp();
+            // если есть токен, то обновляем и не идет снятие или откат
+            if (userInfo.value?.jwt && !stopFetchAll.value) {
+              initApp();
+            }
           }, 30000);
         }
       }, 500);

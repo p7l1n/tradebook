@@ -670,7 +670,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-right: 15px;
+    margin-right: 12px;
   }
 
   &__item-title {

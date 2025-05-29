@@ -56,9 +56,9 @@
           type="danger"
           :loading="loadingRemove"
           class="base-btn"
-          @click="removeEntity"
+          @click="removeOrders"
         >
-          Удалить кассу
+          Удалить Заявки
         </el-button>
         <el-button
           type="warning"
@@ -87,11 +87,13 @@ export default {
     const loadingRemove = ref(false);
     const loadingEdit = ref(false);
     const loadingDK = ref(false);
+    const loadingOrders = ref(false);
 
     const isRemove = ref(false);
     const organizationsList = computed(
       () => store.getters["settings/organizationsList"]
     );
+    const ordersList = computed(() => store.getters["orders/orders"]);
     const notesList = computed(() => store.getters["note/notes"]);
     const dailyNotesList = computed(() => store.getters["dailyNote/notes"]);
     const organizationId = computed(
@@ -290,24 +292,93 @@ export default {
       loadingRemove.value = false;
     };
 
+    const removeOrders = async () => {
+      loadingOrders.value = true;
+      const BATCH_SIZE = 50;
+
+      const deleteInBatches = async (items) => {
+        const batches = [];
+        for (let i = 0; i < items.length; i += BATCH_SIZE) {
+          batches.push(items.slice(i, i + BATCH_SIZE));
+        }
+
+        for (let i = 0; i < batches.length; i++) {
+          await Promise.all(
+            batches[i].map((order) => deleteQuery(`Orders/${order.id}`))
+          );
+          const progress = Math.round(((i + 1) / batches.length) * 100);
+          ElNotification({
+            title: "Прогресс",
+            message: `Удаление: ${progress}%`,
+            type: "info",
+            duration: 1000,
+          });
+        }
+      };
+
+      try {
+        await deleteInBatches(ordersList.value);
+
+        ElNotification({
+          title: "Касса",
+          message: "Заявки очищены",
+          type: "success",
+        });
+      } catch (error) {
+        ElNotification({
+          title: "Ошибка",
+          message: "Произошла ошибка при удалении",
+          type: "error",
+        });
+      } finally {
+        loadingOrders.value = false;
+        await store.dispatch("orders/fetchOrders");
+      }
+    };
+
     const removeDK = async () => {
       loadingDK.value = true;
-      await Promise.all(
-        notesList.value.map(async (note) => {
-          await deleteQuery(`Notes/${note.id}`);
-        })
-      );
-      await Promise.all(
-        dailyNotesList.value.map(async (note) => {
-          await deleteQuery(`Notes/${note.id}`);
-        })
-      );
-      loadingDK.value = false;
-      ElNotification({
-        title: "Касса",
-        message: "ДК и Тетрадь очищены",
-        type: "warning",
-      });
+      const BATCH_SIZE = 50;
+
+      const deleteInBatches = async (items) => {
+        const batches = [];
+        for (let i = 0; i < items.length; i += BATCH_SIZE) {
+          batches.push(items.slice(i, i + BATCH_SIZE));
+        }
+
+        for (let i = 0; i < batches.length; i++) {
+          await Promise.all(
+            batches[i].map((note) => deleteQuery(`Notes/${note.id}`))
+          );
+          const progress = Math.round(((i + 1) / batches.length) * 100);
+          ElNotification({
+            title: "Прогресс",
+            message: `Удаление: ${progress}%`,
+            type: "info",
+            duration: 1000,
+          });
+        }
+      };
+
+      try {
+        await deleteInBatches(notesList.value);
+        await deleteInBatches(dailyNotesList.value);
+
+        ElNotification({
+          title: "Касса",
+          message: "ДК и Тетрадь очищены",
+          type: "success",
+        });
+      } catch (error) {
+        ElNotification({
+          title: "Ошибка",
+          message: "Произошла ошибка при удалении",
+          type: "error",
+        });
+      } finally {
+        loadingDK.value = false;
+        await store.dispatch("dailyNote/fetchNotes");
+      }
     };
 
     onMounted(async () => {
@@ -324,6 +395,7 @@ export default {
       loadingEdit,
       loadingRemove,
       loadingDK,
+      loadingOrders,
       isRemove,
       organizationId,
       selectedOrganization,
@@ -333,6 +405,7 @@ export default {
       updateEntity,
       removeEntity,
       removeDK,
+      removeOrders,
     };
   },
 };
