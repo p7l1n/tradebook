@@ -258,7 +258,7 @@ export default {
 
 .widget-total {
   width: 100%;
-  max-width: 600px;
+  // max-width: 600px;
   padding: 0;
   display: flex;
   flex-direction: column;

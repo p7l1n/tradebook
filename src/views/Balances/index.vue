@@ -120,7 +120,7 @@ $paddingSmall: 8px;
 .balance-page {
   &__widgets {
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     padding: 0 $paddingLarge;
     box-sizing: border-box;
     display: flex;
@@ -168,7 +168,10 @@ $paddingSmall: 8px;
   display: flex;
   flex-direction: column;
   width: 50%;
-  max-width: 600px;
+  // max-width: 600px;
+  &:last-child {
+    margin-top: -40px;
+  }
 
   @media (max-width: $breakpoint-tablet) {
     width: 100%;
