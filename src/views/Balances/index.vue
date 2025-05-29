@@ -178,7 +178,7 @@ $paddingSmall: 8px;
     max-width: 100%;
 
     &:last-child {
-      margin-top: 0px;
+      margin-top: 10px;
     }
   }
 }
