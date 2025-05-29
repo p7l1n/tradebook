@@ -176,6 +176,10 @@ $paddingSmall: 8px;
   @media (max-width: $breakpoint-tablet) {
     width: 100%;
     max-width: 100%;
+
+    &:last-child {
+      margin-top: -20px;
+    }
   }
 }
 </style>
