@@ -459,22 +459,41 @@ export default {
       };
 
       store.dispatch("orders/setStopFetchAll", true); // чтобы после каждого изменения не обновлялось
-      // отсеять уже зеленые + не трогать те что выручка тип + отмеченные галочкой
-      await Promise.all(
-        filteredOrdersList.value
-          .filter(
-            (order) =>
-              order.status === true &&
-              order.type !== 2 &&
-              !order.comment.includes("payed")
+      const ordersToUpdate = filteredOrdersList.value
+        .filter(
+          (order) =>
+            order.status === true &&
+            order.type !== 2 &&
+            !order.comment.includes("payed")
+        )
+        .map((order) => {
+          const newOrder = getOrderAPIFormat(order);
+          newOrder.comment = `payed${(date - 10800) * 1000}`;
+          newOrder.status = 1;
+          return newOrder;
+        });
+
+      // Батчинг по 50 заказов
+      const batchSize = 50;
+
+      for (let i = 0; i < ordersToUpdate.length; i += batchSize) {
+        const batch = ordersToUpdate.slice(i, i + batchSize);
+
+        ElNotification({
+          title: "Снятие кассы",
+          message: `Обработка ${i + batch.length} из ${
+            ordersToUpdate.length
+          } сделок`,
+          type: "info",
+          duration: 2000,
+        });
+
+        await Promise.all(
+          batch.map((order) =>
+            store.dispatch("orders/updateOrderEntity", order)
           )
-          .map(async (order) => {
-            const newOrder = getOrderAPIFormat(order);
-            newOrder.comment = `payed${(date - 10800) * 1000}`;
-            newOrder.status = 1;
-            return await store.dispatch("orders/updateOrderEntity", newOrder);
-          })
-      );
+        );
+      }
       store.dispatch("orders/setStopFetchAll", false);
       await store.dispatch("orders/addNewOrderEntity", orderCashout);
       await store.dispatch("orders/fetchOrders");
