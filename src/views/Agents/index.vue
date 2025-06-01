@@ -102,26 +102,26 @@ export default {
       return time.getTime() > Date.now();
     };
 
-    const filterOptions = computed(() => store.getters["agents/filter"]);
+    const filterOptions = computed(() => store.getters["dailyNote/filter"]);
 
     const onSelectMenu = (ndx) => {
       activeMenuIndex.value = ndx;
     };
 
     const onSelectDateFrom = (val) => {
-      store.dispatch("agents/setFilterOption", { key: "dateFrom", value: val });
+      store.dispatch("dailyNote/setFilterOption", { key: "from", value: val });
     };
 
     const onSelectDateTo = (val) => {
-      store.dispatch("agents/setFilterOption", { key: "dateTo", value: val });
+      store.dispatch("dailyNote/setFilterOption", { key: "to", value: val });
     };
 
     onMounted(() => {
-      if (filterOptions.value.dateFrom) {
-        dateFrom.value = filterOptions.value.dateFrom;
+      if (filterOptions.value.from) {
+        dateFrom.value = filterOptions.value.from;
       }
-      if (filterOptions.value.dateTo) {
-        dateTo.value = filterOptions.value.dateTo;
+      if (filterOptions.value.to) {
+        dateTo.value = filterOptions.value.to;
       }
     });
 

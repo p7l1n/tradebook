@@ -14,9 +14,10 @@ export default function useStats() {
     notesList.value.concat(agentList.value)
   );
 
-  const initialStats = computed(
-    () => store.getters["settings/organizationBalances"]
-  );
+  // const initialStats = computed(
+  //   () => store.getters["settings/organizationBalances"]
+  // );
+  const initialStats = computed(() => store.getters["stats/stats"]);
 
   const filterOptions = computed(() => store.getters["orders/filter"]);
 
@@ -46,38 +47,6 @@ export default function useStats() {
             ? r.status == true
             : r.status == false ||
               filterOptions.value.cacheIdsForLayer2Filter.includes(r.id) // поверх не ИСП можно выделять исп и видеть их
-      )
-      .filter((r) =>
-        filterOptions.value.client && filterOptions.value.client.length
-          ? filterOptions.value.client.includes(r.client)
-          : true
-      )
-      .filter((r) =>
-        filterOptions.value.customNum && filterOptions.value.customNum.length
-          ? filterOptions.value.customNum.includes(r.customNum)
-          : true
-      )
-      .filter((r) =>
-        filterOptions.value.operator && filterOptions.value.operator.length
-          ? filterOptions.value.operator.includes(r.operator)
-          : true
-      )
-      .filter((r) =>
-        filterOptions.value.inCurrency && filterOptions.value.inCurrency.length
-          ? filterOptions.value.inCurrency.includes(r.inCurrency)
-          : true
-      )
-      .filter((r) =>
-        filterOptions.value.outCurrency &&
-        filterOptions.value.outCurrency.length
-          ? filterOptions.value.outCurrency.includes(r.outCurrency)
-          : true
-      )
-      .filter((r) =>
-        filterOptions.value.date
-          ? +r.date >= +new Date(filterOptions.value.date) &&
-            +r.date < +new Date(filterOptions.value.date) + 86400000
-          : true
       );
   });
 

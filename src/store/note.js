@@ -9,8 +9,8 @@ export default {
   namespaced: true,
   state: () => ({
     filter: {
-      dateFrom: null,
-      dateTo: null,
+      from: null,
+      to: null,
     },
     notes: [],
     profitHistory: [],
@@ -37,8 +37,8 @@ export default {
       commit(types.SET_FILTER_OPTION, { key, value });
     },
     // profit
-    async fetchProfitHistory({ commit }) {
-      const res = await getQuery("ProfitHistory");
+    async fetchProfitHistory({ state, commit }) {
+      const res = await getQuery("ProfitHistory", state.filter);
       if (res && Array.isArray(res)) {
         commit(
           types.ADD_PROFIT_LIST,

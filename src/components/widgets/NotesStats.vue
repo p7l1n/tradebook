@@ -14,8 +14,8 @@
       </div>
       <div
         class="widget-total__list-item"
-        v-for="(item, ndx) in statsList"
-        :key="ndx"
+        v-for="item in statsList"
+        :key="item.client"
       >
         <div class="widget-total__list-item-field long strong">
           {{ checkVinny(item.client) }}
@@ -65,6 +65,14 @@
         >
           {{ toCurrency(item.amounts.WUSD || 0) }}
         </div>
+        <el-button
+          type="warning"
+          class="base-btn"
+          style="margin-left: 10px; width: 80px; height: 24px"
+          @click="reCalculate(item)"
+        >
+          Расчет
+        </el-button>
       </div>
     </div>
   </div>
@@ -76,8 +84,10 @@ import useStatsNotes from "@/compositions/useStatsNotes";
 import { toCurrency } from "@/helpers";
 import { sortByKey } from "@/helpers";
 import { computed } from "vue";
+import { useStore } from "vuex";
 import { checkVinny } from "@/helpers";
-
+import { ElNotification } from "element-plus";
+import { DEFAULT_CURRENCIES_SHORT_MAP } from "@/config/defaultCurrencies";
 export default {
   props: {
     maxWidth: {
@@ -94,10 +104,13 @@ export default {
     },
   },
   setup(props) {
+    const store = useStore();
     const { allStats, allStatsAgents } = useStatsNotes();
+    const contragents = computed(() => store.getters["clients/clients"]);
 
     const statsList = computed(() => {
       const list = props.isAgents ? allStatsAgents.value : allStats.value;
+
       const filteredList = !props.searchStr.length
         ? list
         : list.filter((item) =>
@@ -111,10 +124,47 @@ export default {
       );
     });
 
+    const reCalculate = (item) => {
+      const clientId = contragents.value.find(
+        (c) => c.name === item.client
+      )?.id;
+      if (!clientId) {
+        ElNotification({
+          title: "Ошибка",
+          message: "Контрагент не найден",
+          type: "error",
+        });
+      }
+      Object.keys(item.amounts).forEach(async (key) => {
+        const inCurrencyId = DEFAULT_CURRENCIES_SHORT_MAP[key];
+        const type = item.amounts[key] > 0 ? 0 : 1;
+        const amount = Math.abs(item.amounts[key]);
+        const date = Math.floor((+new Date() + 10800000) / 1000);
+
+        const note = {
+          date,
+          clientId,
+          inCurrencyId,
+          type,
+          amount,
+          category: 1,
+          comment: `расчет`,
+          isProfit: false,
+        };
+        await store.dispatch("dailyNote/addNewEntity", note);
+      });
+      ElNotification({
+        title: "Сводка",
+        message: "Расчет успешно произведен",
+        type: "success",
+      });
+    };
+
     return {
       statsList,
       toCurrency,
       checkVinny,
+      reCalculate,
     };
   },
 };

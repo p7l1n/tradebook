@@ -55,6 +55,7 @@
         @input="onWusdInput"
       />
     </div>
+    <div class="balances-item" @click="addNewCurrency">ADD</div>
   </div>
 </template>
 <script>
@@ -110,6 +111,34 @@ export default {
       });
     };
 
+    const addNewCurrency = () => {
+      store.dispatch("stats/addCurrencies", {
+        name: "RUB",
+        amount: 0,
+        organizationId: 1,
+      });
+      store.dispatch("stats/addCurrencies", {
+        name: "USD",
+        amount: 0,
+        organizationId: 1,
+      });
+      store.dispatch("stats/addCurrencies", {
+        name: "EUR",
+        amount: 0,
+        organizationId: 1,
+      });
+      store.dispatch("stats/addCurrencies", {
+        name: "WUSD",
+        amount: 0,
+        organizationId: 1,
+      });
+      store.dispatch("stats/addCurrencies", {
+        name: "USDT",
+        amount: 0,
+        organizationId: 1,
+      });
+    };
+
     onMounted(() => {
       rubAmount.value = statsStartAmounts.value.RUB;
       usdAmount.value = statsStartAmounts.value.USD;
@@ -119,6 +148,7 @@ export default {
     });
 
     return {
+      addNewCurrency,
       rubAmount,
       usdAmount,
       eurAmount,

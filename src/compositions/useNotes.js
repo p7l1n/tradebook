@@ -7,36 +7,13 @@ export default function useNotes() {
 
   const notesList = computed(() => store.getters["note/notes"]);
   const profitHistory = computed(() => store.getters["note/profitHistory"]);
-  const filterOptions = computed(() => store.getters["note/filter"]);
 
   const filteredNotesList = computed(() => {
-    return notesList.value.filter((r) => {
-      if (filterOptions.value.dateFrom && filterOptions.value.dateTo) {
-        return (
-          +r.date >= +new Date(filterOptions.value.dateFrom) &&
-          +r.date < +new Date(filterOptions.value.dateTo) + 86400000
-        );
-      }
-      if (filterOptions.value.dateFrom && !filterOptions.value.dateTo) {
-        return +r.date >= +new Date(filterOptions.value.dateFrom);
-      }
-      return true;
-    });
+    return notesList.value;
   });
 
   const filteredProfitHistory = computed(() => {
-    return profitHistory.value.filter((r) => {
-      if (filterOptions.value.dateFrom && filterOptions.value.dateTo) {
-        return (
-          +r.date >= +new Date(filterOptions.value.dateFrom) &&
-          +r.date < +new Date(filterOptions.value.dateTo) + 86400000
-        );
-      }
-      if (filterOptions.value.dateFrom && !filterOptions.value.dateTo) {
-        return +r.date >= +new Date(filterOptions.value.dateFrom);
-      }
-      return true;
-    });
+    return profitHistory.value;
   });
 
   const isCashOutedToday = computed(() => {

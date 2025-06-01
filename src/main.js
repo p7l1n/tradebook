@@ -21,7 +21,7 @@ createPersistedState({
     // "note.profitHistory",
     // "note.filter",
     // "dailyNote.notes",
-    // "dailyNote.filter",
+    "dailyNote.filter",
     // "stats.stats",
     "auth.user",
     "settings.organizationsList",

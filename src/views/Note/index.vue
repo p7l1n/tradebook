@@ -287,7 +287,7 @@ export default {
     };
 
     const isLoading = computed(() => store.getters["rates/isLoading"]);
-    const filterOptions = computed(() => store.getters["note/filter"]);
+    const filterOptions = computed(() => store.getters["dailyNote/filter"]);
 
     const onSelectMenu = (ndx) => {
       activeMenuIndex.value = ndx;
@@ -308,11 +308,11 @@ export default {
     };
 
     const onSelectDateFrom = (val) => {
-      store.dispatch("note/setFilterOption", { key: "dateFrom", value: val });
+      store.dispatch("dailyNote/setFilterOption", { key: "from", value: val });
     };
 
     const onSelectDateTo = (val) => {
-      store.dispatch("note/setFilterOption", { key: "dateTo", value: val });
+      store.dispatch("dailyNote/setFilterOption", { key: "to", value: val });
     };
 
     const addNew = async () => {
@@ -380,11 +380,11 @@ export default {
     };
 
     onMounted(() => {
-      if (filterOptions.value.dateFrom) {
-        dateFrom.value = filterOptions.value.dateFrom;
+      if (filterOptions.value.from) {
+        dateFrom.value = filterOptions.value.from;
       }
-      if (filterOptions.value.dateTo) {
-        dateTo.value = filterOptions.value.dateTo;
+      if (filterOptions.value.to) {
+        dateTo.value = filterOptions.value.to;
       }
     });
 

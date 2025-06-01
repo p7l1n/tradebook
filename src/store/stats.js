@@ -53,11 +53,17 @@ export default {
       if (curr && curr.amount === value) return;
       dispatch("updateCurrencies", { ...curr, amount: value });
     },
-    async fetchCurrencies({ dispatch, commit }) {
-      const res = await getQuery("Currencies");
+    async fetchCurrencies({ dispatch, rootGetters, commit }) {
+      const organizationId = rootGetters["settings/organizationId"];
+
+      const res = await getQuery("Currencies", { organizationId });
       if (res && Array.isArray(res)) {
-        commit(types.ADD_CURR_LIST, res);
-        res.forEach((curr) => {
+        const arr = res.filter(
+          (item) => item.organizationId === organizationId
+        );
+        console.log(arr);
+        commit(types.ADD_CURR_LIST, arr);
+        arr.forEach((curr) => {
           dispatch("setAmount", {
             key: curr.name,
             value: curr.amount,

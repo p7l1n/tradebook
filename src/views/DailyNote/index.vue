@@ -956,14 +956,14 @@ export default {
 
     const onSelectDateFrom = (val) => {
       store.dispatch("dailyNote/setFilterOption", {
-        key: "dateFrom",
+        key: "from",
         value: val,
       });
     };
 
     const onSelectDateTo = (val) => {
       store.dispatch("dailyNote/setFilterOption", {
-        key: "dateTo",
+        key: "to",
         value: val,
       });
     };
@@ -1018,11 +1018,11 @@ export default {
     };
 
     onMounted(() => {
-      if (filterOptions.value.dateFrom) {
-        dateFrom.value = filterOptions.value.dateFrom;
+      if (filterOptions.value.from) {
+        dateFrom.value = filterOptions.value.from;
       }
-      if (filterOptions.value.dateTo) {
-        dateTo.value = filterOptions.value.dateTo;
+      if (filterOptions.value.to) {
+        dateTo.value = filterOptions.value.to;
       }
       if (filterOptions.value.activeTabIndex) {
         activeMenuIndex.value = filterOptions.value.activeTabIndex;

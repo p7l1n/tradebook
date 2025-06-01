@@ -3,6 +3,59 @@ import store from "@/store";
 let currentNotification;
 // axios.defaults.withCredentials = true;
 
+const objectToQueryParams = (obj) => {
+  const clientsList = store.getters["clients/clients"];
+  const params = new URLSearchParams();
+
+  const currencyMap = {
+    RUB: 1,
+    USD: 2,
+    EUR: 3,
+    WUSD: 4,
+    USDT: 0,
+  };
+
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== undefined && value !== null) {
+      if (key === "status") {
+        // Преобразуем статус в числовое значение
+        const statusValue =
+          value === "Исполнено" ? 1 : value === "Не исполнено" ? 0 : value;
+        params.append(key, statusValue);
+      } else if (key === "inCurrencyId" || key === "outCurrencyId") {
+        // Преобразуем валюту в числовое значение
+        const currencyValues = Array.isArray(value) ? value : [value];
+        currencyValues.forEach((currency) => {
+          const currencyValue =
+            currencyMap[currency] !== undefined
+              ? currencyMap[currency]
+              : currency;
+          params.append(key, currencyValue);
+        });
+      } else if (Array.isArray(value)) {
+        // Для массивов добавляем каждый элемент отдельно
+        if (key === "clientId" || key === "operatorId") {
+          // Преобразуем имена в ID
+          const ids = value
+            .map((name) => {
+              const client = clientsList.find((c) => c.name === name);
+              return client ? client.id : null;
+            })
+            .filter((id) => id !== null);
+
+          ids.forEach((id) => params.append(key, id));
+        } else {
+          value.forEach((item) => params.append(key, item));
+        }
+      } else {
+        params.append(key, value);
+      }
+    }
+  }
+
+  return params.toString();
+};
+
 const routes = {
   Notes: "Журнал/Тетрадь",
   Clients: "Контрагенты",
@@ -201,10 +254,33 @@ export const getQuery = async (url, params = {}) => {
 
   let res;
   let urlQuery = "";
+  const localParams = { ...params };
+  delete localParams.activeTabIndex;
+  delete localParams.searchStr;
+  delete localParams.showStats;
+  delete localParams.showPayed;
+  delete localParams.date;
+  delete localParams.status;
+  delete localParams.cacheIdsForLayer2Filter;
 
   if (isAdmin) {
-    params.organizationId = organizationId;
-    urlQuery = `?organizationId=${organizationId}`;
+    localParams.organizationId = organizationId;
+  }
+
+  if (localParams.from) {
+    localParams.from = Math.floor(
+      (+new Date(localParams.from) + 10800000) / 1000
+    );
+  }
+
+  if (localParams.to) {
+    localParams.to = Math.floor((+new Date(localParams.to) + 86400000) / 1000);
+  }
+  localParams.pageSize = 100000;
+
+  const queryParamsString = objectToQueryParams(localParams);
+  if (queryParamsString) {
+    urlQuery = `?${queryParamsString}`;
   }
 
   try {

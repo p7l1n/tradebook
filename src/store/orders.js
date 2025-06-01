@@ -17,11 +17,12 @@ export default {
       searchStr: "",
       status: null,
       customNum: null,
-      client: null,
-      operator: null,
-      inCurrency: null,
-      outCurrency: null,
-      date: null,
+      clientId: null,
+      operatorId: null,
+      inCurrencyId: null,
+      outCurrencyId: null,
+      from: null,
+      to: null,
       showStats: true,
       showPayed: true,
       cacheIdsForLayer2Filter: [],
@@ -95,8 +96,9 @@ export default {
     setStopFetchAll({ commit }, value) {
       commit(types.SET_STOP_FETCH_ALL, value);
     },
-    setFilterOption({ commit }, { key, value }) {
+    setFilterOption({ commit, dispatch }, { key, value }) {
       commit(types.SET_FILTER_OPTION, { key, value });
+      dispatch("fetchOrders");
     },
     updateShowFields({ commit }, value) {
       commit(types.UPDATE_SHOW_FIELDS, value);
@@ -104,10 +106,10 @@ export default {
     setVirtualQueue({ commit }, id) {
       commit(types.SET_VIRTUAL_QUEUE_NUM, id);
     },
-    async fetchOrders({ commit, rootGetters }) {
+    async fetchOrders({ state, commit, rootGetters }) {
       const clients = rootGetters["clients/clients"];
 
-      const res = await getQuery("Orders");
+      const res = await getQuery("Orders", state.filter);
       if (res && Array.isArray(res)) {
         commit(
           types.SET_ORDERS,

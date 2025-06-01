@@ -213,7 +213,6 @@ export default {
     const cashOutLoading = ref(false);
     const selectedCustomNum = ref(null);
 
-    const ordersList = computed(() => store.getters["orders/orders"]);
     const filterOptions = computed(() => store.getters["orders/filter"]);
     // const notesList = computed(() => store.getters["note/notes"]);
     const clientsList = computed(() => store.getters["clients/clients"]);
@@ -255,7 +254,7 @@ export default {
     });
 
     const clientItems = computed(() => {
-      return [...new Set(ordersList.value.map((item) => item.client))].map(
+      return [...new Set(clientsList.value.map((item) => item.name))].map(
         (item) => {
           return {
             title: item,
@@ -266,7 +265,7 @@ export default {
     });
 
     const operatorItems = computed(() => {
-      return [...new Set(ordersList.value.map((item) => item.operator))].map(
+      return [...new Set(clientsList.value.map((item) => item.name))].map(
         (item) => {
           return {
             title: item,
@@ -277,40 +276,32 @@ export default {
     });
 
     const customNumItems = computed(() => {
-      return [...new Set(ordersList.value.map((item) => item.customNum))].map(
-        (item) => {
-          return {
-            title: item,
-            value: item,
-          };
-        }
-      );
+      return Array.from({ length: 500 }, (_, i) => i + 1).map((item) => ({
+        title: item,
+        value: item,
+      }));
     });
 
     const currInItems = computed(() => {
-      return [...new Set(ordersList.value.map((item) => item.inCurrency))].map(
-        (item) => {
-          return {
-            title: item,
-            value: item,
-          };
-        }
-      );
+      return ["USDT", "RUB", "USD", "EUR", "WUSD"].map((item) => {
+        return {
+          title: item,
+          value: item,
+        };
+      });
     });
 
     const currOutItems = computed(() => {
-      return [...new Set(ordersList.value.map((item) => item.outCurrency))].map(
-        (item) => {
-          return {
-            title: item,
-            value: item,
-          };
-        }
-      );
+      return ["USDT", "RUB", "USD", "EUR", "WUSD"].map((item) => {
+        return {
+          title: item,
+          value: item,
+        };
+      });
     });
 
     const onSelectDate = (val) => {
-      store.dispatch("orders/setFilterOption", { key: "date", value: val });
+      store.dispatch("orders/setFilterOption", { key: "from", value: val });
     };
 
     const onStatusSelect = (val) => {
@@ -339,23 +330,26 @@ export default {
     };
 
     const onClientSelect = (val) => {
-      store.dispatch("orders/setFilterOption", { key: "client", value: val });
+      store.dispatch("orders/setFilterOption", { key: "clientId", value: val });
     };
 
     const onOperatorSelect = (val) => {
-      store.dispatch("orders/setFilterOption", { key: "operator", value: val });
+      store.dispatch("orders/setFilterOption", {
+        key: "operatorId",
+        value: val,
+      });
     };
 
     const onCurrInSelect = (val) => {
       store.dispatch("orders/setFilterOption", {
-        key: "inCurrency",
+        key: "inCurrencyId",
         value: val,
       });
     };
 
     const onCurrOutSelect = (val) => {
       store.dispatch("orders/setFilterOption", {
-        key: "outCurrency",
+        key: "outCurrencyId",
         value: val,
       });
     };
@@ -529,11 +523,11 @@ export default {
 
     onMounted(() => {
       searchStr.value = filterOptions.value.searchStr;
-      selectedClient.value = filterOptions.value.client;
-      selectedOperator.value = filterOptions.value.operator;
-      selectedDate.value = filterOptions.value.date;
-      selectedCurrIn.value = filterOptions.value.inCurrency;
-      selectedCurrOut.value = filterOptions.value.outCurrency;
+      selectedClient.value = filterOptions.value.clientId;
+      selectedOperator.value = filterOptions.value.operatorId;
+      selectedDate.value = filterOptions.value.from;
+      selectedCurrIn.value = filterOptions.value.inCurrencyId;
+      selectedCurrOut.value = filterOptions.value.outCurrencyId;
       showStats.value = filterOptions.value.showStats;
       showPayed.value = filterOptions.value.showPayed;
       selectedStatus.value = filterOptions.value.status;

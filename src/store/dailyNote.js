@@ -11,8 +11,8 @@ export default {
   namespaced: true,
   state: () => ({
     filter: {
-      dateFrom: null,
-      dateTo: null,
+      from: null,
+      to: null,
       activeTabIndex: 0,
     },
     notes: [],
@@ -33,14 +33,14 @@ export default {
   },
 
   actions: {
-    async fetchNotes({ commit, rootGetters }) {
+    async fetchNotes({ state, commit, rootGetters }) {
       const contragents = rootGetters["clients/clients"];
 
-      const res = await getQuery("Notes");
+      const res = await getQuery("Notes", state.filter);
       if (res && Array.isArray(res)) {
         commit(
           types.SET_NOTES,
-          res.reverse().map((item) => {
+          res.map((item) => {
             return {
               ...item,
               date: item.date * 1000,
@@ -56,8 +56,14 @@ export default {
         return;
       }
     },
-    setFilterOption({ commit }, { key, value }) {
+    setFilterOption({ commit, state, dispatch }, { key, value }) {
       commit(types.SET_FILTER_OPTION, { key, value });
+      if (
+        (state.filter.from && state.filter.to) ||
+        (!state.filter.from && !state.filter.to)
+      ) {
+        dispatch("fetchNotes");
+      }
     },
     async updateEntity({ dispatch }, value) {
       const res = await putQuery(`Notes/${value.id}`, value);
