@@ -498,6 +498,7 @@ export default {
           const newOrder = getOrderAPIFormat(order);
           newOrder.comment = `payed${(date - 10800) * 1000}`;
           newOrder.status = 1;
+          newOrder.customNum = "";
           return newOrder;
         });
 
