@@ -67,7 +67,8 @@ export default {
     onMounted(() => {
       setTimeout(() => {
         const title = ` - ${
-          document.querySelector(".main-menu__items-item.active")?.innerHTML || ""
+          document.querySelector(".main-menu__items-item.active")?.innerHTML ||
+          ""
         }`;
         document.title = `TradeBook${title}`;
       }, 1000);
