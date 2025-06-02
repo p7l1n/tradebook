@@ -167,7 +167,7 @@ $paddingSmall: 8px;
 .col {
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 80%;
   // max-width: 600px;
   &:last-child {
     margin-top: -40px;

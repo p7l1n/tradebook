@@ -7,7 +7,7 @@
         :key="ndx"
         active-class="active"
         class="main-menu__items-item"
-        @click="closeMobileMenu"
+        @click="closeMobileMenu(item)"
       >
         {{ item.title }}
       </router-link>
@@ -57,13 +57,20 @@ export default {
       isMobileMenuOpen.value = !isMobileMenuOpen.value;
     };
 
-    const closeMobileMenu = () => {
+    const closeMobileMenu = (item) => {
+      document.title = `TradeBook - ${item.title}`;
       if (isMobile.value) {
         isMobileMenuOpen.value = false;
       }
     };
 
     onMounted(() => {
+      setTimeout(() => {
+        const title = ` - ${
+          document.querySelector(".main-menu__items-item.active")?.innerHTML || ""
+        }`;
+        document.title = `TradeBook${title}`;
+      }, 1000);
       window.addEventListener("resize", handleResize);
     });
 
