@@ -37,6 +37,13 @@ export default function useStats() {
           : true;
       })
       .filter((r) =>
+        filterOptions.value.showAgents == null
+          ? true
+          : filterOptions.value.showAgents === "Да"
+          ? r.agentId > 0
+          : false
+      )
+      .filter((r) =>
         filterOptions.value.showPayed ? true : !r.comment.includes("payed")
       )
       .filter(

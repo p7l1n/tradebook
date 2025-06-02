@@ -257,6 +257,7 @@ export const getQuery = async (url, params = {}) => {
   const localParams = { ...params };
   delete localParams.activeTabIndex;
   delete localParams.searchStr;
+  delete localParams.showAgents;
   delete localParams.showStats;
   delete localParams.showPayed;
   delete localParams.date;

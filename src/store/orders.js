@@ -24,6 +24,7 @@ export default {
       from: null,
       to: null,
       showStats: true,
+      showAgents: null,
       showPayed: true,
       cacheIdsForLayer2Filter: [],
       pageSize: 100000,

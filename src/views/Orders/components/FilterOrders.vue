@@ -147,6 +147,24 @@
           />
         </el-select>
       </div>
+      <div class="filter-orders__item">
+        <div class="filter-orders__item-title">Только с посредником</div>
+        <el-select
+          v-model="selectedWithAgent"
+          clearable
+          filterable
+          placeholder="Да/Нет"
+          style="width: 170px"
+          @change="onWithAgentSelect"
+        >
+          <el-option
+            v-for="item in agentsItems"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </div>
     </div>
     <div class="filter-orders__section row">
       <div v-if="false" class="cashouted">Касса снята</div>
@@ -212,6 +230,7 @@ export default {
     const currentDate = ref(null);
     const cashOutLoading = ref(false);
     const selectedCustomNum = ref(null);
+    const selectedWithAgent = ref(null);
 
     const filterOptions = computed(() => store.getters["orders/filter"]);
     // const notesList = computed(() => store.getters["note/notes"]);
@@ -244,6 +263,14 @@ export default {
       },
     ]);
 
+    const agentsItems = computed(() => {
+      return ["Да"].map((item) => {
+        return {
+          title: item,
+          value: item,
+        };
+      });
+    });
     const statusItems = computed(() => {
       return ["Исполнено", "Не исполнено"].map((item) => {
         return {
@@ -299,6 +326,13 @@ export default {
         };
       });
     });
+
+    const onWithAgentSelect = (val) => {
+      store.dispatch("orders/setFilterOption", {
+        key: "showAgents",
+        value: val,
+      });
+    };
 
     const onSelectDate = (val) => {
       store.dispatch("orders/setFilterOption", { key: "from", value: val });
@@ -532,6 +566,7 @@ export default {
       showPayed.value = filterOptions.value.showPayed;
       selectedStatus.value = filterOptions.value.status;
       selectedCustomNum.value = filterOptions.value.customNum;
+      selectedWithAgent.value = filterOptions.value.showAgents;
 
       currentDate.value = new Date();
     });
@@ -548,12 +583,13 @@ export default {
       selectedCurrIn,
       selectedCurrOut,
       selectedCustomNum,
-
+      selectedWithAgent,
       clientItems,
       operatorItems,
       customNumItems,
       currInItems,
       currOutItems,
+      agentsItems,
       showStats,
       showPayed,
       showCashOut,
@@ -571,6 +607,7 @@ export default {
       onOperatorSelect,
       onCurrInSelect,
       onCurrOutSelect,
+      onWithAgentSelect,
       onChangeStats,
       onChangePayed,
       onCustomNumSelect,
@@ -596,7 +633,7 @@ export default {
   &__export {
     position: absolute;
     right: 0;
-    top: 65px;
+    top: 85px;
 
     @media (max-width: $breakpoint-tablet) {
       position: static;
