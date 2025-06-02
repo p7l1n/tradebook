@@ -61,7 +61,7 @@ export default {
         const arr = res.filter(
           (item) => item.organizationId === organizationId
         );
-        console.log(arr);
+
         commit(types.ADD_CURR_LIST, arr);
         arr.forEach((curr) => {
           dispatch("setAmount", {

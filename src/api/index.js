@@ -263,6 +263,13 @@ export const getQuery = async (url, params = {}) => {
   delete localParams.status;
   delete localParams.cacheIdsForLayer2Filter;
 
+  if (["Журнал/Тетрадь", "Заявки"].includes(routes[url.split("/")[0]])) {
+    if (!isAdmin) {
+      // удалить параметры для обычноых юзеров и остальных справочников
+      delete localParams.organizationId;
+    }
+  }
+
   if (isAdmin) {
     localParams.organizationId = organizationId;
   }
@@ -276,7 +283,6 @@ export const getQuery = async (url, params = {}) => {
   if (localParams.to) {
     localParams.to = Math.floor((+new Date(localParams.to) + 86400000) / 1000);
   }
-  localParams.pageSize = 100000;
 
   const queryParamsString = objectToQueryParams(localParams);
   if (queryParamsString) {

@@ -26,6 +26,7 @@ export default {
       showStats: true,
       showPayed: true,
       cacheIdsForLayer2Filter: [],
+      pageSize: 100000,
     },
     showFields: {
       id: {

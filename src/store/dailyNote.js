@@ -13,6 +13,7 @@ export default {
     filter: {
       from: null,
       to: null,
+      pageSize: 100000,
       activeTabIndex: 0,
     },
     notes: [],
