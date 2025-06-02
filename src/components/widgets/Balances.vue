@@ -55,7 +55,7 @@
         @input="onWusdInput"
       />
     </div>
-    <div class="balances-item" @click="addNewCurrency">ADD</div>
+    <div v-if="false" class="balances-item" @click="addNewCurrency">ADD</div>
   </div>
 </template>
 <script>
@@ -111,31 +111,58 @@ export default {
       });
     };
 
-    const addNewCurrency = () => {
-      store.dispatch("stats/addCurrencies", {
+    const addNewCurrency = async () => {
+      // city
+      await store.dispatch("stats/addCurrencies", {
         name: "RUB",
-        amount: 0,
+        amount: 70000000,
         organizationId: 1,
       });
-      store.dispatch("stats/addCurrencies", {
+      await store.dispatch("stats/addCurrencies", {
         name: "USD",
-        amount: 0,
+        amount: 700000,
         organizationId: 1,
       });
-      store.dispatch("stats/addCurrencies", {
+      await store.dispatch("stats/addCurrencies", {
         name: "EUR",
-        amount: 0,
+        amount: 500000,
         organizationId: 1,
       });
-      store.dispatch("stats/addCurrencies", {
+      await store.dispatch("stats/addCurrencies", {
         name: "WUSD",
         amount: 0,
         organizationId: 1,
       });
-      store.dispatch("stats/addCurrencies", {
+      await store.dispatch("stats/addCurrencies", {
         name: "USDT",
-        amount: 0,
+        amount: 1105000,
         organizationId: 1,
+      });
+      // sport
+      await store.dispatch("stats/addCurrencies", {
+        name: "RUB",
+        amount: 30000000,
+        organizationId: 2,
+      });
+      await store.dispatch("stats/addCurrencies", {
+        name: "USD",
+        amount: 350000,
+        organizationId: 2,
+      });
+      await store.dispatch("stats/addCurrencies", {
+        name: "EUR",
+        amount: 250000,
+        organizationId: 2,
+      });
+      await store.dispatch("stats/addCurrencies", {
+        name: "WUSD",
+        amount: 0,
+        organizationId: 2,
+      });
+      await store.dispatch("stats/addCurrencies", {
+        name: "USDT",
+        amount: 300000,
+        organizationId: 2,
       });
     };
 

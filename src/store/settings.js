@@ -14,6 +14,7 @@ export default {
     organizationsList: [],
     organizationBalances: {
       1: {
+        // сити
         start: {
           RUB: 70000000,
           USD: 700000,
@@ -23,6 +24,7 @@ export default {
         },
       },
       2: {
+        // спорт
         start: {
           RUB: 30000000,
           USD: 350000,
