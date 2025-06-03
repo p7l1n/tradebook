@@ -62,6 +62,8 @@ export default function useStatsNotes() {
     return Array.from(map.values());
   });
 
+  console.log("STATS FRONT", allStats.value, allStatsAgents.value);
+
   return {
     allStats,
     allStatsAgents,

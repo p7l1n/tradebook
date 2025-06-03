@@ -271,6 +271,15 @@ export const getQuery = async (url, params = {}) => {
     }
   }
 
+  if (
+    [
+      "Notes/aggregate-by-client-currency",
+      "Notes/aggregate-by-currency",
+    ].includes(url)
+  ) {
+    localParams.organizationId = organizationId;
+  }
+
   if (isAdmin) {
     localParams.organizationId = organizationId;
   }

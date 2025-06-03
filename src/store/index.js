@@ -9,6 +9,7 @@ import auth from "./auth";
 import agents from "./agents";
 import settings from "./settings";
 import claims from "./claims";
+import noteStats from "./noteStats";
 
 export default createStore({
   state: {},
@@ -26,5 +27,6 @@ export default createStore({
     agents,
     settings,
     claims,
+    noteStats,
   },
 });
