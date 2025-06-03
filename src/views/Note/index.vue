@@ -288,6 +288,9 @@ export default {
 
     const isLoading = computed(() => store.getters["rates/isLoading"]);
     const filterOptions = computed(() => store.getters["dailyNote/filter"]);
+    const startCurrenciesIndexFromSelectorId = computed(
+      () => store.getters["stats/startCurrenciesIndexFromSelectorId"]
+    );
 
     const onSelectMenu = (ndx) => {
       activeMenuIndex.value = ndx;
@@ -336,7 +339,9 @@ export default {
         date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value,
-        inCurrencyId: activeIncurrenciesIndex.value,
+        inCurrencyId: startCurrenciesIndexFromSelectorId.value(
+          activeIncurrenciesIndex.value
+        ),
         amount: amount.value,
         comment: comment.value,
         isProfit: false,

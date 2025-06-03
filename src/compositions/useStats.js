@@ -10,6 +10,7 @@ export default function useStats() {
   const notesList = computed(() => store.getters["note/notes"]);
   const agentList = computed(() => store.getters["agents/notes"]);
   const dailyNotesList = computed(() => store.getters["dailyNote/notes"]);
+
   const notesWithAgentsList = computed(() =>
     notesList.value.concat(agentList.value)
   );

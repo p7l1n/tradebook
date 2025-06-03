@@ -237,6 +237,10 @@ export default {
 
     const loading = ref(false);
 
+    const startCurrenciesIndexFromSelectorId = computed(
+      () => store.getters["stats/startCurrenciesIndexFromSelectorId"]
+    );
+
     const defaultContragent = computed(() => store.getters["auth/user"]?.sub);
     selectedOperator.value = defaultContragent.value;
 
@@ -407,13 +411,20 @@ export default {
         operatorId, // selectedOperator.value,
         clientId, // selectedClient.value,
         agentId: agentId || 0,
-        agentCurrencyId: activeAgentcurrenciesIndex.value || 0,
+        agentCurrencyId:
+          startCurrenciesIndexFromSelectorId.value(
+            activeAgentcurrenciesIndex.value
+          ) || 0,
         agentAmount: amountAgent.value || 0,
         agentRate: rateAgent.value || 0,
-        inCurrencyId: activeIncurrenciesIndex.value, // inCurrencies.value[activeIncurrenciesIndex.value],
+        inCurrencyId: startCurrenciesIndexFromSelectorId.value(
+          activeIncurrenciesIndex.value
+        ), // inCurrencies.value[activeIncurrenciesIndex.value],
         inAmount: +amountIn.value,
         rate: rateIn.value,
-        outCurrencyId: activeOutcurrenciesIndex.value, // outCurrencies.value[activeOutcurrenciesIndex.value],
+        outCurrencyId: startCurrenciesIndexFromSelectorId.value(
+          activeOutcurrenciesIndex.value
+        ), // outCurrencies.value[activeOutcurrenciesIndex.value],
         outAmount: +amountOut.value,
         status: 0,
         customComment: customComment.value || "",

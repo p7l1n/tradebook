@@ -87,7 +87,7 @@ import { computed } from "vue";
 import { useStore } from "vuex";
 import { checkVinny } from "@/helpers";
 import { ElNotification } from "element-plus";
-import { DEFAULT_CURRENCIES_SHORT_MAP } from "@/config/defaultCurrencies";
+
 export default {
   props: {
     maxWidth: {
@@ -107,6 +107,9 @@ export default {
     const store = useStore();
     const { allStats, allStatsAgents } = useStatsNotes();
     const contragents = computed(() => store.getters["clients/clients"]);
+    const startCurrenciesIndexes = computed(
+      () => store.getters["stats/startCurrenciesIndexes"]
+    );
 
     const statsList = computed(() => {
       const list = props.isAgents ? allStatsAgents.value : allStats.value;
@@ -136,7 +139,7 @@ export default {
         });
       }
       Object.keys(item.amounts).forEach(async (key) => {
-        const inCurrencyId = DEFAULT_CURRENCIES_SHORT_MAP[key];
+        const inCurrencyId = startCurrenciesIndexes.value[key];
         const type = item.amounts[key] > 0 ? 0 : 1;
         const amount = Math.abs(item.amounts[key]);
         const date = Math.floor((+new Date() + 10800000) / 1000);

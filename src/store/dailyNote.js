@@ -1,5 +1,4 @@
 import { postQuery, getQuery, putQuery, deleteQuery } from "@/api";
-import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
 import { getNoteTypeFromIndex } from "@/config/noteTypes";
 
 const types = {
@@ -36,6 +35,11 @@ export default {
   actions: {
     async fetchNotes({ state, commit, rootGetters }) {
       const contragents = rootGetters["clients/clients"];
+      const startCurrenciesIndexes =
+        rootGetters["stats/startCurrenciesIndexes"];
+      const invertedObj = Object.fromEntries(
+        Object.entries(startCurrenciesIndexes).map(([k, v]) => [v, k])
+      );
 
       const res = await getQuery("Notes", state.filter);
       if (res && Array.isArray(res)) {
@@ -46,7 +50,7 @@ export default {
               ...item,
               date: item.date * 1000,
               type: getNoteTypeFromIndex(item.type),
-              inCurrency: DEFAULT_CURRENCIES[item.inCurrencyId],
+              inCurrency: invertedObj[item.inCurrencyId],
               client:
                 contragents.find((c) => c.id === item.clientId)?.name || "???",
             };

@@ -631,6 +631,9 @@ export default {
     const amountWusd = ref("");
     const commentWusd = ref("");
     const loadingWusd = ref(false);
+    const startCurrenciesIndexes = computed(
+      () => store.getters["stats/startCurrenciesIndexes"]
+    );
 
     const addWUSD = async () => {
       if (!amountWusd.value) {
@@ -657,7 +660,7 @@ export default {
         date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value,
-        inCurrencyId: 4,
+        inCurrencyId: startCurrenciesIndexes.value["WUSD"],
         amount: amountWusd.value > 0 ? amountWusd.value : -amountWusd.value,
         comment: commentWusd.value,
         isProfit: false,
@@ -695,7 +698,7 @@ export default {
         date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value,
-        inCurrencyId: 3,
+        inCurrencyId: startCurrenciesIndexes.value["EUR"],
         amount: amountEur.value > 0 ? amountEur.value : -amountEur.value,
         comment: commentEur.value,
         isProfit: false,
@@ -733,7 +736,7 @@ export default {
         date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value,
-        inCurrencyId: 2,
+        inCurrencyId: startCurrenciesIndexes.value["USD"],
         amount: amountDol.value > 0 ? amountDol.value : -amountDol.value,
         comment: commentDol.value,
         isProfit: false,
@@ -773,7 +776,7 @@ export default {
         date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value,
-        inCurrencyId: 0,
+        inCurrencyId: startCurrenciesIndexes.value["USDT"],
         amount: amounUsd.value > 0 ? amounUsd.value : -amounUsd.value,
         comment: commentUsd.value,
         isProfit: false,
@@ -811,7 +814,7 @@ export default {
         date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value,
-        inCurrencyId: 1,
+        inCurrencyId: startCurrenciesIndexes.value["RUB"],
         amount: amountRub.value > 0 ? amountRub.value : -amountRub.value,
         comment: commentRub.value,
         isProfit: false,

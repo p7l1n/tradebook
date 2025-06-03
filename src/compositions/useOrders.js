@@ -33,6 +33,10 @@ export default function useOrders() {
     ORDER_TYPES.trade,
   ]);
 
+  const startCurrenciesIndexFromSelectorId = computed(
+    () => store.getters["stats/startCurrenciesIndexFromSelectorId"]
+  );
+
   const operatorList = computed(() =>
     store.getters["clients/clients"].filter(
       (item) => item.type === CONTRAGENTS.operator
@@ -105,14 +109,21 @@ export default function useOrders() {
       comment: comment.value || "active",
 
       agentId: agentId || 0,
-      agentCurrencyId: activeAgentcurrenciesIndex.value || 0,
+      agentCurrencyId:
+        startCurrenciesIndexFromSelectorId.value(
+          activeAgentcurrenciesIndex.value
+        ) || 0,
       agentAmount: +amountAgent.value || 0,
       agentRate: +rateAgent.value || 0,
 
-      inCurrencyId: activeIncurrenciesIndex.value,
+      inCurrencyId: startCurrenciesIndexFromSelectorId.value(
+        activeIncurrenciesIndex.value
+      ),
       inAmount: +amountIn.value,
       rate: rateIn.value,
-      outCurrencyId: activeOutcurrenciesIndex.value,
+      outCurrencyId: startCurrenciesIndexFromSelectorId.value(
+        activeOutcurrenciesIndex.value
+      ),
       outAmount: +amountOut.value,
       status: apiData.status,
       customComment: apiData.customComment,

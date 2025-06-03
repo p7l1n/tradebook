@@ -13,6 +13,14 @@ export default {
   state: () => ({
     currencies: [],
     stats: {
+      startDefaultControlCurrencies: {
+        1: "RUB",
+        2: "USD",
+        3: "EUR",
+        0: "USDT",
+        4: "WUSD",
+      },
+      startCurrenciesIndexes: {},
       start: {
         RUB: 0,
         USD: 0,
@@ -25,11 +33,17 @@ export default {
 
   getters: {
     stats: (state) => state.stats,
+    startCurrenciesIndexes: (state) => state.stats.startCurrenciesIndexes,
+    startCurrenciesIndexFromSelectorId: (state) => (id) => {
+      const label = state.stats.startDefaultControlCurrencies[id];
+      return state.stats.startCurrenciesIndexes[label];
+    },
   },
 
   mutations: {
-    [types.SET_AMOUNT](state, { key, value }) {
+    [types.SET_AMOUNT](state, { key, value, id }) {
       state.stats.start[key] = value;
+      state.stats.startCurrenciesIndexes[key] = id;
     },
     [types.ADD_CURR_LIST](state, value) {
       state.currencies = value;
@@ -44,16 +58,17 @@ export default {
         return;
       }
     },
-    setAmount({ state, dispatch }, { key, value, initial }) {
+    setAmount({ state, dispatch }, { key, value, initial, id }) {
       if (initial) {
         state.stats.start[key] = value;
+        state.stats.startCurrenciesIndexes[key] = id;
         return;
       }
       const curr = state.currencies.find((item) => item.name === key);
       if (curr && curr.amount === value) return;
       dispatch("updateCurrencies", { ...curr, amount: value });
     },
-    async fetchCurrencies({ dispatch, rootGetters, commit }) {
+    async fetchCurrencies({ state, dispatch, rootGetters, commit }) {
       const organizationId = rootGetters["settings/organizationId"];
 
       const res = await getQuery("Currencies", { organizationId });
@@ -68,9 +83,11 @@ export default {
             key: curr.name,
             value: curr.amount,
             initial: true,
+            id: curr.id,
           });
         });
       }
+      console.log("INDEXES", state.stats.startCurrenciesIndexes);
       if (res.error) {
         return;
       }

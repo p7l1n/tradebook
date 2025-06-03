@@ -168,6 +168,9 @@ export default {
     const fixedRates = []; // ["RUB", "USD", "EUR"];
 
     const ratesList = computed(() => store.getters["rates/rates"]);
+    const startCurrenciesIndexes = computed(
+      () => store.getters["stats/startCurrenciesIndexes"]
+    );
 
     const clearAll = () => {
       selectedItem.value = null;
@@ -197,14 +200,6 @@ export default {
       points.value = selectedItem.value.points;
     };
 
-    const getIndexOfTitle = (title) => {
-      if (title === "RUB") return 1;
-      if (title === "USD") return 2;
-      if (title === "USDT") return 5;
-      if (title === "EUR") return 3;
-      if (title === "WUSD") return 4;
-    };
-
     const updateEntity = async () => {
       loading.value = true;
       if (isEditing.value) {
@@ -217,7 +212,7 @@ export default {
           spreadSell: +spreadSell.value,
           apiKey: apiKey.value,
           points: points.value,
-          inCurrencyId: getIndexOfTitle(title.value),
+          inCurrencyId: startCurrenciesIndexes.value[title.value],
         });
         loading.value = false;
         // clearAll();
@@ -251,20 +246,6 @@ export default {
       store.dispatch("rates/setUpdateFromServer", val);
     };
 
-    const update = async () => {
-      await store.dispatch("rates/addRateEntity", {
-        title: "USDT",
-        buy: 0,
-        sell: 0,
-        spreadBuy: 0,
-        spreadSell: 0,
-        apiKey: "usdt",
-        points: 3,
-        inCurrencyId: 5,
-        organizationId: 5,
-      });
-    };
-
     onMounted(async () => {
       selectRow(ratesList.value["RUB"]);
     });
@@ -293,7 +274,6 @@ export default {
       onCheckUpdatePrice,
       numberFormatter,
       numberParser,
-      update,
     };
   },
 };

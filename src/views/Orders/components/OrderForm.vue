@@ -284,6 +284,9 @@ export default {
     });
 
     const notesList = computed(() => store.getters["note/notes"]);
+    const startCurrenciesIndexFromSelectorId = computed(
+      () => store.getters["stats/startCurrenciesIndexFromSelectorId"]
+    );
 
     const onSelectOperationType = (ndx) => {
       activeOperationTypesIndex.value = ndx;
@@ -394,17 +397,24 @@ export default {
           date: Math.floor((props.editOrder.date + 10800000) / 1000),
           comment: props.editOrder.comment || "active",
           agentId: agentId || 0,
-          agentCurrencyId: activeAgentcurrenciesIndex.value || 0,
+          agentCurrencyId:
+            startCurrenciesIndexFromSelectorId.value(
+              activeAgentcurrenciesIndex.value
+            ) || 0,
           agentAmount: amountAgent.value || 0,
           agentRate: rateAgent.value || 0,
 
           type: activeOperationTypesIndex.value, // operationTypes.value[activeOperationTypesIndex.value],
           operatorId, // : selectedOperator.value,
           clientId, // selectedClient.value,
-          inCurrencyId: activeIncurrenciesIndex.value, // inCurrencies.value[activeIncurrenciesIndex.value],
+          inCurrencyId: startCurrenciesIndexFromSelectorId.value(
+            activeIncurrenciesIndex.value
+          ), // inCurrencies.value[activeIncurrenciesIndex.value],
           inAmount: +amountIn.value,
           rate: rateIn.value,
-          outCurrencyId: activeOutcurrenciesIndex.value, // outCurrencies.value[activeOutcurrenciesIndex.value],
+          outCurrencyId: startCurrenciesIndexFromSelectorId.value(
+            activeOutcurrenciesIndex.value
+          ), // outCurrencies.value[activeOutcurrenciesIndex.value],
           outAmount: +amountOut.value,
           status: props.editOrder.status,
           customComment: customComment.value,

@@ -115,7 +115,9 @@ export default {
     const inCurrencies = ref(DEFAULT_CURRENCIES);
 
     const amount = ref("");
-
+    const startCurrenciesIndexFromSelectorId = computed(
+      () => store.getters["stats/startCurrenciesIndexFromSelectorId"]
+    );
     const clientsList = computed(() => store.getters["clients/clients"]);
     const clientItems = computed(() => {
       return [
@@ -166,7 +168,9 @@ export default {
           type: activeOperationTypesIndex.value,
           clientId: findClient?.id,
           comment: comment.value,
-          inCurrencyId: activeIncurrenciesIndex.value,
+          inCurrencyId: startCurrenciesIndexFromSelectorId.value(
+            activeIncurrenciesIndex.value
+          ),
           amount: amount.value,
           category: props.editNote.category,
         };
@@ -186,7 +190,9 @@ export default {
         date: Math.floor((+new Date() + 10800000) / 1000),
         clientId: findClient?.id,
         type: activeOperationTypesIndex.value,
-        inCurrencyId: activeIncurrenciesIndex.value,
+        inCurrencyId: startCurrenciesIndexFromSelectorId.value(
+          activeIncurrenciesIndex.value
+        ),
         amount: amount.value,
         comment: comment.value,
         isProfit: false,

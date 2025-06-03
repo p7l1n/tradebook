@@ -1,5 +1,4 @@
 import { postQuery, getQuery, putQuery, deleteQuery } from "@/api";
-import { DEFAULT_CURRENCIES } from "@/config/defaultCurrencies";
 import { getOrderTypeFromIndex } from "@/config/orderTypes";
 
 const types = {
@@ -110,6 +109,11 @@ export default {
     },
     async fetchOrders({ state, commit, rootGetters }) {
       const clients = rootGetters["clients/clients"];
+      const startCurrenciesIndexes =
+        rootGetters["stats/startCurrenciesIndexes"];
+      const invertedObj = Object.fromEntries(
+        Object.entries(startCurrenciesIndexes).map(([k, v]) => [v, k])
+      );
 
       const res = await getQuery("Orders", state.filter);
       if (res && Array.isArray(res)) {
@@ -151,14 +155,14 @@ export default {
                 date: item.date * 1000,
                 status: item.status === 0 ? false : true,
                 type: getOrderTypeFromIndex(item.type),
-                inCurrency: DEFAULT_CURRENCIES[item.inCurrencyId],
-                outCurrency: DEFAULT_CURRENCIES[item.outCurrencyId],
+                inCurrency: invertedObj[item.inCurrencyId],
+                outCurrency: invertedObj[item.outCurrencyId],
                 client:
                   clients.find((c) => c.id === item.clientId)?.name || "???",
                 operator:
                   clients.find((c) => c.id === item.operatorId)?.name || "???",
                 agent: clients.find((c) => c.id === item.agentId)?.name || "",
-                agentCurrency: DEFAULT_CURRENCIES[item.agentCurrencyId],
+                agentCurrency: invertedObj[item.agentCurrencyId],
                 kassaAmountIn,
                 kassaAmountOut,
               };

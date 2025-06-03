@@ -236,6 +236,10 @@ export default {
     // const notesList = computed(() => store.getters["note/notes"]);
     const clientsList = computed(() => store.getters["clients/clients"]);
 
+    const startCurrenciesIndexes = computed(
+      () => store.getters["stats/startCurrenciesIndexes"]
+    );
+
     const disabledDate = (time) => {
       return time.getTime() > Date.now();
     };
@@ -445,7 +449,7 @@ export default {
         date,
         type: 1, // NOTE_TYPES.credit,
         clientId,
-        inCurrencyId: 0, // usdt
+        inCurrencyId: startCurrenciesIndexes.value["USDT"], // usdt
         amount: profitSum,
         comment: NOTE_COMMENT_TYPES.cashOut,
         category: 1,
@@ -470,15 +474,15 @@ export default {
         type: 2,
         operatorId,
         clientId: clientCashId,
-        inCurrencyId: 0,
+        inCurrencyId: startCurrenciesIndexes.value["USDT"],
         inAmount: 0,
-        outCurrencyId: 0,
+        outCurrencyId: startCurrenciesIndexes.value["USDT"],
         outAmount: profitSum,
         rate: 0,
         status: 1,
         comment: `payed${(date - 10800) * 1000}`,
         agentId: 0,
-        agentCurrencyId: 0,
+        agentCurrencyId: startCurrenciesIndexes.value["USDT"],
         agentAmount: 0,
         agentRate: 0,
         customComment: "",
