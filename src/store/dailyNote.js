@@ -33,7 +33,7 @@ export default {
   },
 
   actions: {
-    async fetchNotes({ state, commit, rootGetters }) {
+    async fetchNotes({ state, commit, rootGetters, dispatch }) {
       const contragents = rootGetters["clients/clients"];
       const startCurrenciesIndexes =
         rootGetters["stats/startCurrenciesIndexes"];
@@ -56,6 +56,8 @@ export default {
             };
           })
         );
+        dispatch("noteStats/fetchDkStats", {}, { root: true });
+        dispatch("noteStats/fetchAgentsStats", {}, { root: true });
       }
       if (res.error) {
         return;

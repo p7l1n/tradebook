@@ -15,6 +15,21 @@ export default {
   getters: {
     dkStats: (state) => state.dkStats,
     agentsStats: (state) => state.agentsStats,
+    combinedAgentsStats: (state) => {
+      const combined = {
+        client: "Посредники",
+        amounts: {},
+      };
+
+      state.agentsStats.forEach((agent) => {
+        Object.entries(agent.amounts).forEach(([currency, amount]) => {
+          combined.amounts[currency] =
+            (combined.amounts[currency] || 0) + amount;
+        });
+      });
+
+      return combined;
+    },
   },
 
   mutations: {

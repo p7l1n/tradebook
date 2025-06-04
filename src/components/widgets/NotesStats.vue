@@ -66,6 +66,7 @@
           {{ toCurrency(item.amounts.WUSD || 0) }}
         </div>
         <el-button
+          v-if="!isAgents"
           type="warning"
           class="base-btn"
           style="margin-left: 10px; width: 80px; height: 24px"
@@ -78,9 +79,6 @@
   </div>
 </template>
 <script>
-// import { computed } from "vue";
-// import { useStore } from "vuex";
-import useStatsNotes from "@/compositions/useStatsNotes";
 import { toCurrency } from "@/helpers";
 import { sortByKey } from "@/helpers";
 import { computed } from "vue";
@@ -105,14 +103,23 @@ export default {
   },
   setup(props) {
     const store = useStore();
-    const { allStats, allStatsAgents } = useStatsNotes();
     const contragents = computed(() => store.getters["clients/clients"]);
     const startCurrenciesIndexes = computed(
       () => store.getters["stats/startCurrenciesIndexes"]
     );
 
+    const dkStats = computed(() => store.getters["noteStats/dkStats"]);
+    const agentsStats = computed(() => store.getters["noteStats/agentsStats"]);
+
+    const combinedAgentsStats = computed(
+      () => store.getters["noteStats/combinedAgentsStats"]
+    );
+
+    const dkCombinedStats = computed(() => {
+      return [combinedAgentsStats.value].concat(dkStats.value);
+    });
     const statsList = computed(() => {
-      const list = props.isAgents ? allStatsAgents.value : allStats.value;
+      const list = props.isAgents ? agentsStats.value : dkCombinedStats.value;
 
       const filteredList = !props.searchStr.length
         ? list
