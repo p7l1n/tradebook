@@ -107,7 +107,7 @@ export default {
     setVirtualQueue({ commit }, id) {
       commit(types.SET_VIRTUAL_QUEUE_NUM, id);
     },
-    async fetchOrders({ state, commit, rootGetters }) {
+    async fetchOrders({ state, commit, rootGetters, dispatch }) {
       const clients = rootGetters["clients/clients"];
       const startCurrenciesIndexes =
         rootGetters["stats/startCurrenciesIndexes"];
@@ -168,6 +168,7 @@ export default {
               };
             })
         );
+        await dispatch("noteStats/fetchKassaStats", {}, { root: true });
       }
       if (res.error) {
         return;

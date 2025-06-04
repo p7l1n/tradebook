@@ -65,7 +65,8 @@ export default {
       await store.dispatch("orders/fetchOrders");
       await store.dispatch("settings/fetchOrganizations");
       await store.dispatch("noteStats/fetchDkStats");
-      await store.dispatch("noteStats/fetchAgentsStats");
+      // await store.dispatch("noteStats/fetchAgentsStats");
+      await store.dispatch("noteStats/fetchKassaStats");
       // await store.dispatch("noteStats/fetchAllStats");
       if (isAdmin.value) {
         await store.dispatch("claims/fetchClaimList");

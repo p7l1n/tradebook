@@ -1,8 +1,10 @@
 import { getQuery } from "@/api";
+import ElNotification from "element-plus";
 
 const types = {
   SET_DK_STATS: "SET_DK_STATS",
   SET_AGENTS_STATS: "SET_AGENTS_STATS",
+  SET_KASSA_STATS: "SET_KASSA_STATS",
 };
 
 export default {
@@ -10,9 +12,16 @@ export default {
   state: () => ({
     dkStats: [],
     agentsStats: [],
+    kassaStats: [],
   }),
 
   getters: {
+    profitUsdt: (state) => {
+      return Object.values(state.kassaStats).reduce((acc, curr) => {
+        return acc + (curr.totalInUSDT || 0);
+      }, 0);
+    },
+    kassaStats: (state) => state.kassaStats,
     dkStats: (state) => state.dkStats,
     agentsStats: (state) => state.agentsStats,
     combinedAgentsStats: (state) => {
@@ -33,6 +42,9 @@ export default {
   },
 
   mutations: {
+    [types.SET_KASSA_STATS](state, value) {
+      state.kassaStats = value;
+    },
     [types.SET_DK_STATS](state, value) {
       state.dkStats = value;
     },
@@ -64,10 +76,14 @@ export default {
             return acc;
           }, {}),
         }));
-        console.log("STATS API DK", stats);
         commit(types.SET_DK_STATS, stats);
       }
       if (res.error) {
+        ElNotification({
+          title: "Ошибка загрузки статистики ДК",
+          message: res.error,
+          type: "error",
+        });
         return;
       }
     },
@@ -93,10 +109,40 @@ export default {
             return acc;
           }, {}),
         }));
-        console.log("STATS API AGENT", stats);
         commit(types.SET_AGENTS_STATS, stats);
       }
       if (res.error) {
+        ElNotification({
+          title: "Ошибка загрузки статистики посредников",
+          message: res.error,
+          type: "error",
+        });
+        return;
+      }
+    },
+    async fetchKassaStats({ rootGetters, commit, getters }) {
+      const organizationId = rootGetters["settings/organizationId"];
+      const res = await getQuery("Notes/cashier-withdrawal", {
+        organizationId,
+      });
+      if (res && Array.isArray(res)) {
+        const stats = res.reduce((acc, curr) => {
+          const { name, ...rest } = curr;
+          acc[name] = rest;
+          return acc;
+        }, {});
+        console.log("STATS API KASSA", stats);
+        setTimeout(() => {
+          console.log("PROFIT USDT", getters.profitUsdt);
+        }, 1000);
+        commit(types.SET_KASSA_STATS, stats);
+      }
+      if (res.error) {
+        ElNotification({
+          title: "Ошибка загрузки статистики",
+          message: res.error,
+          type: "error",
+        });
         return;
       }
     },
