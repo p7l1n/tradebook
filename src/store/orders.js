@@ -120,7 +120,6 @@ export default {
         commit(
           types.SET_ORDERS,
           res
-            .reverse()
             // .filter((item) => item.comment !== "payed")
             .map((item) => {
               // calc in
