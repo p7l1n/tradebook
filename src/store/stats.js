@@ -68,7 +68,7 @@ export default {
       if (curr && curr.amount === value) return;
       dispatch("updateCurrencies", { ...curr, amount: value });
     },
-    async fetchCurrencies({ state, dispatch, rootGetters, commit }) {
+    async fetchCurrencies({ dispatch, rootGetters, commit }) {
       const organizationId = rootGetters["settings/organizationId"];
 
       const res = await getQuery("Currencies", { organizationId });
@@ -87,7 +87,7 @@ export default {
           });
         });
       }
-      console.log("INDEXES", state.stats.startCurrenciesIndexes);
+
       if (res.error) {
         return;
       }

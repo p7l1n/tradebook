@@ -275,7 +275,7 @@ export const getQuery = async (url, params = {}) => {
     [
       "Notes/aggregate-by-client-currency",
       "Notes/aggregate-by-currency",
-      "Notes/cashier-withdrawal",
+      "Logic/get-stats",
     ].includes(url)
   ) {
     localParams.organizationId = organizationId;

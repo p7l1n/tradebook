@@ -125,9 +125,9 @@ export default {
         return;
       }
     },
-    async fetchKassaStats({ rootGetters, commit, getters }) {
+    async fetchKassaStats({ rootGetters, commit }) {
       const organizationId = rootGetters["settings/organizationId"];
-      const res = await getQuery("Notes/cashier-withdrawal", {
+      const res = await getQuery("Logic/get-stats", {
         organizationId,
       });
       if (res && Array.isArray(res)) {
@@ -142,14 +142,10 @@ export default {
             (stats[key].totalInCurrencyStart || 0) +
             (stats[key].totalInCurrencyAll || 0) +
             (stats[key].totalInCurrencyDK || 0) +
+            // (stats[key].totalInUSDTAll || 0) +
             (stats[key].totalInCurrencyDailyNotes || 0);
         });
 
-        console.log("STATS API KASSA", stats);
-        setTimeout(() => {
-          console.log("PROFIT USDT", getters.profitUsdt);
-          console.log("PROFIT USDT ALL", getters.profitUsdtAll);
-        }, 1000);
         commit(types.SET_KASSA_STATS, stats);
       }
       if (res.error) {

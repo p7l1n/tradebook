@@ -265,67 +265,122 @@
         <div class="widget-total__list-item-field label">Ф + Балансовые ДК</div>
         <div
           :class="{
-            red: allStats?.statsOrders?.RUB?.totalInCurrencyFACT2 < 0,
-            green: allStats?.statsOrders?.RUB?.totalInCurrencyFACT2 >= 0,
+            red:
+              allStats?.statsOrders?.RUB?.totalInCurrencyFACTAll +
+                allStats?.statsOrders?.RUB?.totalInCurrencyDKwithProvodka <
+              0,
+            green:
+              allStats?.statsOrders?.RUB?.totalInCurrencyFACTAll +
+                allStats?.statsOrders?.RUB?.totalInCurrencyDKwithProvodka >=
+              0,
           }"
           class="widget-total__list-item-field"
         >
           {{
-            !allStats?.statsOrders?.RUB?.totalInCurrencyFACT2
-              ? 0
-              : toCurrency(allStats?.statsOrders?.RUB?.totalInCurrencyFACT2)
+            !allStats?.statsOrders?.RUB?.totalInCurrencyDKwithProvodka
+              ? toCurrency(
+                  allStats?.statsOrders?.RUB?.totalInCurrencyFACTAll || 0
+                )
+              : toCurrency(
+                  allStats?.statsOrders?.RUB?.totalInCurrencyFACTAll +
+                    allStats?.statsOrders?.RUB?.totalInCurrencyDKwithProvodka
+                )
           }}
         </div>
         <div
           :class="{
-            red: allStats?.statsOrders?.USD?.totalInCurrencyFACT2 < 0,
-            green: allStats?.statsOrders?.USD?.totalInCurrencyFACT2 >= 0,
+            red:
+              allStats?.statsOrders?.USD?.totalInCurrencyFACTAll +
+                allStats?.statsOrders?.USD?.totalInCurrencyDKwithProvodka <
+              0,
+            green:
+              allStats?.statsOrders?.USD?.totalInCurrencyFACTAll +
+                allStats?.statsOrders?.USD?.totalInCurrencyDKwithProvodka >=
+              0,
           }"
           class="widget-total__list-item-field"
         >
           {{
-            !allStats?.statsOrders?.USD?.totalInCurrencyFACT2
-              ? 0
-              : toCurrency(allStats?.statsOrders?.USD?.totalInCurrencyFACT2)
+            !allStats?.statsOrders?.USD?.totalInCurrencyDKwithProvodka
+              ? toCurrency(
+                  allStats?.statsOrders?.USD?.totalInCurrencyFACTAll || 0
+                )
+              : toCurrency(
+                  allStats?.statsOrders?.USD?.totalInCurrencyFACTAll +
+                    allStats?.statsOrders?.USD?.totalInCurrencyDKwithProvodka
+                )
           }}
         </div>
         <div
           :class="{
-            red: allStats?.statsOrders?.EUR?.totalInCurrencyFACT2 < 0,
-            green: allStats?.statsOrders?.EUR?.totalInCurrencyFACT2 >= 0,
+            red:
+              allStats?.statsOrders?.EUR?.totalInCurrencyFACTAll +
+                allStats?.statsOrders?.EUR?.totalInCurrencyDKwithProvodka <
+              0,
+            green:
+              allStats?.statsOrders?.EUR?.totalInCurrencyFACTAll +
+                allStats?.statsOrders?.EUR?.totalInCurrencyDKwithProvodka >=
+              0,
           }"
           class="widget-total__list-item-field"
         >
           {{
-            !allStats?.statsOrders?.EUR?.totalInCurrencyFACT2
-              ? 0
-              : toCurrency(allStats?.statsOrders?.EUR?.totalInCurrencyFACT2)
+            !allStats?.statsOrders?.EUR?.totalInCurrencyDKwithProvodka
+              ? toCurrency(
+                  allStats?.statsOrders?.EUR?.totalInCurrencyFACTAll || 0
+                )
+              : toCurrency(
+                  allStats?.statsOrders?.EUR?.totalInCurrencyFACTAll +
+                    allStats?.statsOrders?.EUR?.totalInCurrencyDKwithProvodka
+                )
           }}
         </div>
         <div
           :class="{
-            red: allStats?.statsOrders?.WUSD?.totalInCurrencyFACT2 < 0,
-            green: allStats?.statsOrders?.WUSD?.totalInCurrencyFACT2 >= 0,
+            red:
+              allStats?.statsOrders?.WUSD?.totalInCurrencyFACTAll +
+                allStats?.statsOrders?.WUSD?.totalInCurrencyDKwithProvodka <
+              0,
+            green:
+              allStats?.statsOrders?.WUSD?.totalInCurrencyFACTAll +
+                allStats?.statsOrders?.WUSD?.totalInCurrencyDKwithProvodka >=
+              0,
           }"
           class="widget-total__list-item-field"
         >
           {{
-            !allStats?.statsOrders?.WUSD?.totalInCurrencyFACT2
-              ? 0
-              : toCurrency(allStats?.statsOrders?.WUSD?.totalInCurrencyFACT2)
+            !allStats?.statsOrders?.WUSD?.totalInCurrencyDKwithProvodka
+              ? toCurrency(
+                  allStats?.statsOrders?.WUSD?.totalInCurrencyFACTAll || 0
+                )
+              : toCurrency(
+                  +allStats?.statsOrders?.WUSD?.totalInCurrencyFACTAll +
+                    +allStats?.statsOrders?.WUSD?.totalInCurrencyDKwithProvodka
+                )
           }}
         </div>
         <div
           :class="{
-            red: allStats?.statsOrders?.USDT?.totalInCurrencyFACT2 < 0,
-            green: allStats?.statsOrders?.USDT?.totalInCurrencyFACT2 >= 0,
+            red:
+              allStats?.statsOrders?.USDT?.totalInCurrencyFACTAll +
+                allStats?.statsOrders?.USDT?.totalInCurrencyDKwithProvodka <
+              0,
+            green:
+              allStats?.statsOrders?.USDT?.totalInCurrencyFACTAll +
+                allStats?.statsOrders?.USDT?.totalInCurrencyDKwithProvodka >=
+              0,
           }"
           class="widget-total__list-item-field"
         >
           {{
-            !allStats?.statsOrders?.USDT?.totalInCurrencyFACT2
-              ? 0
-              : toCurrency(allStats?.statsOrders?.USDT?.totalInCurrencyFACT2)
+            !allStats?.statsOrders?.USDT?.totalInCurrencyDKwithProvodka
+              ? toCurrency(
+                  allStats?.statsOrders?.USDT?.totalInCurrencyFACTAll || 0
+                )
+              : toCurrency(
+                  allStats?.statsOrders?.USDT?.totalInCurrencyFACTAll +
+                    allStats?.statsOrders?.USDT?.totalInCurrencyDKwithProvodka
+                )
           }}
         </div>
       </div>
