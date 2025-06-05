@@ -214,7 +214,8 @@ import {
 
 export default {
   setup() {
-    const { profitUsdt, filteredOrdersList } = useStats();
+    const { filteredOrdersList } = useStats();
+    const profitUsdt = computed(() => store.getters["noteStats/profitUsdt"]);
     const { getOrderAPIFormat } = useOrders();
     const { isCashOutedToday } = useNotes();
     const store = useStore();

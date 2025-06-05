@@ -21,6 +21,11 @@ export default {
         return acc + (curr.totalInUSDT || 0);
       }, 0);
     },
+    profitUsdtAll: (state) => {
+      return Object.values(state.kassaStats).reduce((acc, curr) => {
+        return acc + (curr.totalInUSDTAll || 0);
+      }, 0);
+    },
     kassaStats: (state) => state.kassaStats,
     dkStats: (state) => state.dkStats,
     agentsStats: (state) => state.agentsStats,
@@ -43,7 +48,7 @@ export default {
 
   mutations: {
     [types.SET_KASSA_STATS](state, value) {
-      state.kassaStats = value;
+      state.kassaStats = { ...state.kassaStats, ...value };
     },
     [types.SET_DK_STATS](state, value) {
       state.dkStats = value;
@@ -131,9 +136,19 @@ export default {
           acc[name] = rest;
           return acc;
         }, {});
+
+        Object.keys(stats).forEach((key) => {
+          stats[key].totalInCurrencyFACTAll =
+            (stats[key].totalInCurrencyStart || 0) +
+            (stats[key].totalInCurrencyAll || 0) +
+            (stats[key].totalInCurrencyDK || 0) +
+            (stats[key].totalInCurrencyDailyNotes || 0);
+        });
+
         console.log("STATS API KASSA", stats);
         setTimeout(() => {
           console.log("PROFIT USDT", getters.profitUsdt);
+          console.log("PROFIT USDT ALL", getters.profitUsdtAll);
         }, 1000);
         commit(types.SET_KASSA_STATS, stats);
       }

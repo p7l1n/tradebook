@@ -13,7 +13,7 @@
         <div class="widget-total__list-item-field strong">USDT</div>
       </div>
       <!-- строка журнал -->
-      <div class="widget-total__list-item">
+      <div v-if="!isInactive" class="widget-total__list-item">
         <div class="widget-total__list-item-field label">Журнал</div>
         <div
           :class="{
@@ -61,6 +61,55 @@
           {{ toCurrency(allStats?.statsOrders?.USDT?.totalInCurrency) }}
         </div>
       </div>
+      <!-- строка журнал (неактивные) -->
+      <div v-if="isInactive" class="widget-total__list-item">
+        <div class="widget-total__list-item-field label">Журнал</div>
+        <div
+          :class="{
+            red: allStats?.statsOrders?.RUB?.totalInCurrencyAll < 0,
+            green: allStats?.statsOrders?.RUB?.totalInCurrencyAll >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{ toCurrency(allStats?.statsOrders?.RUB?.totalInCurrencyAll) }}
+        </div>
+        <div
+          :class="{
+            red: allStats?.statsOrders?.USD?.totalInCurrencyAll < 0,
+            green: allStats?.statsOrders?.USD?.totalInCurrencyAll >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{ toCurrency(allStats?.statsOrders?.USD?.totalInCurrencyAll) }}
+        </div>
+        <div
+          :class="{
+            red: allStats?.statsOrders?.EUR?.totalInCurrencyAll < 0,
+            green: allStats?.statsOrders?.EUR?.totalInCurrencyAll >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{ toCurrency(allStats?.statsOrders?.EUR?.totalInCurrencyAll) }}
+        </div>
+        <div
+          :class="{
+            red: allStats?.statsOrders?.WUSD?.totalInCurrencyAll < 0,
+            green: allStats?.statsOrders?.WUSD?.totalInCurrencyAll >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{ toCurrency(allStats?.statsOrders?.WUSD?.totalInCurrencyAll) }}
+        </div>
+        <div
+          :class="{
+            red: allStats?.statsOrders?.USDT?.totalInCurrencyAll < 0,
+            green: allStats?.statsOrders?.USDT?.totalInCurrencyAll >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{ toCurrency(allStats?.statsOrders?.USDT?.totalInCurrencyAll) }}
+        </div>
+      </div>
       <!-- строка прибыль -->
       <div class="widget-total__list-item">
         <div class="widget-total__list-item-field label">Винни</div>
@@ -69,11 +118,11 @@
         <div class="widget-total__list-item-field"></div>
         <div class="widget-total__list-item-field"></div>
         <div class="widget-total__list-item-field strong">
-          {{ toCurrency(profitUsdt) }}
+          {{ toCurrency(profitUsdtValue) }}
         </div>
       </div>
-      <!-- строка факт -->
-      <div class="widget-total__list-item">
+      <!-- строка факт АКТИВ-->
+      <div v-if="!isInactive" class="widget-total__list-item">
         <div class="widget-total__list-item-field label">Факт</div>
         <div
           :class="{
@@ -141,6 +190,76 @@
           }}
         </div>
       </div>
+      <!-- Строка факт (неактивные) -->
+      <div v-if="isInactive" class="widget-total__list-item">
+        <div class="widget-total__list-item-field label">Факт</div>
+        <div
+          :class="{
+            red: allStats?.statsOrders?.RUB?.totalInCurrencyFACTAll < 0,
+            green: allStats?.statsOrders?.RUB?.totalInCurrencyFACTAll >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{
+            !allStats?.statsOrders?.RUB?.totalInCurrencyFACTAll
+              ? 0
+              : toCurrency(allStats?.statsOrders?.RUB?.totalInCurrencyFACTAll)
+          }}
+        </div>
+        <div
+          :class="{
+            red: allStats?.statsOrders?.USD?.totalInCurrencyFACTAll < 0,
+            green: allStats?.statsOrders?.USD?.totalInCurrencyFACTAll >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{
+            !allStats?.statsOrders?.USD?.totalInCurrencyFACTAll
+              ? 0
+              : toCurrency(allStats?.statsOrders?.USD?.totalInCurrencyFACTAll)
+          }}
+        </div>
+        <div
+          :class="{
+            red: allStats?.statsOrders?.EUR?.totalInCurrencyFACTAll < 0,
+            green: allStats?.statsOrders?.EUR?.totalInCurrencyFACTAll >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{
+            !allStats?.statsOrders?.EUR?.totalInCurrencyFACTAll
+              ? 0
+              : toCurrency(allStats?.statsOrders?.EUR?.totalInCurrencyFACTAll)
+          }}
+        </div>
+        <div
+          :class="{
+            red: allStats?.statsOrders?.WUSD?.totalInCurrencyFACTAll < 0,
+            green: allStats?.statsOrders?.WUSD?.totalInCurrencyFACTAll >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{
+            !allStats?.statsOrders?.WUSD?.totalInCurrencyFACTAll
+              ? 0
+              : toCurrency(allStats?.statsOrders?.WUSD?.totalInCurrencyFACTAll)
+          }}
+        </div>
+        <div
+          :class="{
+            red: allStats?.statsOrders?.USDT?.totalInCurrencyFACTAll < 0,
+            green: allStats?.statsOrders?.USDT?.totalInCurrencyFACTAll >= 0,
+          }"
+          class="widget-total__list-item-field"
+        >
+          {{
+            !allStats?.statsOrders?.USDT?.totalInCurrencyFACTAll
+              ? 0
+              : toCurrency(allStats?.statsOrders?.USDT?.totalInCurrencyFACTAll)
+          }}
+        </div>
+      </div>
+
       <!-- строка факт2 -->
       <div v-if="isInactive" class="widget-total__list-item">
         <div class="widget-total__list-item-field label">Ф + Балансовые ДК</div>
@@ -216,7 +335,7 @@
 <script>
 import { computed } from "vue";
 import { useStore } from "vuex";
-import useStats from "@/compositions/useStats";
+
 import { toCurrency } from "@/helpers";
 
 export default {
@@ -232,21 +351,25 @@ export default {
   },
   setup(props) {
     const store = useStore();
-    const { allStats, profitUsdt, allStatsInactive, profitUsdtInactive } =
-      useStats();
 
+    const profitUsdt = computed(() => store.getters["noteStats/profitUsdt"]);
+    const profitUsdtAll = computed(
+      () => store.getters["noteStats/profitUsdtAll"]
+    );
+    const kassaStats = computed(() => store.getters["noteStats/kassaStats"]);
     const ratesList = computed(() => store.getters["rates/rates"]);
-    const stats = computed(() => {
-      return props.isInactive ? allStatsInactive.value : allStats.value;
+
+    const allStats = computed(() => {
+      return { statsOrders: kassaStats.value };
     });
 
-    const profit = computed(() => {
-      return props.isInactive ? profitUsdtInactive.value : profitUsdt.value;
+    const profitUsdtValue = computed(() => {
+      return !props.isInactive ? profitUsdt.value : profitUsdtAll.value;
     });
     return {
       ratesList,
-      allStats: stats,
-      profitUsdt: profit,
+      allStats,
+      profitUsdtValue,
       toCurrency,
     };
   },

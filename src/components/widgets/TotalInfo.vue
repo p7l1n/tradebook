@@ -15,8 +15,8 @@
       </div>
       <div
         class="widget-total__list-item"
-        v-for="(item, key, ndx) in allStats.statsOrders"
-        :key="ndx"
+        v-for="(item, key, ndx) in allStats"
+        :key="item.currencyId"
       >
         <div class="widget-total__list-item-field strong">{{ key }}</div>
         <div class="widget-total__list-item-field">
@@ -98,7 +98,6 @@
 <script>
 import { computed } from "vue";
 import { useStore } from "vuex";
-import useStats from "@/compositions/useStats";
 import { toCurrency } from "@/helpers";
 
 export default {
@@ -110,13 +109,15 @@ export default {
   },
   setup() {
     const store = useStore();
-    const { allStats, profitUsdt } = useStats();
+
+    const profitUsdt = computed(() => store.getters["noteStats/profitUsdt"]);
+    const allStats = computed(() => store.getters["noteStats/kassaStats"]);
 
     const ratesList = computed(() => store.getters["rates/rates"]);
     const totalInCurrencyFACTwu = computed(() => {
       return (
-        allStats.value.statsOrders?.USD?.totalInCurrencyFACTwu +
-        allStats.value.statsOrders?.WUSD?.totalInCurrencyFACTwu
+        allStats.value?.USD?.totalInCurrencyFACT +
+        allStats.value?.WUSD?.totalInCurrencyFACT
       );
     });
 

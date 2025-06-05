@@ -12,7 +12,7 @@ export default {
     filter: {
       from: null,
       to: null,
-      pageSize: 100000,
+      pageSize: 1000,
       activeTabIndex: 0,
     },
     notes: [],
