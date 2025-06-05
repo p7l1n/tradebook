@@ -395,7 +395,10 @@ export default {
         const newOrderEntity = {
           id: props.editOrder.id,
           date: Math.floor((props.editOrder.date + 10800000) / 1000),
-          comment: props.editOrder.comment || "active",
+          comment:
+            props.editOrder.comment === "active"
+              ? "edited"
+              : props.editOrder.comment || "active",
           agentId: agentId || 0,
           agentCurrencyId:
             startCurrenciesIndexFromSelectorId.value(

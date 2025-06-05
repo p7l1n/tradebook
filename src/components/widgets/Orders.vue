@@ -73,6 +73,7 @@
           :class="{
             editing: editing && ids.includes(item.id),
             payed: item?.comment?.includes('payed'),
+            edited: item?.comment?.includes('edited'),
             disabled: loading && processingId === item.id,
           }"
           class="widget-orders__list-item"
@@ -428,6 +429,10 @@ export default {
 
     &.editing {
       background-color: $colorSelected;
+    }
+
+    &.edited {
+      background-color: $colorEdited;
     }
 
     &.payed {

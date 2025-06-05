@@ -20,10 +20,12 @@
   --color-input-wrap: #746f6f21;
   --color-selected: #ccc;
   --payed-color: #d4e3d5;
+  --color-edited: #d3bdbd;
   --bg-main-color: #e5e5e5;
 }
 
 body.dark {
+  --color-edited: #7a5240;
   --panel-color: #2a2929;
   --panel-color-secondary: #23222294;
   --panel-color-light: rgb(51, 52, 53);
@@ -66,4 +68,5 @@ $lightRed: var(--light-red);
 $colorInputWrap: var(--color-input-wrap);
 $colorSelected: var(--color-selected);
 $payedColor: var(--payed-color);
+$colorEdited: var(--color-edited);
 $bgMainColor: var(--bg-main-color);
