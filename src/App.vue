@@ -55,19 +55,24 @@ export default {
     const focused = ref(false);
     const lastExecutionTime = ref(null);
 
-    const initApp = async () => {
+    const initApp = async (strongOnly) => {
       const startTime = performance.now();
-      await store.dispatch("stats/fetchCurrencies");
-      await store.dispatch("rates/fetchRates");
-      await store.dispatch("clients/fetchContragents");
-      await store.dispatch("dailyNote/fetchNotes");
-      await store.dispatch("note/fetchProfitHistory");
-      await store.dispatch("orders/fetchOrders");
-      await store.dispatch("settings/fetchOrganizations");
-      await store.dispatch("noteStats/fetchDkStats");
-      // await store.dispatch("noteStats/fetchAgentsStats");
-      await store.dispatch("noteStats/fetchKassaStats");
-      // await store.dispatch("noteStats/fetchAllStats");
+      if (strongOnly) {
+        await store.dispatch("clients/fetchContragents");
+        await store.dispatch("dailyNote/fetchNotes");
+        await store.dispatch("orders/fetchOrders");
+      } else {
+        await store.dispatch("stats/fetchCurrencies");
+        await store.dispatch("rates/fetchRates");
+        await store.dispatch("clients/fetchContragents");
+        await store.dispatch("dailyNote/fetchNotes");
+        await store.dispatch("note/fetchProfitHistory");
+        await store.dispatch("orders/fetchOrders");
+        await store.dispatch("settings/fetchOrganizations");
+        // await store.dispatch("noteStats/fetchDkStats");
+        // await store.dispatch("noteStats/fetchAgentsStats");
+        // await store.dispatch("noteStats/fetchKassaStats");
+      }
       if (isAdmin.value) {
         await store.dispatch("claims/fetchClaimList");
       }
@@ -112,7 +117,7 @@ export default {
           timer.value = setInterval(() => {
             // если есть токен, то обновляем и не идет снятие или откат
             if (userInfo.value?.jwt && !stopFetchAll.value) {
-              initApp();
+              initApp(true);
             }
           }, 30000);
         }
