@@ -166,6 +166,7 @@ export default {
                 kassaAmountOut,
               };
             })
+            .sort((a, b) => b.id - a.id)
         );
         await dispatch("noteStats/fetchKassaStats", {}, { root: true });
       }
