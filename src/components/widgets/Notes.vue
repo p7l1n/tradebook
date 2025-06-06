@@ -78,7 +78,11 @@
             }}
           </div>
           <div
-            v-if="!item.isProfit && !item.comment.includes('withB')"
+            v-if="
+              item.id !== processingId &&
+              !item.isProfit &&
+              !item.comment.includes('withB')
+            "
             class="widget-notes__list-item-field remove"
             @click.stop="remove(item)"
           ></div>
@@ -135,6 +139,7 @@ export default {
     const selectedItem = ref(null);
     const loading = ref(false);
     const activeRemoveNdx = ref(-1);
+    const processingId = ref(null);
 
     const notesList = computed(() => {
       const search = props.searchStr.toLowerCase();
@@ -168,7 +173,9 @@ export default {
     };
 
     const remove = async (item) => {
+      processingId.value = item.id;
       await store.dispatch("dailyNote/removeEntity", item);
+      processingId.value = null;
     };
 
     const updateEntity = async (item, ndx) => {
@@ -198,6 +205,7 @@ export default {
       countIncrement,
       countToShow,
       isAdmin,
+      processingId,
       getNumFormat,
       selectRow,
       remove,

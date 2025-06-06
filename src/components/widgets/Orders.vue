@@ -168,7 +168,10 @@
             }}
           </div>
           <div
-            v-show="isAdmin || !item?.comment?.includes('payed')"
+            v-show="
+              processingId !== item.id &&
+              (isAdmin || !item?.comment?.includes('payed'))
+            "
             class="widget-orders__list-item-field remove"
             @click.stop="remove(item)"
           ></div>
@@ -306,6 +309,7 @@ export default {
     };
 
     const remove = async (item) => {
+      processingId.value = item.id;
       const notesToRemove = [].concat(
         notesList.value.filter((note) => {
           return note.comment === item.comment;
@@ -317,6 +321,7 @@ export default {
       }
 
       await store.dispatch("orders/removeOrderEntity", item);
+      processingId.value = null;
     };
 
     const getAmountIn = (item) => {
