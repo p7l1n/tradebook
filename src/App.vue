@@ -1,7 +1,7 @@
 <template>
   <MainMenu v-if="userInfo" />
   <div class="app-version">
-    {{ lastExecutionTime ? `${lastExecutionTime}ms | ` : "" }}p1.2.3
+    {{ lastExecutionTime ? `${lastExecutionTime}ms | ` : "" }}p1.2.4
   </div>
   <div :class="{ isAuth: userInfo }" class="main-app">
     <div v-if="isAuth" class="app-switch-theme">
@@ -60,12 +60,14 @@ export default {
       if (strongOnly) {
         await store.dispatch("clients/fetchContragents");
         await store.dispatch("dailyNote/fetchNotes");
+        await store.dispatch("dailyNote/fetchOnlyDailyNotes");
         await store.dispatch("orders/fetchOrders");
       } else {
         await store.dispatch("stats/fetchCurrencies");
         await store.dispatch("rates/fetchRates");
         await store.dispatch("clients/fetchContragents");
         await store.dispatch("dailyNote/fetchNotes");
+        await store.dispatch("dailyNote/fetchOnlyDailyNotes");
         await store.dispatch("note/fetchProfitHistory");
         await store.dispatch("orders/fetchOrders");
         await store.dispatch("settings/fetchOrganizations");

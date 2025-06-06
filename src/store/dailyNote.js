@@ -4,6 +4,7 @@ import { getNoteTypeFromIndex } from "@/config/noteTypes";
 const types = {
   SET_FILTER_OPTION: "SET_FILTER_OPTION",
   SET_NOTES: "SET_NOTES",
+  SET_ONLY_DAILY_NOTES: "SET_ONLY_DAILY_NOTES",
 };
 
 export default {
@@ -16,14 +17,19 @@ export default {
       activeTabIndex: 0,
     },
     notes: [],
+    onlyDailyNotes: [],
   }),
 
   getters: {
     filter: (state) => state.filter,
     notes: (state) => state.notes.filter((c) => c.category === 0), // 0 daily
+    onlyDailyNotes: (state) => state.onlyDailyNotes,
   },
 
   mutations: {
+    [types.SET_ONLY_DAILY_NOTES](state, value) {
+      state.onlyDailyNotes = value;
+    },
     [types.SET_NOTES](state, value) {
       state.notes = value;
     },
@@ -33,6 +39,34 @@ export default {
   },
 
   actions: {
+    async fetchOnlyDailyNotes({ commit, rootGetters }) {
+      const contragents = rootGetters["clients/clients"];
+      const startCurrenciesIndexes =
+        rootGetters["stats/startCurrenciesIndexes"];
+      const invertedObj = Object.fromEntries(
+        Object.entries(startCurrenciesIndexes).map(([k, v]) => [v, k])
+      );
+
+      const res = await getQuery("Notes", { category: 0, pageSize: 1000 });
+      if (res && Array.isArray(res)) {
+        commit(
+          types.SET_ONLY_DAILY_NOTES,
+          res.map((item) => {
+            return {
+              ...item,
+              date: item.date * 1000,
+              type: getNoteTypeFromIndex(item.type),
+              inCurrency: invertedObj[item.inCurrencyId],
+              client:
+                contragents.find((c) => c.id === item.clientId)?.name || "???",
+            };
+          })
+        );
+      }
+      if (res.error) {
+        return;
+      }
+    },
     async fetchNotes({ state, commit, rootGetters, dispatch }) {
       const contragents = rootGetters["clients/clients"];
       const startCurrenciesIndexes =
