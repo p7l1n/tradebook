@@ -33,8 +33,7 @@
           type="primary"
           @click="loadAllNotes"
           :loading="loadingAllNotes"
-          class="filter__export"
-          style="top: 50px"
+          class="filter__export dk-load-btn"
           >Загрузить весь ДК</el-button
         >
         <!-- <Button title="Новая запись" @click="openForm" class="credit-btn" /> -->
@@ -498,11 +497,22 @@ export default {
     &__export {
       position: absolute;
       right: 0;
-      top: 0;
+      top: -10px;
+
+      &.dk-load-btn {
+        width: 130px;
+        top: -10px;
+        height: 39px;
+        right: 140px;
+      }
 
       @media (max-width: $breakpoint-tablet) {
         position: static;
         width: 100%;
+
+        &.dk-load-btn {
+          width: 100%;
+        }
       }
     }
 

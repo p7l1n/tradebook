@@ -112,7 +112,7 @@ export default {
   width: 130px;
   height: 40px;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   background-color: #1d6f42;
   color: white;
   cursor: pointer;
