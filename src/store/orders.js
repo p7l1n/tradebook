@@ -120,7 +120,6 @@ export default {
         commit(
           types.SET_ORDERS,
           res
-            // .filter((item) => item.comment !== "payed")
             .map((item) => {
               // calc in
               let kassaAmountIn = 0;

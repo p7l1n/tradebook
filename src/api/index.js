@@ -285,9 +285,9 @@ export const getQuery = async (url, params = {}) => {
     localParams.organizationId = organizationId;
   }
 
-  if (localParams.pageSize) {
-    localParams.pageSize = 1000;
-  }
+  // if (localParams.pageSize) {
+  //   localParams.pageSize = 1000;
+  // }
 
   if (localParams.from) {
     localParams.from = Math.floor(

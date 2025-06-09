@@ -11,6 +11,7 @@ module.exports = defineConfig({
           @import "@/assets/styles/colors.scss";
           @import "@/assets/styles/base.scss";
           @import "@/assets/styles/_fonts.scss";
+          @import "@/assets/styles/_element-ui.scss";
         `,
       },
     },

@@ -45,6 +45,7 @@ export default {
   },
 
   actions: {
+    // загрузить весь ДК
     async fetchAllTypesNotes({ commit, rootGetters }) {
       const contragents = rootGetters["clients/clients"];
       const startCurrenciesIndexes =
@@ -82,6 +83,7 @@ export default {
       await fetchPage(page);
       commit(types.SET_ALL_TYPES_NOTES, allNotes);
     },
+    // загрузить только тетрадь записи
     async fetchOnlyDailyNotes({ commit, rootGetters }) {
       const contragents = rootGetters["clients/clients"];
       const startCurrenciesIndexes =
@@ -110,7 +112,8 @@ export default {
         return;
       }
     },
-    async fetchNotes({ state, commit, rootGetters, dispatch }) {
+    // загрузить все записи 1000 штук
+    async fetchNotes({ commit, rootGetters, dispatch }) {
       const contragents = rootGetters["clients/clients"];
       const startCurrenciesIndexes =
         rootGetters["stats/startCurrenciesIndexes"];
@@ -118,7 +121,7 @@ export default {
         Object.entries(startCurrenciesIndexes).map(([k, v]) => [v, k])
       );
 
-      const res = await getQuery("Notes", state.filter);
+      const res = await getQuery("Notes", { pageSize: 2500 });
       if (res && Array.isArray(res)) {
         commit(
           types.SET_NOTES,

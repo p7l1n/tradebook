@@ -12,43 +12,10 @@ export default {
     isDarkTheme: false,
     organizationId: 1,
     organizationsList: [],
-    organizationBalances: {
-      1: {
-        // сити
-        start: {
-          RUB: 70000000,
-          USD: 700000,
-          EUR: 500000,
-          USDT: 1105000,
-          WUSD: 0,
-        },
-      },
-      2: {
-        // спорт
-        start: {
-          RUB: 30000000,
-          USD: 350000,
-          EUR: 250000,
-          USDT: 300000,
-          WUSD: 0,
-        },
-      },
-      5: {
-        start: {
-          RUB: 10000000,
-          USD: 10000,
-          EUR: 5000,
-          USDT: 10000,
-          WUSD: 0,
-        },
-      },
-    },
   }),
 
   getters: {
     isDarkTheme: (state) => state.isDarkTheme,
-    organizationBalances: (state) =>
-      state.organizationBalances[state.organizationId],
     organizationId: (state) => state.organizationId,
     organizationsList: (state) => state.organizationsList,
     organizationName: (state) =>

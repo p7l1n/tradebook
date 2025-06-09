@@ -30,11 +30,12 @@
           class="filter__export"
         />
         <el-button
+          v-if="activeMenuIndex === 0"
           type="primary"
           @click="loadAllNotes"
           :loading="loadingAllNotes"
           class="filter__export dk-load-btn"
-          >Загрузить весь ДК</el-button
+          >Загрузить все ДК</el-button
         >
         <!-- <Button title="Новая запись" @click="openForm" class="credit-btn" /> -->
         <div class="filter__stats">
