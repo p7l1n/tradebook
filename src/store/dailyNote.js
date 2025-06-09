@@ -5,6 +5,7 @@ const types = {
   SET_FILTER_OPTION: "SET_FILTER_OPTION",
   SET_NOTES: "SET_NOTES",
   SET_ONLY_DAILY_NOTES: "SET_ONLY_DAILY_NOTES",
+  SET_ALL_TYPES_NOTES: "SET_ALL_TYPES_NOTES", // все записи по 1000 всех страниц
 };
 
 export default {
@@ -16,6 +17,7 @@ export default {
       pageSize: 1000,
       activeTabIndex: 0,
     },
+    allTypesNotes: [],
     notes: [],
     onlyDailyNotes: [],
   }),
@@ -24,9 +26,13 @@ export default {
     filter: (state) => state.filter,
     notes: (state) => state.notes.filter((c) => c.category === 0), // 0 daily
     onlyDailyNotes: (state) => state.onlyDailyNotes,
+    allTypesNotes: (state) => state.allTypesNotes,
   },
 
   mutations: {
+    [types.SET_ALL_TYPES_NOTES](state, value) {
+      state.allTypesNotes = value;
+    },
     [types.SET_ONLY_DAILY_NOTES](state, value) {
       state.onlyDailyNotes = value;
     },
@@ -39,6 +45,43 @@ export default {
   },
 
   actions: {
+    async fetchAllTypesNotes({ commit, rootGetters }) {
+      const contragents = rootGetters["clients/clients"];
+      const startCurrenciesIndexes =
+        rootGetters["stats/startCurrenciesIndexes"];
+      const invertedObj = Object.fromEntries(
+        Object.entries(startCurrenciesIndexes).map(([k, v]) => [v, k])
+      );
+
+      const pageSize = 1000;
+      let page = 1;
+      let allNotes = [];
+
+      const fetchPage = async (pageNum) => {
+        const res = await getQuery("Notes", { page: pageNum, pageSize });
+        if (res && Array.isArray(res)) {
+          const processedNotes = res.map((item) => ({
+            ...item,
+            date: item.date * 1000,
+            type: getNoteTypeFromIndex(item.type),
+            inCurrency: invertedObj[item.inCurrencyId],
+            client:
+              contragents.find((c) => c.id === item.clientId)?.name || "???",
+          }));
+          allNotes = [...allNotes, ...processedNotes];
+
+          if (res.length === pageSize) {
+            await fetchPage(pageNum + 1);
+          }
+        }
+        if (res.error) {
+          return;
+        }
+      };
+
+      await fetchPage(page);
+      commit(types.SET_ALL_TYPES_NOTES, allNotes);
+    },
     async fetchOnlyDailyNotes({ commit, rootGetters }) {
       const contragents = rootGetters["clients/clients"];
       const startCurrenciesIndexes =

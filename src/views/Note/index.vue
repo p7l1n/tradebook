@@ -29,6 +29,14 @@
           :is-dk="true"
           class="filter__export"
         />
+        <el-button
+          type="primary"
+          @click="loadAllNotes"
+          :loading="loadingAllNotes"
+          class="filter__export"
+          style="top: 50px"
+          >Загрузить весь ДК</el-button
+        >
         <!-- <Button title="Новая запись" @click="openForm" class="credit-btn" /> -->
         <div class="filter__stats">
           <el-input
@@ -224,6 +232,7 @@ export default {
     const selectedClient = ref(null);
     const amount = ref("");
     const comment = ref("");
+    const loadingAllNotes = ref(false);
 
     const onSelectInCurrencies = (ndx) => {
       activeIncurrenciesIndex.value = ndx;
@@ -308,6 +317,17 @@ export default {
     const openForm = () => {
       editForm.value = true;
       selectedItem.value = null;
+    };
+
+    const loadAllNotes = async () => {
+      loadingAllNotes.value = true;
+      await store.dispatch("dailyNote/fetchAllTypesNotes");
+      ElNotification({
+        title: "Успешно",
+        message: `Все записи загружены`,
+        type: "success",
+      });
+      loadingAllNotes.value = false;
     };
 
     const onSelectDateFrom = (val) => {
@@ -417,6 +437,7 @@ export default {
       collectionsIds,
       loadingRemove,
       filteredNotesList,
+      loadingAllNotes,
 
       toCurrency,
       disabledDate,
@@ -437,6 +458,7 @@ export default {
       onCollect,
       numberFormatter,
       numberParser,
+      loadAllNotes,
     };
   },
 };

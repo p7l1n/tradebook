@@ -18,8 +18,15 @@ export default {
 
   getters: {
     filter: (state) => state.filter,
-    notes: (state, getters, rootState) =>
-      rootState.dailyNote.notes.filter((c) => c.category === 1), // DK
+    notes: (state, getters, rootState) => {
+      const allNotes = [
+        ...rootState.dailyNote.allTypesNotes.filter((c) => c.category === 1),
+        ...rootState.dailyNote.notes.filter((c) => c.category === 1),
+      ];
+      return [
+        ...new Map(allNotes.map((item) => [item.id, item])).values(),
+      ].sort((a, b) => b.id - a.id);
+    },
     profitHistory: (state) => state.profitHistory,
   },
 
