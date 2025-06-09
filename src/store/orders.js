@@ -115,7 +115,11 @@ export default {
         Object.entries(startCurrenciesIndexes).map(([k, v]) => [v, k])
       );
 
-      const res = await getQuery("Orders", state.filter);
+      const res = await getQuery(
+        "Orders",
+        state.filter,
+        rootGetters["stats/startCurrenciesIndexes"]
+      );
       if (res && Array.isArray(res)) {
         commit(
           types.SET_ORDERS,

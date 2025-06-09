@@ -100,6 +100,10 @@ export default {
       type: String,
       default: "",
     },
+    showSmallBalances: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
     const store = useStore();
@@ -126,10 +130,29 @@ export default {
         : list.filter((item) =>
             item.client.toLowerCase().includes(props.searchStr.toLowerCase())
           );
+
+      const hasAnyNonZero = (item) =>
+        Object.values(item.amounts).some((value) => Math.abs(value) > 1e-10);
+
+      const hasSmallAmounts = (item) => {
+        const { USDT, RUB, USD, EUR, WUSD } = item.amounts;
+        const hasNonZero = Object.values(item.amounts).some(
+          (value) => Math.abs(value) > 1e-10
+        );
+        return (
+          hasNonZero &&
+          Math.abs(USDT) < 1 &&
+          Math.abs(RUB) < 50 &&
+          Math.abs(USD) < 1 &&
+          Math.abs(EUR) < 1 &&
+          Math.abs(WUSD) < 1
+        );
+      };
+
       return sortByKey(
-        filteredList.filter((item) =>
-          Object.values(item.amounts).some((value) => value != 0)
-        ),
+        filteredList.filter(hasAnyNonZero).filter((item) => {
+          return props.showSmallBalances ? hasSmallAmounts(item) : true;
+        }),
         "client"
       );
     });

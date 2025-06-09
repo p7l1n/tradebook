@@ -3,17 +3,19 @@ import store from "@/store";
 let currentNotification;
 // axios.defaults.withCredentials = true;
 
-const objectToQueryParams = (obj) => {
+const objectToQueryParams = (obj, startCurrenciesIndexes) => {
   const clientsList = store.getters["clients/clients"];
   const params = new URLSearchParams();
 
-  const currencyMap = {
+  let currencyMap = {
     RUB: 1,
     USD: 2,
     EUR: 3,
     WUSD: 4,
     USDT: 0,
   };
+
+  currencyMap = { ...currencyMap, ...startCurrenciesIndexes };
 
   for (const [key, value] of Object.entries(obj)) {
     if (value !== undefined && value !== null) {
@@ -248,7 +250,11 @@ export const deleteQuery = async (url) => {
   }
 };
 
-export const getQuery = async (url, params = {}) => {
+export const getQuery = async (
+  url,
+  params = {},
+  startCurrenciesIndexes = {}
+) => {
   const isAdmin = store.getters["auth/isAdmin"];
   const organizationId = store.getters["settings/organizationId"];
 
@@ -299,7 +305,10 @@ export const getQuery = async (url, params = {}) => {
     localParams.to = Math.floor((+new Date(localParams.to) + 86400000) / 1000);
   }
 
-  const queryParamsString = objectToQueryParams(localParams);
+  const queryParamsString = objectToQueryParams(
+    localParams,
+    startCurrenciesIndexes
+  );
   if (queryParamsString) {
     urlQuery = `?${queryParamsString}`;
   }

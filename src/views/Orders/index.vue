@@ -39,12 +39,6 @@
             max-width
             class="orders-page__widgets-item"
           />
-          <Rates
-            v-if="
-              !isLoading && activeMenuIndex === 1 && filterOptions.showStats
-            "
-            class="balance-page__widgets-item ml-15"
-          />
         </div>
         <Orders
           v-if="!isLoading && activeMenuIndex !== 2"
@@ -101,7 +95,6 @@ import OrderForm from "@/views/Orders/components/OrderForm";
 import OrderFormLine from "./components/OrderFormLine";
 import EditFieldsForm from "@/views/Orders/components/EditFieldsForm";
 import TotalInfo from "@/components/widgets/TotalInfo";
-import Rates from "@/components/widgets/Rates";
 import CheckButton from "@/components/CheckButton";
 
 import { useStore } from "vuex";
@@ -122,7 +115,6 @@ export default {
     EditFieldsForm,
     FilterOrders,
     TotalInfo,
-    Rates,
     CheckButton,
   },
   setup() {

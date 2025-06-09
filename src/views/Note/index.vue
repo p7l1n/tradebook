@@ -45,6 +45,14 @@
             placeholder="Поиск по ДК"
             clearable
           />
+          <el-checkbox
+            v-if="false && activeMenuIndex === 1"
+            v-model="showSmallBalances"
+            label="Показать копейки"
+            border
+            class="ml10"
+            @change="onChangeSmallBalances"
+          />
           <div v-if="activeMenuIndex === 0" class="ml10">
             <el-date-picker
               v-model="dateFrom"
@@ -151,6 +159,7 @@
       <NotesStats
         v-if="!isLoading && activeMenuIndex === 1"
         :search-str="searchStr"
+        :show-small-balances="showSmallBalances"
       />
       <ProfitHistory
         v-if="!isLoading && activeMenuIndex === 2"
@@ -222,6 +231,7 @@ export default {
     const collectionsIds = ref([]);
     const editModeFlag = ref(false);
     const loadingRemove = ref(false);
+    const showSmallBalances = ref(false);
 
     const activeIncurrenciesIndex = ref(-1);
     const inCurrencies = ref(DEFAULT_CURRENCIES);
@@ -404,6 +414,10 @@ export default {
       }
     };
 
+    const onChangeSmallBalances = (val) => {
+      showSmallBalances.value = val;
+    };
+
     onMounted(() => {
       if (filterOptions.value.from) {
         dateFrom.value = filterOptions.value.from;
@@ -438,6 +452,7 @@ export default {
       loadingRemove,
       filteredNotesList,
       loadingAllNotes,
+      showSmallBalances,
 
       toCurrency,
       disabledDate,
@@ -459,6 +474,7 @@ export default {
       numberFormatter,
       numberParser,
       loadAllNotes,
+      onChangeSmallBalances,
     };
   },
 };
