@@ -165,7 +165,7 @@
     <div class="order-form__btns">
       <Button title="Очистить" @click="clearForm" />
       <el-button
-        v-if="editOrder"
+        v-if="false && editOrder"
         type="warning"
         :loading="loadingRemove"
         class="base-btn ml10"

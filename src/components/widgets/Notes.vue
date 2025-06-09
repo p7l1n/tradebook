@@ -107,6 +107,7 @@ import { useStore } from "vuex";
 import moment from "moment";
 import useNotes from "@/compositions/useNotes";
 import useAgentsNotes from "@/compositions/useAgentsNotes";
+import { ElMessageBox } from "element-plus";
 
 export default {
   components: {},
@@ -172,7 +173,26 @@ export default {
       emit("select", item);
     };
 
-    const remove = async (item) => {
+    const remove = async (item, confirm = false) => {
+      if (!confirm) {
+        ElMessageBox.confirm(
+          `ДК запись с номером #${item.id} на ${toCurrency(item.amount)} ${
+            item.inCurrency
+          } будет удалена. Продолжить?`,
+          "Предупреждение",
+          {
+            confirmButtonText: "Удалить",
+            cancelButtonText: "Отменить",
+            type: "warning",
+          }
+        )
+          .then(() => {
+            remove(item, true);
+          })
+          .catch(() => {});
+        return;
+      }
+
       processingId.value = item.id;
       await store.dispatch("dailyNote/removeEntity", item);
       processingId.value = null;

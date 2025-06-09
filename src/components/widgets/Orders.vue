@@ -196,7 +196,7 @@ import moment from "moment";
 import useStats from "@/compositions/useStats";
 import useOrders from "@/compositions/useOrders";
 import { parseLongName } from "@/helpers";
-import { ElNotification } from "element-plus";
+import { ElNotification, ElMessageBox } from "element-plus";
 
 export default {
   components: {},
@@ -308,7 +308,23 @@ export default {
       loading.value = false;
     };
 
-    const remove = async (item) => {
+    const remove = async (item, confirm = false) => {
+      if (!confirm) {
+        ElMessageBox.confirm(
+          `Сделка с номером #${item.id} ${item.inCurrency} -> ${item.outCurrency} будет удалена. Продолжить?`,
+          "Предупреждение",
+          {
+            confirmButtonText: "Удалить",
+            cancelButtonText: "Отменить",
+            type: "warning",
+          }
+        )
+          .then(() => {
+            remove(item, true);
+          })
+          .catch(() => {});
+        return;
+      }
       processingId.value = item.id;
       const notesToRemove = [].concat(
         notesList.value.filter((note) => {

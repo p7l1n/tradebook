@@ -34,7 +34,7 @@
           </div>
           <div class="widget-profits__list-item-field strong green">
             <el-button
-              v-if="ndx === 0"
+              v-if="isAdmin && ndx === 0"
               size="small"
               type="danger"
               :loading="removeLoading"
@@ -53,7 +53,7 @@ import { useStore } from "vuex";
 import { toCurrency } from "@/helpers";
 import { NOTE_TYPES } from "@/config/noteTypes";
 import moment from "moment";
-import { ElNotification } from "element-plus";
+import { ElNotification, ElMessageBox } from "element-plus";
 import useNotes from "@/compositions/useNotes";
 import useOrders from "@/compositions/useOrders";
 import useStats from "@/compositions/useStats";
@@ -70,12 +70,31 @@ export default {
 
     const { filteredProfitHistory } = useNotes();
     const notesList = computed(() => store.getters["note/notes"]);
+    const isAdmin = computed(() => store.getters["auth/isAdmin"]);
 
     const selectRow = (item) => {
       emit("select", item);
     };
 
-    const removeProfit = async (profitItem) => {
+    const removeProfit = async (profitItem, confirm = false) => {
+      if (!confirm) {
+        ElMessageBox.confirm(
+          `Подтвердите отмену снятия кассы на сумму ${toCurrency(
+            profitItem.amount
+          )} USDT. Продолжить?`,
+          "Предупреждение",
+          {
+            confirmButtonText: "Отменить снятие",
+            cancelButtonText: "Отменить",
+            type: "warning",
+          }
+        )
+          .then(() => {
+            removeProfit(profitItem, true);
+          })
+          .catch(() => {});
+        return;
+      }
       removeLoading.value = true;
 
       // ищем в журнале ДК эту запись тоже
@@ -150,6 +169,7 @@ export default {
       NOTE_TYPES,
       filteredProfitHistory,
       removeLoading,
+      isAdmin,
       toCurrency,
       selectRow,
       removeProfit,

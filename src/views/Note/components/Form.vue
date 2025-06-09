@@ -54,7 +54,7 @@
     <div class="note-form__btns">
       <Button title="Очистить" @click="clearForm" />
       <el-button
-        v-if="editNote"
+        v-if="false && editNote"
         type="warning"
         :loading="loadingRemove"
         class="base-btn ml10"

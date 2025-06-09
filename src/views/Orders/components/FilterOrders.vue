@@ -173,7 +173,7 @@
         type="success"
         :loading="cashOutLoading"
         :disabled="!profitUsdt"
-        @click="cashOut"
+        @click="cashOut(false)"
         class="cashout"
         >Снять кассу {{ toCurrency(profitUsdt) }} USDT</el-button
       >
@@ -198,7 +198,7 @@
   </div>
 </template>
 <script>
-import { ElSelect, ElNotification } from "element-plus";
+import { ElSelect, ElNotification, ElMessageBox } from "element-plus";
 import ExportButton from "@/components/ExportButton";
 import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
@@ -420,7 +420,25 @@ export default {
       )
     );
 
-    const cashOut = async () => {
+    const cashOut = async (confirm = false) => {
+      if (!confirm) {
+        ElMessageBox.confirm(
+          `Подтвердите снятие кассы на сумму ${toCurrency(
+            profitUsdt.value
+          )} USDT. Продолжить?`,
+          "Предупреждение",
+          {
+            confirmButtonText: "Снять кассу",
+            cancelButtonText: "Отменить",
+            type: "success",
+          }
+        )
+          .then(() => {
+            cashOut(true);
+          })
+          .catch(() => {});
+        return;
+      }
       // const id = `${Math.random()}`.slice(2);
       const profitSum = profitUsdt.value;
 

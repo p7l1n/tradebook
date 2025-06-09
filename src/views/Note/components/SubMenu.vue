@@ -12,8 +12,8 @@
   </div>
 </template>
 <script>
-import { ref, computed } from "vue";
-import { useStore } from "vuex";
+import { ref } from "vue";
+
 export default {
   props: {
     activeIndex: {
@@ -22,13 +22,7 @@ export default {
     },
   },
   setup() {
-    const store = useStore();
-    const isAdmin = computed(() => store.getters["auth/isAdmin"]);
-    const menuItems = ref(["Журнал ДК", "Сводка"]);
-
-    if (isAdmin.value) {
-      menuItems.value.push("История снятий");
-    }
+    const menuItems = ref(["Журнал ДК", "Сводка", "История снятий"]);
 
     return {
       menuItems,
