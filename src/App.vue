@@ -1,7 +1,7 @@
 <template>
   <MainMenu v-if="userInfo" />
   <div class="app-version">
-    {{ lastExecutionTime ? `${lastExecutionTime}ms | ` : "" }}p1.2.4
+    {{ lastExecutionTime ? `${lastExecutionTime}ms | ` : "" }}p1.2.5
   </div>
   <div :class="{ isAuth: userInfo }" class="main-app">
     <div v-if="isAuth" class="app-switch-theme">
@@ -63,6 +63,7 @@ export default {
         await store.dispatch("dailyNote/fetchOnlyDailyNotes");
         await store.dispatch("orders/fetchOrders");
       } else {
+        await store.dispatch("settings/fetchOrganizations");
         await store.dispatch("stats/fetchCurrencies");
         await store.dispatch("rates/fetchRates");
         await store.dispatch("clients/fetchContragents");
@@ -70,7 +71,6 @@ export default {
         await store.dispatch("dailyNote/fetchOnlyDailyNotes");
         await store.dispatch("note/fetchProfitHistory");
         await store.dispatch("orders/fetchOrders");
-        await store.dispatch("settings/fetchOrganizations");
         // await store.dispatch("noteStats/fetchDkStats");
         // await store.dispatch("noteStats/fetchAgentsStats");
         // await store.dispatch("noteStats/fetchKassaStats");
@@ -303,6 +303,12 @@ html {
   min-width: 170px;
 }
 
+.el-message-box__message,
+.el-message-box__header.show-close {
+  font-family: Manrope-Regular, Manrope-Medium, Avenir, Helvetica, Arial,
+    sans-serif !important;
+}
+
 .app-version {
   position: fixed;
   right: 3px;
@@ -313,6 +319,12 @@ html {
 }
 
 body.dark {
+  .el-message-box {
+    background-color: #2a2929 !important;
+  }
+  .el-message-box__title {
+    color: #ccc !important;
+  }
   .el-select-dropdown__list {
     background-color: #444 !important;
   }
