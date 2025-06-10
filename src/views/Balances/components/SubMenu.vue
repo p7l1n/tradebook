@@ -22,7 +22,7 @@ export default {
     },
   },
   setup() {
-    const menuItems = ref(["Табло", "Валюты", "Балансы", "Сверка"]);
+    const menuItems = ref(["Табло", "Курсы", "Балансы", "Сверка"]);
 
     return {
       menuItems,

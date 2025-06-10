@@ -12,6 +12,8 @@
         <div class="widget-total__list-item-field label">Тетрадь</div>
         <div class="widget-total__list-item-field label">ФАКТ</div>
         <div class="widget-total__list-item-field label">ФАКТ U+W</div>
+        <div class="widget-total__list-item-field label">Калк ФК</div>
+        <div class="widget-total__list-item-field label">= Калк ФК - ФАКТ</div>
       </div>
       <div
         class="widget-total__list-item"
@@ -91,14 +93,28 @@
               : ""
           }}
         </div>
+        <div class="widget-total__list-item-field">
+          <el-input
+            v-model="inputsState[key]"
+            :placeholder="key"
+            clearable
+            :formatter="numberFormatter"
+            :parser="numberParser"
+            style="width: 70px; min-width: 70px"
+          />
+        </div>
+        <div class="widget-total__list-item-field">
+          {{ toCurrency(calculatroStats[key]) }}
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { computed } from "vue";
+import { computed, reactive } from "vue";
 import { useStore } from "vuex";
 import { toCurrency } from "@/helpers";
+import { numberFormatter, numberParser } from "@/formatters";
 
 export default {
   props: {
@@ -110,8 +126,30 @@ export default {
   setup() {
     const store = useStore();
 
+    const inputsState = reactive({
+      RUB: "",
+      USD: "",
+      EUR: "",
+      WUSD: "",
+      USDT: "",
+    });
+
     const profitUsdt = computed(() => store.getters["noteStats/profitUsdt"]);
     const allStats = computed(() => store.getters["noteStats/kassaStats"]);
+
+    const calculatroStats = computed(() => {
+      const result = {};
+      for (const [currency, value] of Object.entries(inputsState)) {
+        const inputValue = parseFloat(value) || 0;
+        const factValue = allStats.value?.[currency]?.totalInCurrencyFACT || 0;
+        if (inputValue == 0) {
+          result[currency] = factValue;
+        } else {
+          result[currency] = inputValue - factValue;
+        }
+      }
+      return result;
+    });
 
     const ratesList = computed(() => store.getters["rates/rates"]);
     const totalInCurrencyFACTwu = computed(() => {
@@ -126,7 +164,11 @@ export default {
       allStats,
       profitUsdt,
       totalInCurrencyFACTwu,
+      inputsState,
+      numberFormatter,
+      numberParser,
       toCurrency,
+      calculatroStats,
     };
   },
 };
@@ -219,6 +261,13 @@ export default {
 
     &:nth-child(even) {
       background-color: $panelColorActive;
+    }
+
+    @media (max-width: 768px) {
+      &:nth-child(10),
+      &:nth-child(11) {
+        display: none;
+      }
     }
   }
 }
