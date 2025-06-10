@@ -1,5 +1,15 @@
 <template>
   <div :class="{ maxWidth }" class="widget-total">
+    <el-button
+      v-if="showSmallBalances"
+      type="warning"
+      class="base-btn"
+      style="width: 300px; height: 27px; margin: 5px auto"
+      :loading="loadingAllCalculations"
+      @click="reCalculateAll"
+    >
+      Расчет по всем копейкам
+    </el-button>
     <div class="widget-total__title">
       {{ isAgents ? "Посредники" : "Статистика (ТЕТРАДЬ + ЖУРНАЛ ДК)" }}
     </div>
@@ -81,7 +91,7 @@
 <script>
 import { toCurrency } from "@/helpers";
 import { sortByKey } from "@/helpers";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useStore } from "vuex";
 import { checkVinny } from "@/helpers";
 import { ElNotification } from "element-plus";
@@ -107,6 +117,7 @@ export default {
   },
   setup(props) {
     const store = useStore();
+    const loadingAllCalculations = ref(false);
     const contragents = computed(() => store.getters["clients/clients"]);
     const startCurrenciesIndexes = computed(
       () => store.getters["stats/startCurrenciesIndexes"]
@@ -131,30 +142,43 @@ export default {
             item.client.toLowerCase().includes(props.searchStr.toLowerCase())
           );
 
-      const hasAnyNonZero = (item) =>
-        Object.values(item.amounts).some((value) => Math.abs(value) > 1e-10);
+      const hasNonZero = (item) => {
+        const USDT = Number(item.amounts.USDT) || 0;
+        const RUB = Number(item.amounts.RUB) || 0;
+        const USD = Number(item.amounts.USD) || 0;
+        const EUR = Number(item.amounts.EUR) || 0;
+        const WUSD = Number(item.amounts.WUSD) || 0;
+        return [USDT, RUB, USD, EUR, WUSD].some((val) => val !== 0);
+      };
 
       const hasSmallAmounts = (item) => {
-        const { USDT, RUB, USD, EUR, WUSD } = item.amounts;
-        const hasNonZero = Object.values(item.amounts).some(
-          (value) => Math.abs(value) > 1e-10
-        );
+        const USDT = Number(item.amounts.USDT) || 0;
+        const RUB = Number(item.amounts.RUB) || 0;
+        const USD = Number(item.amounts.USD) || 0;
+        const EUR = Number(item.amounts.EUR) || 0;
+        const WUSD = Number(item.amounts.WUSD) || 0;
+
         return (
-          hasNonZero &&
-          Math.abs(USDT) < 1 &&
-          Math.abs(RUB) < 50 &&
-          Math.abs(USD) < 1 &&
-          Math.abs(EUR) < 1 &&
-          Math.abs(WUSD) < 1
+          USDT >= -1 &&
+          USDT <= 1 &&
+          RUB >= -50 &&
+          RUB <= 50 &&
+          USD >= -1 &&
+          USD <= 1 &&
+          EUR >= -1 &&
+          EUR <= 1 &&
+          WUSD >= -1 &&
+          WUSD <= 1
         );
       };
 
-      return sortByKey(
-        filteredList.filter(hasAnyNonZero).filter((item) => {
-          return props.showSmallBalances ? hasSmallAmounts(item) : true;
-        }),
-        "client"
-      );
+      const finalList = filteredList
+        .filter(hasNonZero)
+        .filter((item) =>
+          props.showSmallBalances ? hasSmallAmounts(item) : true
+        );
+
+      return sortByKey(finalList, "client");
     });
 
     const reCalculate = (item) => {
@@ -193,11 +217,30 @@ export default {
       });
     };
 
+    const reCalculateAll = async () => {
+      store.commit("dailyNote/setStopFetchAll", true);
+      loadingAllCalculations.value = true;
+      const itemsToCalculate = [...statsList.value];
+      for (const item of itemsToCalculate) {
+        await reCalculate(item);
+      }
+      ElNotification({
+        title: "Сводка",
+        message: "Общий расчет успешно произведен",
+        type: "success",
+      });
+      loadingAllCalculations.value = false;
+      store.commit("dailyNote/setStopFetchAll", false);
+      await store.dispatch("dailyNote/fetchNotes");
+    };
+
     return {
       statsList,
       toCurrency,
       checkVinny,
       reCalculate,
+      reCalculateAll,
+      loadingAllCalculations,
     };
   },
 };

@@ -30,6 +30,8 @@ createPersistedState({
     "orders.lastOrderNum",
     "orders.virtualNums",
     "settings.isDarkTheme",
+    "sverka.address",
+    "sverka.sverkaList",
   ],
 })(store);
 

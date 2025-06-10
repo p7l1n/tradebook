@@ -10,6 +10,7 @@ import agents from "./agents";
 import settings from "./settings";
 import claims from "./claims";
 import noteStats from "./noteStats";
+import sverka from "./sverka";
 
 export default createStore({
   state: {},
@@ -28,5 +29,6 @@ export default createStore({
     settings,
     claims,
     noteStats,
+    sverka,
   },
 });

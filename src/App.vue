@@ -1,7 +1,7 @@
 <template>
   <MainMenu v-if="userInfo" />
   <div class="app-version">
-    {{ lastExecutionTime ? `${lastExecutionTime}ms | ` : "" }}p1.2.9
+    {{ lastExecutionTime ? `${lastExecutionTime}ms | ` : "" }}p1.2.10
   </div>
   <div :class="{ isAuth: userInfo }" class="main-app">
     <div v-if="isAuth" class="app-switch-theme">
@@ -71,6 +71,7 @@ export default {
         await store.dispatch("dailyNote/fetchOnlyDailyNotes");
         await store.dispatch("note/fetchProfitHistory");
         await store.dispatch("orders/fetchOrders");
+        await store.dispatch("sverka/fetchBalance");
         // await store.dispatch("noteStats/fetchDkStats");
         // await store.dispatch("noteStats/fetchAgentsStats");
         // await store.dispatch("noteStats/fetchKassaStats");
@@ -101,6 +102,7 @@ export default {
     );
 
     const timer = ref(null);
+    const timerLog = ref(null);
 
     onMounted(async () => {
       switchTheme.value = store.getters["settings/isDarkTheme"];
@@ -122,6 +124,9 @@ export default {
               initApp(true);
             }
           }, 30000);
+          timerLog.value = setInterval(async () => {
+            await store.dispatch("sverka/fetchBalance");
+          }, 120000);
         }
       }, 500);
     });
@@ -152,6 +157,7 @@ export default {
 
     onBeforeUnmount(() => {
       clearInterval(timer.value);
+      clearInterval(timerLog.value);
     });
 
     return {

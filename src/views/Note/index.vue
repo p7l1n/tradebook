@@ -46,7 +46,7 @@
             clearable
           />
           <el-checkbox
-            v-if="false && activeMenuIndex === 1"
+            v-if="activeMenuIndex === 1"
             v-model="showSmallBalances"
             label="Показать копейки"
             border

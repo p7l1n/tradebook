@@ -6,11 +6,13 @@ const types = {
   SET_NOTES: "SET_NOTES",
   SET_ONLY_DAILY_NOTES: "SET_ONLY_DAILY_NOTES",
   SET_ALL_TYPES_NOTES: "SET_ALL_TYPES_NOTES", // все записи по 1000 всех страниц
+  SET_STOP_FETCH_ALL: "SET_STOP_FETCH_ALL",
 };
 
 export default {
   namespaced: true,
   state: () => ({
+    stopFetchAll: false,
     filter: {
       from: null,
       to: null,
@@ -23,6 +25,7 @@ export default {
   }),
 
   getters: {
+    stopFetchAll: (state) => state.stopFetchAll,
     filter: (state) => state.filter,
     notes: (state) => state.notes.filter((c) => c.category === 0), // 0 daily
     onlyDailyNotes: (state) => state.onlyDailyNotes,
@@ -30,6 +33,9 @@ export default {
   },
 
   mutations: {
+    [types.SET_STOP_FETCH_ALL](state, value) {
+      state.stopFetchAll = value;
+    },
     [types.SET_ALL_TYPES_NOTES](state, value) {
       state.allTypesNotes = value;
     },
@@ -45,6 +51,9 @@ export default {
   },
 
   actions: {
+    setStopFetchAll({ commit }, value) {
+      commit(types.SET_STOP_FETCH_ALL, value);
+    },
     // загрузить весь ДК
     async fetchAllTypesNotes({ commit, rootGetters }) {
       const contragents = rootGetters["clients/clients"];
@@ -159,10 +168,12 @@ export default {
         return;
       }
     },
-    async addNewEntity({ dispatch }, value) {
+    async addNewEntity({ getters, dispatch }, value) {
       const res = await postQuery("Notes", value); // { ...value, category: 2 }
       if (res.id) {
-        await dispatch("fetchNotes");
+        if (!getters.stopFetchAll) {
+          await dispatch("fetchNotes");
+        }
       }
       return res;
     },

@@ -59,6 +59,13 @@
       <Loader v-if="isLoading" />
       <Balances v-if="!isLoading" class="balance-page__widgets-item" />
     </div>
+    <div
+      v-if="activeMenuIndex === 3"
+      :class="{ isLoading }"
+      class="balance-page__widgets"
+    >
+      <Sverka v-if="!isLoading" class="balance-page__widgets-item" />
+    </div>
   </div>
 </template>
 <script>
@@ -74,6 +81,7 @@ import { useStore } from "vuex";
 
 import { onMounted, ref, computed } from "vue";
 import RatesStats from "@/components/widgets/RatesStats";
+import Sverka from "@/components/widgets/Sverka";
 
 export default {
   components: {
@@ -84,6 +92,7 @@ export default {
     Loader,
     RatesShort,
     RatesStats,
+    Sverka,
     // NotesStats,
   },
   setup() {
