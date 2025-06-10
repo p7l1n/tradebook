@@ -95,13 +95,15 @@
         </div>
         <div class="widget-total__list-item-field">
           <el-input
+            v-if="key !== 'USD'"
             v-model="inputsState[key]"
-            :placeholder="key"
+            :placeholder="key === 'WUSD' ? 'WUSD + USD' : key"
             clearable
             :formatter="numberFormatter"
             :parser="numberParser"
             style="width: 70px; min-width: 70px"
           />
+          <div v-else>-</div>
         </div>
         <div class="widget-total__list-item-field">
           {{ toCurrency(calculatroStats[key]) }}
@@ -143,9 +145,12 @@ export default {
         const inputValue = parseFloat(value) || 0;
         const factValue = allStats.value?.[currency]?.totalInCurrencyFACT || 0;
         if (inputValue == 0) {
-          result[currency] = factValue;
+          result[currency] =
+            currency === "WUSD" ? totalInCurrencyFACTwu.value : factValue;
         } else {
-          result[currency] = inputValue - factValue;
+          result[currency] =
+            inputValue -
+            (currency === "WUSD" ? totalInCurrencyFACTwu.value : factValue);
         }
       }
       return result;
