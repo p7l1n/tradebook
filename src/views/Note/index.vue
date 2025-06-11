@@ -73,11 +73,19 @@
               @change="onSelectDateTo"
             />
           </div>
+          <div v-if="activeMenuIndex === 0 && isMobile" class="ml10 w100">
+            <el-checkbox
+              v-model="showFormMobile"
+              label="Показать форму"
+              border
+              class="w100"
+            />
+          </div>
         </div>
       </div>
       <!-- form -->
       <div
-        v-if="activeMenuIndex === 0"
+        v-if="activeMenuIndex === 0 && (!isMobile || showFormMobile)"
         class="note-page__form"
         tabindex="0"
         @keydown.enter="addNew"
@@ -232,6 +240,7 @@ export default {
     const editModeFlag = ref(false);
     const loadingRemove = ref(false);
     const showSmallBalances = ref(false);
+    const showFormMobile = ref(false);
 
     const activeIncurrenciesIndex = ref(-1);
     const inCurrencies = ref(DEFAULT_CURRENCIES);
@@ -307,6 +316,7 @@ export default {
 
     const isLoading = computed(() => store.getters["rates/isLoading"]);
     const filterOptions = computed(() => store.getters["dailyNote/filter"]);
+    const isMobile = computed(() => window.innerWidth <= 480);
     const startCurrenciesIndexFromSelectorId = computed(
       () => store.getters["stats/startCurrenciesIndexFromSelectorId"]
     );
@@ -425,6 +435,12 @@ export default {
       if (filterOptions.value.to) {
         dateTo.value = filterOptions.value.to;
       }
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 480) {
+          showFormMobile.value = false;
+        }
+      });
     });
 
     return {
@@ -453,6 +469,8 @@ export default {
       filteredNotesList,
       loadingAllNotes,
       showSmallBalances,
+      showFormMobile,
+      isMobile,
 
       toCurrency,
       disabledDate,
@@ -502,6 +520,9 @@ export default {
 
   .ml10 {
     margin-left: 10px;
+  }
+  .w100 {
+    width: 100%;
   }
   .filter {
     display: flex;

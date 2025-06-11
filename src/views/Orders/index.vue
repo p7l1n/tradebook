@@ -20,8 +20,17 @@
             Удалить
           </el-button>
         </div>
+        <el-checkbox
+          v-if="activeMenuIndex === 0 && isMobile"
+          v-model="showFormMobile"
+          label="Показать форму"
+          border
+          class="orders-page__mobile-checkbox"
+        />
       </div>
-      <OrderFormLine v-if="activeMenuIndex === 0" />
+      <OrderFormLine
+        v-if="activeMenuIndex === 0 && (!isMobile || showFormMobile)"
+      />
       <!-- панель фильтров -->
       <FilterOrders v-if="activeMenuIndex === 1" />
       <!-- настройки полей таблицы -->
@@ -125,6 +134,8 @@ export default {
     const selectedOrder = ref(null);
     const editModeFlag = ref(false);
     const collectionsIds = ref([]);
+    const showFormMobile = ref(false);
+    const isMobile = ref(false);
 
     const isLoading = computed(() => store.getters["rates/isLoading"]);
     const filterOptions = computed(() => store.getters["orders/filter"]);
@@ -183,8 +194,13 @@ export default {
       });
     };
 
+    const checkMobile = () => {
+      isMobile.value = window.innerWidth <= 480;
+    };
+
     onMounted(async () => {
-      // await store.dispatch("rates/fetchRates");
+      checkMobile();
+      window.addEventListener("resize", checkMobile);
     });
 
     return {
@@ -197,6 +213,8 @@ export default {
       editModeFlag,
       collectionsIds,
       loadingRemove,
+      showFormMobile,
+      isMobile,
       onSelectMenu,
       closeForm,
       onSelectOrder,
@@ -220,7 +238,11 @@ export default {
 
   .mt-15 {
     margin-top: 15px;
-    margin-bottom: 15px;
+    // margin-bottom: 15px;
+
+    @media (max-width: $breakpoint-mobile) {
+      margin-top: 0;
+    }
   }
 
   .ml-15 {
@@ -285,6 +307,25 @@ export default {
     @media (max-width: $breakpoint-tablet) {
       position: static;
       margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  }
+
+  &__mobile-checkbox {
+    @media (min-width: $breakpoint-tablet) {
+      display: none;
+    }
+
+    @media (max-width: $breakpoint-tablet) {
+      width: 100%;
+      margin-top: 10px;
+
+      :deep(.el-checkbox) {
+        width: 100%;
+        margin-right: 0;
+        justify-content: center;
+      }
     }
   }
 }
